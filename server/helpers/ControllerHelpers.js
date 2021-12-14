@@ -11,9 +11,9 @@ class ControllerHelpers{
         let month = date.getMonth() + 1;
         let day = date.getDate();
 
-        let date = `${year}-${month}-${day}`;
+        let dateToString = `${year}-${month}-${day}`;
 
-        return date;
+        return dateToString;
     }
 
     /**
@@ -32,9 +32,9 @@ class ControllerHelpers{
         let minutes = date.getMinutes();
         let seconds = date.getSeconds();
 
-        let date = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        let dateToString = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
-        return date;
+        return dateToString;
     }
 
     /**

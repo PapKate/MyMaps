@@ -1,19 +1,9 @@
-const db = require('../config/db');
 const ControllerHelpers = require('../helpers/ControllerHelpers');
 
 /**
- * Represents a user in the database
+ * Represents the user from a request
  */
 class User{
-
-    constructor(id, username, email, password, dateCreated, dateModified) {
-        this.id = id;
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.dateCreated = dateCreated;
-        this.dateModified = dateModified;
-    }
 
     constructor(username, email, password) {
         this.username = username;
@@ -21,31 +11,31 @@ class User{
         this.password = password;
     }
 
-    async Create() {
+    Create() {
 
         let dateTimeNow = ControllerHelpers.GetCurrentDateTime();
 
         let dateCreated = dateTimeNow;
         let dateModified = dateTimeNow;
 
-        let sql = `
+        let query = `
             INSERT INTO users(username, email, password, dateCreated, dateModified)
             VALUES('${this.username}', '${this.email}', '${this.password}', '${dateCreated}', '${dateModified}');
         `;
 
-        return db.execute(sql);
+        return query;
     }
 
     static GetAll() {
-        let sql = `SELECT * FROM users`;
+        let query = `SELECT * FROM users`;
 
-        return db.execute(sql);
+        return query;
     }
 
     static GetById(id) {
-        let sql = `SELECT * FROM users WHERE id = ${id};`;
+        let query = `SELECT * FROM users WHERE id = ${id};`;
 
-        return db.execute(sql);
+        return query;
     }
 
     /**
@@ -55,17 +45,36 @@ class User{
      * @param {string} newPassword 
      * @returns 
      */
-    static Update(id, newUsername, newPassword) {
+    static UpdateById(id, newUsername, newPassword) {
 
         // Gets the current date time as string
         var dateModified = ControllerHelpers.GetCurrentDateTime();
 
-        let sql = `UPDATE users SET username = ${newUsername}, 
-                                    password = ${newPassword}, 
-                                    dateModified = ${dateModified} 
+        let query = `UPDATE users SET username = ${newUsername}, 
+                                      password = ${newPassword}, 
+                                      dateModified = ${dateModified} 
                     WHERE id = ${id};`;
 
-        return db.execute(sql);
+        return query;
+    }
+
+    /**
+     * Updates the username and the password
+     * @param {int} id 
+     * @returns 
+     * TODO Create the query for DELETE
+     */
+     static DeleteById(id) {
+
+        // Gets the current date time as string
+        var dateModified = ControllerHelpers.GetCurrentDateTime();
+
+        // let query = `DELETE users SET username = ${newUsername}, 
+        //                             password = ${newPassword}, 
+        //                             dateModified = ${dateModified} 
+        //             WHERE id = ${id};`;
+
+        return query;
     }
 }
 
