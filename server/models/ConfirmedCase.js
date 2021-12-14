@@ -4,7 +4,7 @@ const ControllerHelpers = require('../helpers/ControllerHelpers');
 /**
  * Represents a Confirmed Case in the database
  */
-class Confirmedcase{
+class ConfirmedCase{
 
     constructor(id,userId, date) {
         this.id = id;
@@ -48,4 +48,4 @@ class Confirmedcase{
 
 }
 
-module.exports = ConfirmedCases;
+module.exports = ConfirmedCase;

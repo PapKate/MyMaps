@@ -4,25 +4,20 @@ class Routes {
      ** The home route
      ** /myMaps 
      */
-    static HomeRoute = "myMaps";
+    static HomeRoute = "/myMaps";
 
     /**
      ** The users' route
      ** /myMaps/users
      */
-     static UsersRoute = HomeRoute + "/users";
+     static UsersRoute = Routes.HomeRoute + "/users";
 
     /**
      ** The route to a user
      ** /myMaps/users/2
      */
-     static UserRoute = PostsRoute + "/:id";
+     static UserRoute = Routes.UsersRoute + "/:id";
 
-     /**
-     ** The route to a post
-     ** /myMaps/users/2
-     */
-     static UserRoute = PostsRoute + "/:id";
 }
 
 module.exports = Routes;
