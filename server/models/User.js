@@ -37,7 +37,7 @@ class User{
     }
 
     static GetAll() {
-        let sql = "SELECT * FROM users";
+        let sql = `SELECT * FROM users`;
 
         return db.execute(sql);
     }
