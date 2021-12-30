@@ -6,7 +6,7 @@ var mysqlModule = require("mysql");
 const MySQLConnection = mysqlModule.createConnection({
     host: "localhost",
     user: "root",
-    password: "12345678",
+    password: "6972136018Mt",
     database: "my-maps",
 });
 
