@@ -62,17 +62,11 @@ class User{
      * Updates the username and the password
      * @param {int} id 
      * @returns 
-     * TODO Create the query for DELETE
+     * 
      */
      static DeleteById(id) {
 
-        // Gets the current date time as string
-        var dateModified = ControllerHelpers.GetCurrentDateTime();
-
-        // let query = `DELETE users SET username = ${newUsername}, 
-        //                             password = ${newPassword}, 
-        //                             dateModified = ${dateModified} 
-        //             WHERE id = ${id};`;
+         let query = `DELETE FROM users WHERE id = ${id};`;
 
         return query;
     }

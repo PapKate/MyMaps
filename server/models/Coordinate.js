@@ -2,43 +2,51 @@ const db = require('../config/db');
 const ControllerHelpers = require('../helpers/ControllerHelpers');
 
 /**
- * Represents a coordinate in the database
+ * Represents a coordinate from a request
  */
 class Coordinate{
-
-    constructor(id,lat,lng) {
-        this.id = id;
-        this.lat = lat;
-        this.lng = lng;
-    }
 
     constructor(lat,lng) {
         this.lat = lat;
         this.lng = lng;
     }
 
-    async Create() {
+     Create() {
         
-        let sql = `
+        let query = `
             INSERT INTO coordinates(lat,lng)
             VALUES('${this.lat}', '${this.lng}');
         `;
 
-        return db.execute(sql);    
+        return query;    
     }
 
     static GetAll() {
-        let sql = `SELECT * FROM coordinates`;
+        let query = `SELECT * FROM coordinates`;
 
-        return db.execute(sql);
+        return query;
     }
 
     static GetById(id) {
-        let sql = `SELECT * FROM coordinates WHERE id = ${id};`;
+        let query = `SELECT * FROM coordinates WHERE id = ${id};`;
 
-        return db.execute(sql);
+        return query;
     }
 
+    static UpdateById(id, newLat, newLng) {
+
+        let query = `UPDATE coordinates SET lat = ${newLat}, 
+                                      lng = ${newLng}, 
+                    WHERE id = ${id};`;
+
+        return query;
+    }
+
+    static DeleteById(id) {
+        let query = `DELETE FROM coordinates WHERE id = ${id};`;
+
+        return query;
+    }
 }
 
 module.exports = Coordinate;
