@@ -26,7 +26,7 @@ const ErrorResponse = require("../utils/errorResponse");
  * @param {*} res 
  * @param {*} next 
  */
-exports.CreateNewUser =  async (req, res, next) => {
+ exports.CreateNewUser =  async (req, res, next) => {
     let user = new User(req.body.username, req.body.email, req.body.password);
     
     // Gets the sql query for creating the user
@@ -45,7 +45,7 @@ exports.CreateNewUser =  async (req, res, next) => {
  * @param {*} next 
  * @returns 
  */
-exports.GetUserById = (async (req, res, next) => {
+ exports.GetUserById = (async (req, res, next) => {
 
     let query = User.GetById(req.params.id);
 
@@ -61,7 +61,7 @@ exports.GetUserById = (async (req, res, next) => {
 /**
  * TODO Delete 
  */
-exports.UpdateUserById = (async (req, res, next) => {
+ exports.UpdateUserById = (async (req, res, next) => {
     
     let query = User.GetById(req.params.id);
     var result = await GetQueryResultAsync(query);
@@ -78,7 +78,7 @@ exports.UpdateUserById = (async (req, res, next) => {
 /**
  * TODO Delete 
  */
-exports.DeleteUserById = (async (req, res, next) => {
+ exports.DeleteUserById = (async (req, res, next) => {
     
     let query = User.GetById(req.params.id);
     var result = await GetQueryResultAsync(query);

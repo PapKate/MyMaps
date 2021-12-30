@@ -17,7 +17,7 @@ class Routes {
      ** /myMaps/users/2
      */
      static UserRoute = Routes.UsersRoute + "/:id";
-
+    
 }
 
 module.exports = Routes;

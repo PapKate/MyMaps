@@ -2,6 +2,8 @@ const express = require('express');
 
 const userControllers = require('../controllers/UserControllers');
 
+const fileController = require('../controllers/FileController');
+
 const router = express.Router();
 
 const Routes = require('./Routes');
@@ -25,4 +27,9 @@ router
     .put(userControllers.UpdateUserById)
     .delete(userControllers.DeleteUserById);
 
+router 
+    .route("/myMaps/file")
+    .post(fileController.GetFile);
+
+    
 module.exports = router;
