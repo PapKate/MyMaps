@@ -2,22 +2,16 @@ const db = require('../config/db');
 const ControllerHelpers = require('../helpers/ControllerHelpers');
 
 /**
- * Represents a point and type in the database
+ * Represents a point and type from a request
  */
 class PointAndType{
-
-    constructor(id, pointId, typeId) {
-        this.id = id;
-        this.pointId = pointId;
-        this.typeId = typeId;
-    }
 
     constructor(pointId, typeId) {
         this.pointId = pointId;
         this.typeId = typeId;
     }
 
-    async Create() {
+    Create() {
 
         let sql = `
             INSERT INTO pointandtypes(pointId, typeId)
@@ -46,14 +40,21 @@ class PointAndType{
      * @param 
      * @returns 
      */
-    static Update(id, newPointId, newTypeId) {
+    static UpdateById(id, newPointId, newTypeId) {
 
-        let sql = `UPDATE users SET pointId = ${newPointId}, 
+        let sql = `UPDATE pointandtypes SET pointId = ${newPointId}, 
                                     typeId = ${newTypeId}                               
                     WHERE id = ${id};`;
 
         return db.execute(sql);
     }
+
+    static DeleteById(id) {
+        let sql = `DELETE FROM pointandtypes WHERE id = ${id};`;
+
+        return db.execute(sql);
+    }
+
 }
 
 module.exports = PointAndType;
