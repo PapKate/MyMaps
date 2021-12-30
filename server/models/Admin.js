@@ -1,4 +1,5 @@
-const db = require('../config/db');
+//const db = require('../config/db');
+
 const ControllerHelpers = require('../helpers/ControllerHelpers');
 
 /**
@@ -7,37 +8,31 @@ const ControllerHelpers = require('../helpers/ControllerHelpers');
 
 class Admin{
 
-    constructor(id, username, password) {
-        this.id = id;
+    constructor(username, password) {
         this.username = username;
         this.password = password;
     }
 
     async Create() {
 
-        let dateTimeNow = ControllerHelpers.GetCurrentDateTime();
-
-        let dateCreated = dateTimeNow;
-        let dateModified = dateTimeNow;
-
-        let sql = `
+        let query = `
             INSERT INTO admins(username, password)
             VALUES('${this.username}', '${this.password}');
         `;
 
-        return db.execute(sql);
+        return query;
     }
 
     static GetAll() {
-        let sql = "SELECT * FROM admins";
+        let query = 'SELECT * FROM admins';
 
-        return db.execute(sql);
+        return query;
     }
 
     static GetById(id) {
-        let sql = `SELECT * FROM admins WHERE id = ${id};`;
+        let query = `SELECT * FROM admins WHERE id = ${id};`;
 
-        return db.execute(sql);
+        return query;
     }
 
     /**
@@ -45,19 +40,24 @@ class Admin{
      * @param {int} id 
      * @param {string} newUsername 
      * @param {string} newPassword 
-     * @returns 
+     * @returns the sql query
      */
-    static Update(id, newUsername, newPassword) {
-
-        // Gets the current date time as string
-        var dateModified = ControllerHelpers.GetCurrentDateTime();
-
-        let sql = `UPDATE admins SET username = ${newUsername}, 
+    static UpdateById(id, newUsername, newPassword) {
+        let query = `UPDATE admins SET username = ${newUsername}, 
                                     password = ${newPassword}, 
-                                    dateModified = ${dateModified} 
                     WHERE id = ${id};`;
 
-        return db.execute(sql);
+        return query;
+    }
+
+    static DeleteById(id) {
+
+        /* let query = `DELETE admins SET username = ${newUsername}, 
+                                     password = ${newPassword}, 
+                                     dateModified = ${dateModified} 
+                     WHERE id = ${id};`;
+
+        return query;*/
     }
 }
 

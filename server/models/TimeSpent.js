@@ -1,46 +1,40 @@
-const db = require('../config/db');
+//const db = require('../config/db');
+
 const ControllerHelpers = require('../helpers/ControllerHelpers');
 
-
+/**
+ * Represents the timespent in the database
+ */
 class TimeSpent{
 
-    constructor(id, minValue, maxValue, dateCreated, dateModified) {
-        this.id = id;
+    constructor(minValue, maxValue) {
         this.minValue = minValue;
         this.maxValue = maxValue;
-        this.dateCreated = dateCreated;
-        this.dateModified = dateModified;
     }
 
     async Create() {
-
-        let dateTimeNow = ControllerHelpers.GetCurrentDateTime();
-
-        let dateCreated = dateTimeNow;
-        let dateModified = dateTimeNow;
-
-        let sql = `
-            INSERT INTO timespent(minValue, maxValue, dateCreated, dateModified)
-            VALUES('${this.minValue}', '${this.maxValue}', '${dateCreated}', '${dateModified}');
+        let query = `
+            INSERT INTO timespent(minValue, maxValue)
+            VALUES('${this.minValue}', '${this.maxValue}');
         `;
 
-        return db.execute(sql);
+        return query;
     }
 
     static GetAll() {
-        let sql = "SELECT * FROM timespent";
+        let query = "SELECT * FROM timespent";
 
-        return db.execute(sql);
+        return query;
     }
 
     static GetById(id) {
-        let sql = `SELECT * FROM timespent WHERE id = ${id};`;
+        let query = `SELECT * FROM timespent WHERE id = ${id};`;
 
-        return db.execute(sql);
+        return query;
     }
 
     /**
-     * Updates the username and the password
+     * Updates the min and max value
      * @param {int} id 
      * @param {int} newMinValue 
      * @param {int} newMaxValue 
@@ -49,15 +43,11 @@ class TimeSpent{
 
     static Update(id, newMinValue, newMaxValue) {
 
-        // Gets the current date time as string
-        var dateModified = ControllerHelpers.GetCurrentDateTime();
-
-        let sql = `UPDATE timespent SET minValue = ${newMinValue}, 
-                                        maxValue = ${newMaxValue}, 
-                                        dateModified = ${dateModified} 
+        let query = `UPDATE timespent SET minValue = ${newMinValue}, 
+                                        maxValue = ${newMaxValue}
                                      WHERE id = ${id};`;
 
-        return db.execute(sql);
+        return query;
     }
 }
 

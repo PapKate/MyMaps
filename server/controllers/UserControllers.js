@@ -1,4 +1,5 @@
 const GetQueryResultAsync = require('../config/db');
+
 const ControllerHelpers = require('../helpers/ControllerHelpers');
 
 const User = require('../models/User');
@@ -59,7 +60,7 @@ exports.GetUserById = (async (req, res, next) => {
 });
 
 /**
- * TODO Delete 
+ * TODO Update  
  */
 exports.UpdateUserById = (async (req, res, next) => {
     
@@ -70,8 +71,17 @@ exports.UpdateUserById = (async (req, res, next) => {
         return next(new ErrorResponse(`ERROR 404: Not found. The username with id ${req.params.id} was not found.`, 404));
     }
 
+    let queryProperties = "";
 
-    res.status(201).json(result[0]);
+    // username = ${newUsername}
+
+    if(!ControllerHelpers.IsNullOrEmpty(req.body.username))
+        queryProperties += `username = ${req.body.username}, `;
+
+    if(!ControllerHelpers.IsNullOrEmpty(req.body.password))
+        queryProperties += `password = ${req.body.password}, `;
+
+    res.status(201).json(result);
 
 });
 
