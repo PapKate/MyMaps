@@ -18,6 +18,7 @@ class Routes {
      */
      static UserRoute = Routes.UsersRoute + "/:id";
 
+
       /**
      ** The points' route
      ** /myMaps/points

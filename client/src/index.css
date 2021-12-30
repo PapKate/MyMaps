@@ -1,13 +1,156 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  padding: 0;
+  font-family: Calibri, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: Calibri, sans-serif;
 }
+
+#root{
+  display: -ms-grid;
+  display: grid;
+}
+
+.headerLogoAndTitle
+{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 3rem;
+  gap: 8px;
+}
+
+.headerLogo
+{
+  border: none;
+  outline: none;
+  background: none;
+  width: 3rem;
+  height: 3rem;
+  display: inline-block;
+  padding: 0;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.headerUsername {
+  font-family: Calibri, sans-serif;
+  font-size: 160%;
+  color: #FFFFFF;
+  cursor: default;  
+}
+
+.headerTitle{
+  font-weight: 600;
+  font-family: Calibri, sans-serif;
+  font-size: 180%;
+  color: #FFFFFF;
+  cursor: default; 
+}
+
+.headerLoginArea {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.page{
+  position:relative;
+  width: 100%;
+  min-height: calc(100vh - 4rem);
+  display: -ms-grid;
+  display: grid;
+  grid-template-rows: 100%;
+  grid-template-columns: auto 1fr;
+}
+
+#input-with-icon-textfield-label{
+  margin-left: 32px;
+}
+
+.sideMenu{
+  position: relative;
+  min-width: 40px; 
+  height: calc(100vh - 4rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  -webkit-box-shadow: 1px 0px 5px 0px  rgba(0,0,0,0.3); 
+  box-shadow: 1px 0px 5px 0px  rgba(0,0,0,0.3);
+}
+
+.menuButtonContainer{
+  position: relative;
+  width: 100%;
+  height: auto;
+}
+
+.menuButtonContent{
+  position:relative;
+  width:100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content:flex-start;
+  align-items: center;
+  gap: 4px;
+  text-transform: capitalize;
+  font-family: Calibri, sans-serif;
+  font-size: 160%;
+}
+
+.menuExitButton{
+  position: absolute;
+  bottom: 0;
+  width:100%;
+  border-style: solid;
+  border-width: 1px 0 0 0;
+  border-color: rgba(0, 0, 0, 0.3);
+}
+
+.pageContent{
+  -ms-grid-row: 1;
+  grid-row: 1;
+  -ms-grid-column: 2;
+  grid-column: 2;
+  width: 100%;
+  height: 100%;
+}
+
+.textInput{
+  width: 100%;
+}
+
+@media (max-width: 800px)
+{
+  .menuButtonContent{
+    justify-content:center;
+  }
+
+  .menuButtonText{
+    display:none;
+  }
+}
+
+@media (max-width: 610px) {
+  .headerLogo {
+    width: 2.5rem;
+    height: 2.4rem;
+  }
+
+  .headerTitle{
+    display: none;
+  }
+}
+
+
+
+

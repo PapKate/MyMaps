@@ -14,6 +14,8 @@ const typeControllers = require('../controllers/TypeControllers');
 
 const timeSpentControllers = require('../controllers/TimeSpentControllers');
 
+const fileController = require('../controllers/FileController');
+
 const router = express.Router();
 
 const Routes = require('./Routes');
@@ -35,6 +37,11 @@ router
     .get(userControllers.GetUserById)
     .put(userControllers.UpdateUserById)
     .delete(userControllers.DeleteUserById);
+
+
+router 
+    .route("/myMaps/file")
+    .post(fileController.GetFile);
 
 /**
 
