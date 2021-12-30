@@ -1,6 +1,3 @@
-const db = require('../config/db');
-const ControllerHelpers = require('../helpers/ControllerHelpers');
-
 /**
  * Represents a Confirmed Case from a request
  */

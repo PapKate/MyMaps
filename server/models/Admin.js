@@ -1,7 +1,3 @@
-//const db = require('../config/db');
-
-const ControllerHelpers = require('../helpers/ControllerHelpers');
-
 /**
  * Represents the admin in the database
  */

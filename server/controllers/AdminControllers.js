@@ -7,6 +7,7 @@ const Admin = require('../models/Admin');
 // Imports the custom error response 
 const ErrorResponse = require("../utils/errorResponse");
 
+
 /**
  * TODO Call the method from the Model with the return query
  */

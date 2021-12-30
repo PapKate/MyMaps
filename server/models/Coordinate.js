@@ -1,6 +1,3 @@
-const db = require('../config/db');
-const ControllerHelpers = require('../helpers/ControllerHelpers');
-
 /**
  * Represents a coordinate from a request
  */

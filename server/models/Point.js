@@ -1,4 +1,3 @@
-const db = require('../config/db');
 const ControllerHelpers = require('../helpers/ControllerHelpers');
 
 /**
@@ -6,14 +5,14 @@ const ControllerHelpers = require('../helpers/ControllerHelpers');
  */
 class Point{
 
-    constructor(name, address, coordinatesId, rating, ratingNumber, currentPopularity, timespentId) {
+    constructor(name, address, coordinatesId, rating, ratingNumber, currentPopularity, timeSpentId) {
         this.name = name;
         this.address = address;
         this.coordinatesId = coordinatesId;
         this.rating = rating;
         this.ratingNumber = ratingNumber;
         this.currentPopularity = currentPopularity;
-        this.timespentId = timespentId;  
+        this.timeSpentId = timeSpentId;  
     }
 
      Create() {
@@ -24,7 +23,7 @@ class Point{
         let dateModified = dateTimeNow;
 
         let query = `
-            INSERT INTO points(id, name, address, coordinatesId, rating, ratingNumber, currentPopularity, timespentId)
+            INSERT INTO points(id, name, address, coordinatesId, rating, ratingNumber, currentPopularity, timeSpentId)
             VALUES('${this.id}', '${this.name}', '${this.address}', '${this.coordinatesId}', '${this.rating}', '${this.ratingNumber}', '${this.currentPopularity}', '${this.timespentId}', '${dateCreated}', '${dateModified}');
         `;
 

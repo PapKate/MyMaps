@@ -45,13 +45,12 @@ class User{
      * @param {string} newPassword 
      * @returns the sql query
      */
-    static UpdateById(id, newUsername, newPassword) {
+    static UpdateById(id, properties) {
 
         // Gets the current date time as string
         var dateModified = ControllerHelpers.GetCurrentDateTime();
 
-        let query = `UPDATE users SET username = ${newUsername}, 
-                                      password = ${newPassword}, 
+        let query = `UPDATE users SET ${properties}
                                       dateModified = ${dateModified} 
                     WHERE id = ${id};`;
 

@@ -66,13 +66,6 @@ const ErrorResponse = require("../utils/errorResponse");
  */
  exports.UpdateUserById = (async (req, res, next) => {
     
-    let query = User.UpdateById(req.params.id);
-    var result = await GetQueryResultAsync(query);
-
-    if(result.length == 0) {
-        return next(new ErrorResponse(`ERROR 404: Not found. The username with id ${req.params.id} was not found.`, 404));
-    }
-
     let queryProperties = "";
 
     if(!ControllerHelpers.IsNullOrEmpty(req.body.username))
@@ -81,8 +74,15 @@ const ErrorResponse = require("../utils/errorResponse");
     if(!ControllerHelpers.IsNullOrEmpty(req.body.password))
         queryProperties += `password = ${req.body.password}, `;
 
-    res.status(201).json(result);
+    let query = User.UpdateById(queryProperties);
+    
+    var result = await GetQueryResultAsync(query);
 
+    if(result.length == 0) {
+        return next(new ErrorResponse(`ERROR 404: Not found. The username with id ${req.params.id} was not found.`, 404));
+    }
+    
+    res.status(201).json(result);
 });
 
 /**

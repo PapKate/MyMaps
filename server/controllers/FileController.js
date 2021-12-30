@@ -1,15 +1,33 @@
 
-
-exports.GetFile = (req,res,next) =>
-{
+/**
+ * Uploads a file and passes its POI data to the data base
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
+ exports.GetFile = (req,res,next) =>
+ {
     var fs = require('fs');
-
+ 
     try {
+        // Reads the path from the request's body as a text
         var data = fs.readFileSync(req.body.path, 'utf8');
-        var test = JSON.parse(data);
-        console.log(test);    
-    } catch(e) {
-        console.log('Error:', e.stack);
-    }
+        // Parses it to JSON
+        var jsonData = JSON.parse(data);
 
+        // Return the json array
+        return jsonData;
+    } 
+    catch(e) {
+         console.log('Error:', e.stack);
+    }
 }
+
+ exports.UpdateDatabase = (jsonData) =>
+{
+    // types
+    // coordinates
+    // timeSpent
+}
+
+ 

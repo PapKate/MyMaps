@@ -3,7 +3,7 @@
  */
  class PointResponseModel{
 
-    constructor(id, name, address, coordinatesId, rating, ratingNumber, currentPopularity, timespentId, dateCreated, dateModified) {
+    constructor(id, name, address, coordinatesId, rating, ratingNumber, currentPopularity, timeSpentId, dateCreated, dateModified) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -11,7 +11,7 @@
         this.rating = rating;
         this.ratingNumber = ratingNumber;
         this.currentPopularity = currentPopularity;
-        this.timespentId = timespentId;  
+        this.timeSpentId = timeSpentId;  
         this.dateCreated = dateCreated;
         this.dateModified = dateModified;
     }
