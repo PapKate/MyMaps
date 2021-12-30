@@ -43,7 +43,7 @@ class User{
      * @param {int} id 
      * @param {string} newUsername 
      * @param {string} newPassword 
-     * @returns 
+     * @returns the sql query
      */
     static UpdateById(id, newUsername, newPassword) {
 

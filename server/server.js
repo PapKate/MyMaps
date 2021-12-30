@@ -6,6 +6,8 @@ var urlModule = require('url');
 // Get the cors module
 const cors = require('cors');
 
+const  bodyParser = require('body-parser');
+
 const express = require('express');
 
 const app = express();
@@ -13,10 +15,12 @@ const app = express();
 // Use cors module
 app.use(cors());
 
-
 // Middleware
+//app.use(express.json());
+
 // Allows us to send JSON data through the body of a request
 app.use(express.json({ limit: '1gb' }));
+app.use(bodyParser.json());
 
 
 // Routes
