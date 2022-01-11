@@ -45,16 +45,38 @@ class User{
      * @param {string} newPassword 
      * @returns the sql query
      */
-    static UpdateById(id, properties) {
+    static UpdateById(id, newUsername, newPassword) {
 
         // Gets the current date time as string
         var dateModified = ControllerHelpers.GetCurrentDateTime();
 
-        let query = `UPDATE users SET ${properties}
-                                      dateModified = ${dateModified} 
-                    WHERE id = ${id};`;
-
-        return query;
+        if(ControllerHelpers.IsNullOrEmpty(newUsername) && ControllerHelpers.IsNullOrEmpty(newPassword)) {   
+            let query = `SELECT* FROM users  
+            WHERE id = ${id};`;
+            return query;
+        } else if(ControllerHelpers.IsNullOrEmpty(newPassword)) {
+            let query = `UPDATE users SET 
+            username = "${newUsername}", 
+            dateModified = "${dateModified}" 
+            WHERE id = ${id};`;
+            return query;
+        } else if(ControllerHelpers.IsNullOrEmpty(newUsername))
+        {
+            let query = `UPDATE users SET 
+            password = "${newPassword}", 
+            dateModified = "${dateModified}" 
+            WHERE id = ${id};`;
+            return query;
+        }
+        else {
+            let query = `UPDATE users SET 
+            username = "${newUsername}", 
+            password = "${newPassword}", 
+            dateModified = "${dateModified}" 
+            WHERE id = ${id};`;
+            return query;
+        };
+        
     }
 
     /**

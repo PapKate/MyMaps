@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { ThemeProvider, makeStyles } from '@material-ui/core';
+
+import { Button, ThemeProvider, makeStyles } from '@material-ui/core';
+
 import { createTheme } from '@material-ui/core/styles';
 import axios from 'axios'
 
@@ -75,12 +77,12 @@ const PointsOfInterestPage = () => {
 
       console.log(jsonData);
       
+
     } 
     catch (error) {
       console.log(error)
     }
-   
-  }
+ }
 
   return(
     <div className="pointsOfInterestPage">

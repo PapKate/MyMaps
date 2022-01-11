@@ -28,7 +28,8 @@ const ErrorResponse = require("../utils/errorResponse");
  * @param {*} next 
  */
 exports.CreateNewCoordinate =  async (req, res, next) => {
-    let coordinate = new Coordinate(req.body.lat, req.body.lng);
+
+    let  coordinate = new Coordinate(req.body.lat, req.body.lng);
     
     // Gets the sql query for creating the user
     let query = coordinate.Create();
@@ -59,17 +60,21 @@ exports.GetCoordinateById = (async (req, res, next) => {
     res.status(200).json(result[0]);
 });
 
-exports.UpdateCoordinateId = (async (req, res, next) => {
+exports.UpdateCoordinateById = (async (req, res, next) => {
     
-    let query = Coordinate.UpdateById(req.params.id);
+    let query = Coordinate.UpdateById(req.params.id, req.body.lat, req.body.lng);
+    
     var result = await GetQueryResultAsync(query);
 
-    if(!result.length == 0) {
+    let query2 = Coordinate.GetById(req.params.id);
+
+    var result2 = await GetQueryResultAsync(query2);
+
+    if(result2.length == 0) {
         return next(new ErrorResponse(`ERROR 404: Not found. The coordinate with id ${req.params.id} was not found.`, 404));
     }
 
-    res.status(201).json(result[0]);
-
+    res.status(201).json(result2);
 });
 
 /**

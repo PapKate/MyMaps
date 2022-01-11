@@ -1,7 +1,7 @@
 /**
  * Represents a coordinate from a request
  */
-class Coordinate{
+ class Coordinate{
 
     constructor(lat,lng) {
         this.lat = lat;
@@ -33,7 +33,7 @@ class Coordinate{
     static UpdateById(id, newLat, newLng) {
 
         let query = `UPDATE coordinates SET lat = ${newLat}, 
-                                      lng = ${newLng}, 
+                                      lng = ${newLng}
                     WHERE id = ${id};`;
 
         return query;

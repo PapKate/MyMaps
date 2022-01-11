@@ -11,7 +11,9 @@ const TimeSpent = require('../models/TimeSpent');
  * @param {*} res 
  * @param {*} next 
  */
+
  exports.GetFile = async (req,res,next) =>{
+
     try {
         var fs = require('fs');
 
@@ -45,7 +47,7 @@ const TimeSpent = require('../models/TimeSpent');
         });
 
         // Reads the path from the request's body as a text
-        var data = fs.readFileSync(req.body.path, 'utf8');
+        var data = await fs.readFile(req.body.path, 'utf8');
         // Parses it to JSON
         var jsonData = JSON.parse(data);
 
@@ -106,11 +108,15 @@ const TimeSpent = require('../models/TimeSpent');
 
         });
         // Set the body of the response
+
         res.status(200).json(jsonData);
+
     } 
     catch(e) {
-         console.log('Error:', e.stack);
+        console.log('Error:', e.stack);
     }
+
 };
+
 
  

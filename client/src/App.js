@@ -1,13 +1,21 @@
 import { useState } from "react";
+
 import { ThemeProvider } from "@material-ui/core";
 import { createTheme } from '@material-ui/core/styles';
 
-import HeaderBar from './Components/HeaderBar';
-import PointsOfInterestPage from "./Pages/Admin/PointsOfInterestPage";
-import TestPage from "./Pages/TestPage";
+import Constants from "./Shared/Constants";
+
+import IconTextInput from "./Components/Inputs/IconTextInput";
+import MenuButton from "./Components/Buttons/MenuButton";
 import UserSideMenu from "./Components/SideMenus/UserSideMenu";
 import AdminSideMenu from "./Components/SideMenus/AdminSideMenu";
+import HeaderBar from './Components/HeaderBar';
+
+import PointsOfInterestPage from "./Pages/Admin/PointsOfInterestPage";
+import TestPage from "./Pages/TestPage";
 import ProfilePage from "./Pages/User/ProfilePage";
+import LoginPage from "./Pages/Login/LoginPage";
+
 
 
 const theme = createTheme({
@@ -35,7 +43,7 @@ const App = () => {
   return (
     <>
       <HeaderBar Username="0xTeli" IsLoggedIn={true}/>
-
+      <LoginPage/>
       {userIsLoggedIn ? (
         <div className='page'>
           <ThemeProvider theme={theme}>
@@ -67,7 +75,6 @@ const App = () => {
           </ThemeProvider>
         </div>
       )}
-
     </>
   );
 }
