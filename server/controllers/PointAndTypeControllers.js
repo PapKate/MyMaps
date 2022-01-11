@@ -65,16 +65,19 @@ exports.GetPointAndTypeById = (async (req, res, next) => {
  */
 exports.UpdatePointAndTypeById = (async (req, res, next) => {
     
-    let query = PointAndType.UpdateById(req.params.id);
+    let query = PointAndType.UpdateById(req.params.id, req.body.pointId, req.body.typeId);
+    
     var result = await GetQueryResultAsync(query);
 
-    if(!result.length == 0) {
+    let query2 = PointAndType.GetById(req.params.id);
+
+    var result2 = await GetQueryResultAsync(query2);
+
+    if(result2.length == 0) {
         return next(new ErrorResponse(`ERROR 404: Not found. The point and type with id ${req.params.id} was not found.`, 404));
     }
 
-
-    res.status(201).json(result[0]);
-
+    res.status(201).json(result2);
 });
 
 /**

@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { ThemeProvider, makeStyles } from '@material-ui/core';
+
+import { Button, ThemeProvider, makeStyles } from '@material-ui/core';
+
 import { createTheme } from '@material-ui/core/styles';
 import axios from 'axios'
 
@@ -100,10 +102,8 @@ const PointsOfInterestPage = () => {
         if(allCoordinates.includes(x.coordinates) === false)
           allCoordinates.push(x.coordinates);
       });
-
       allTypes.forEach(async (x) => {
         try{
-
           var typeAddedToDataBase = await axios.post(`http://localhost:3001/api/myMaps/types`, {
             name : x
           });  
@@ -117,8 +117,7 @@ const PointsOfInterestPage = () => {
     catch (error) {
       console.log(error)
     }
-   
-  }
+ }
 
   return(
     <div className="pointsOfInterestPage">

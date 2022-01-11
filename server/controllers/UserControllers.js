@@ -66,27 +66,23 @@ const ErrorResponse = require("../utils/errorResponse");
  */
  exports.UpdateUserById = (async (req, res, next) => {
     
-    let queryProperties = "";
-
-    if(!ControllerHelpers.IsNullOrEmpty(req.body.username))
-        queryProperties += `username = ${req.body.username}, `;
-
-    if(!ControllerHelpers.IsNullOrEmpty(req.body.password))
-        queryProperties += `password = ${req.body.password}, `;
-
-    let query = User.UpdateById(queryProperties);
+    let query = User.UpdateById(req.params.id, req.body.username, req.body.password);
     
     var result = await GetQueryResultAsync(query);
 
-    if(result.length == 0) {
+    let query2 = User.GetById(req.params.id);
+
+    var result2 = await GetQueryResultAsync(query2);
+
+    if(result2.length == 0) {
         return next(new ErrorResponse(`ERROR 404: Not found. The username with id ${req.params.id} was not found.`, 404));
     }
-    
-    res.status(201).json(result);
+
+    res.status(201).json(result2);
 });
 
 /**
- * TODO Delete 
+ * 
  */
  exports.DeleteUserById = (async (req, res, next) => {
     
@@ -100,4 +96,3 @@ const ErrorResponse = require("../utils/errorResponse");
     res.status(200).json(User);
 
 });
-
