@@ -12,10 +12,10 @@ class TimeSpent{
         this.maxValue = maxValue;
     }
 
-    async Create() {
+    Create() {
         let query = `
-            INSERT INTO timespent(minValue, maxValue)
-            VALUES('${this.minValue}', '${this.maxValue}');
+            INSERT INTO timespent(minValue, timespent.maxValue)
+            VALUES(${this.minValue}, ${this.maxValue});
         `;
 
         return query;
@@ -44,8 +44,8 @@ class TimeSpent{
     static Update(id, newMinValue, newMaxValue) {
 
         let query = `UPDATE timespent SET minValue = ${newMinValue}, 
-                                        maxValue = ${newMaxValue}
-                                     WHERE id = ${id};`;
+                                          timespent.maxValue = ${newMaxValue}
+                                      WHERE id = ${id};`;
 
         return query;
     }

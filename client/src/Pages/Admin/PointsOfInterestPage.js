@@ -74,45 +74,10 @@ const PointsOfInterestPage = () => {
 
       // The json data from the response
       let jsonData = response.data;
-      // Contains all the types 
-      let allTypes = [];
 
-      let allTimeSpent = [];
+      console.log(jsonData);
+      
 
-      let allCoordinates = [];
-
-      // For each POI in the jsonData...
-      jsonData.forEach(x => {
-        // Gets the id
-        var id = x.id;
-        // Gets the name
-        var name = x.name;
-        
-        // For each type in the POI...
-        x.types.forEach(type =>{
-          // If the allTypes array does NOT contain the type...
-          if(allTypes.includes(type) === false)
-            // Adds it to the array
-            allTypes.push(type);
-        });
-
-        if(allTimeSpent.includes(x.time_spent) === false)
-          allTimeSpent.push(x.time_spent);
-
-        if(allCoordinates.includes(x.coordinates) === false)
-          allCoordinates.push(x.coordinates);
-      });
-      allTypes.forEach(async (x) => {
-        try{
-          var typeAddedToDataBase = await axios.post(`http://localhost:3001/api/myMaps/types`, {
-            name : x
-          });  
-          console.log(typeAddedToDataBase);
-        }catch(e)
-        {
-          console.log(e);
-        }
-      });
     } 
     catch (error) {
       console.log(error)
