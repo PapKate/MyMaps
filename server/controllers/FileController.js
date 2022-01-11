@@ -63,7 +63,9 @@ const fs = require("fs").promises;
        });
 
         // Return the json array
-        return jsonData;
+         // Set the body of the response
+        res.status(200).json(jsonData);
+
     } 
     catch(e) {
         console.log('Error:', e.stack);

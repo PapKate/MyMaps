@@ -1,19 +1,22 @@
 import { useState } from "react";
 
-import LoginHeaderBar from './Components/LoginHeaderBar';
-import IconTextInput from "./Components/Inputs/IconTextInput";
-import MenuButton from "./Components/Buttons/MenuButton";
-
-import Constants from "./Shared/Constants";
 import { ThemeProvider } from "@material-ui/core";
 import { createTheme } from '@material-ui/core/styles';
-import VectorButton from "./Components/Buttons/VectorButton";
+
+import Constants from "./Shared/Constants";
+
+import IconTextInput from "./Components/Inputs/IconTextInput";
+import MenuButton from "./Components/Buttons/MenuButton";
+import UserSideMenu from "./Components/SideMenus/UserSideMenu";
+import AdminSideMenu from "./Components/SideMenus/AdminSideMenu";
+import HeaderBar from './Components/HeaderBar';
+
 import PointsOfInterestPage from "./Pages/Admin/PointsOfInterestPage";
+import TestPage from "./Pages/TestPage";
+import ProfilePage from "./Pages/User/ProfilePage";
 import LoginPage from "./Pages/Login/LoginPage";
 
-const marginStyle = {
-  margin: '2em'
-};
+
 
 const theme = createTheme({
   palette: {
@@ -34,22 +37,44 @@ const theme = createTheme({
 
 const App = () => {
 
-  const [text, setText] = useState("");
-
-  // On text changed event
-  const OnTextChanged = event => {
-      setText(event.target.value);
-  };
-
+  const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
+  const SetUserIsLoggedIn = () => setUserIsLoggedIn(!userIsLoggedIn);
 
   return (
     <>
-      <LoginHeaderBar ImageSource={"/icons/avatar.png"} Title={"COVID-19 Map"}/>
-        <ThemeProvider theme={theme}>
+      <HeaderBar Username="0xTeli" IsLoggedIn={true}/>
+      <LoginPage/>
+      {userIsLoggedIn ? (
+        <div className='page'>
+          <ThemeProvider theme={theme}>
 
-           <LoginPage/>
-           
-        </ThemeProvider>
+            <UserSideMenu/>
+
+            <div className="pageContent">
+
+              {/* <TestPage/> */}
+
+              <ProfilePage/>
+            
+            </div>
+
+          </ThemeProvider>
+        </div>
+      ) : (
+        <div className='page'>
+          <ThemeProvider theme={theme}>
+
+            <AdminSideMenu/>
+
+            <div className="pageContent">
+            
+              <PointsOfInterestPage/>
+
+            </div>
+
+          </ThemeProvider>
+        </div>
+      )}
     </>
   );
 }

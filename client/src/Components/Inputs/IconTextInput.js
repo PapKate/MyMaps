@@ -29,6 +29,7 @@ const textInputStyle = {
 
 const IconTextInput = ({ 
         Text, 
+        Type,
         OnTextChanged, 
         VectorSource, 
         VectorColor = Constants.Gray,
@@ -42,11 +43,14 @@ const IconTextInput = ({
     return(
         <div className="textInput">
             <ThemeProvider theme={Theme}>
-                <TextField id="input-with-icon-textfield" style={textInputStyle} size={Size}
+                <TextField style={textInputStyle} size={Size}
                         color={ThemeColor}
                         variant="outlined" 
+                        autoComplete="off"
                         value={Text}
+                        type={Type}
                         onChange={OnTextChanged}
+                        fullWidth={HasFullWidth}
                         label={Text === "" ? Hint : ""} 
                         InputLabelProps={{ shrink: HasFloatingHint }} 
                         InputProps={{

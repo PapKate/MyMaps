@@ -39,7 +39,7 @@ const TextInput = ({
     return(
         <div className="textInput" >
             <ThemeProvider theme={Theme}>
-                <TextField id="input-textfield" style={textInputStyle}
+                <TextField style={textInputStyle}
                         color={ThemeColor}
                         variant="outlined" 
                         value={Text}
