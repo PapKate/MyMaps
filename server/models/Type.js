@@ -7,9 +7,8 @@ class Type{
         this.name = name;
     }
 
-    async Create() {
-        let query = `INSERT INTO types(name)
-            VALUES('${this.name}');`;
+    Create() {
+        let query = `INSERT INTO types(name) VALUES("${this.name}");`;
 
         return query;
     }

@@ -8,7 +8,7 @@ class Coordinate{
         this.lng = lng;
     }
 
-     Create() {
+    Create() {
         
         let query = `
             INSERT INTO coordinates(lat,lng)
