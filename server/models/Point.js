@@ -5,14 +5,15 @@ const ControllerHelpers = require('../helpers/ControllerHelpers');
  */
 class Point{
 
-    constructor(name, address, coordinatesId, rating, ratingNumber, currentPopularity, timeSpentId) {
+    constructor(id, name, address, coordinatesId, rating, ratingNumber, currentPopularity, timespentId) {
+        this.id = id;
         this.name = name;
         this.address = address;
         this.coordinatesId = coordinatesId;
         this.rating = rating;
         this.ratingNumber = ratingNumber;
         this.currentPopularity = currentPopularity;
-        this.timeSpentId = timeSpentId;  
+        this.timespentId = timespentId;  
     }
 
      Create() {
@@ -23,8 +24,8 @@ class Point{
         let dateModified = dateTimeNow;
 
         let query = `
-            INSERT INTO points(id, name, address, coordinatesId, rating, ratingNumber, currentPopularity, timeSpentId)
-            VALUES('${this.id}', '${this.name}', '${this.address}', '${this.coordinatesId}', '${this.rating}', '${this.ratingNumber}', '${this.currentPopularity}', '${this.timespentId}', '${dateCreated}', '${dateModified}');
+            INSERT INTO points(id, name, address, coordinatesId, rating, ratingNumber, currentPopularity, timespentId, dateCreated, dateModified)
+            VALUES("${this.id}", "${this.name}", "${this.address}", ${this.coordinatesId}, ${this.rating}, ${this.ratingNumber}, ${this.currentPopularity}, ${this.timespentId}, "${dateCreated}", "${dateModified}");
         `;
 
         return query;
@@ -36,6 +37,12 @@ class Point{
         return query;
     }
 
+    static DeleteAll() {
+        let query = `DELETE FROM points`;
+
+        return query;
+    }
+    
     /*
     static GetAllOrderByRating() {
         let sql = `SELECT * FROM points ORDER BY rating;`;
@@ -45,7 +52,7 @@ class Point{
     */
 
     static GetById(id) {
-        let query = `SELECT * FROM points WHERE id = ${id};`;
+        let query = `SELECT * FROM points WHERE id = "${id}";`;
 
         return query;
     }
@@ -65,18 +72,20 @@ class Point{
      * @param 
      * @returns 
      */
-    static UpdateById(id, newName, newAddress, newCoordinatesId, newCurrentPopularity, newTimesSpentId) {
+    static UpdateById(id, newName, newAddress, newCoordinatesId, newRating, newRatingNumber, newCurrentPopularity, newTimesSpentId) {
 
         // Gets the current date time as string
         var dateModified = ControllerHelpers.GetCurrentDateTime();
 
-        let query = `UPDATE points SET name = ${newName}, 
-                                    address = ${newAddress}, 
-                                    coordinatesId = ${newCoordinatesId}
-                                    currentPopularity = ${newCurrentPopularity}
-                                    timespentId = ${newTimesSpentId}
-                                    dateModified = ${dateModified} 
-                    WHERE id = ${id};`;
+        let query = `UPDATE points SET name = "${newName}", 
+                                    address = "${newAddress}", 
+                                    coordinatesId = "${newCoordinatesId}",
+                                    rating = "${newRating}",
+                                    ratingNumber = "${newRatingNumber}",
+                                    currentPopularity = "${newCurrentPopularity}",
+                                    timespentId = "${newTimesSpentId}",
+                                    dateModified = "${dateModified}"
+                    WHERE id = "${id}";`;
 
         return query;
     }

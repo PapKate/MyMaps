@@ -152,5 +152,55 @@ code {
 }
 
 
+ .loginBackground{
+  background-image: url('images/loginPhoto.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: right; 
+  position: absolute;
+  width: 100%;
+  height: 100%;
+} 
+
+.loginPageContainer {
+  position: relative;
+  width: 100vw;
+  height: calc(100vh - 4rem);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loginPage{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
+
+.loginText{
+  font-size: 200%;
+  color: #018E42;
+  margin-bottom: 30px; 
+  font-weight: 600;
+  font-family: Calibri, sans-serif;
+}
+
+.loginUsername{
+  margin-bottom: 30px; 
+}
+
+.loginPassword{
+  margin-bottom: 30px; 
+}
+
+.loginButton{
+  margin-bottom: 30px; 
+
+}
+
+
 
 
