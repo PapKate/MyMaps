@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import axios from 'axios';
+
 
 import { Button, ThemeProvider } from '@material-ui/core';
 import { createTheme } from '@material-ui/core/styles';
@@ -43,7 +45,41 @@ const PointsOfInterestPage = () => {
     };
 
     const GetFile = async () => {
-      
+      const test = "test";
+      try {
+      const jsonData = await axios({
+        method: 'POST',
+        url: `/api/myMaps/file`,
+        data:{
+          path: filePath
+        },
+        cancelToken: new axios.CancelToken((c) => (console.log(c))),
+      }); 
+
+      console.log(jsonData)
+    
+      }catch(error) {
+        console.log(error);
+    }
+      // jsonData.forEach(x => {
+      //   var id = x.id;
+      //   var name = x.name;
+
+      //   var types = x.types;
+      //   types.forEach(type =>{
+      //       // Get all types 
+      //       var typeName = type;
+      //       // Check if type exists in types...
+      //       // if not ...
+      //       // Call the database to create a new type
+      //   });
+
+      //   var coordinates = x.coordinates;
+      //   var lat = x.coordinates.lat;
+
+      // });
+    
+
     }
 
     return(

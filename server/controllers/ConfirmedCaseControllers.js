@@ -78,14 +78,19 @@ exports.GetConfirmedCaseByUserId = (async (req, res, next) => {
 
 exports.UpdateConfirmedCaseById = (async (req, res, next) => {
     
-    let query = ConfirmedCase.UpdateById(req.params.id);
+    let query = ConfirmedCase.UpdateById(req.params.id, req.body.date);
+    
     var result = await GetQueryResultAsync(query);
 
-    if(!result.length == 0) {
+    let query2 = ConfirmedCase.GetById(req.params.id);
+
+    var result2 = await GetQueryResultAsync(query2);
+
+    if(result2.length == 0) {
         return next(new ErrorResponse(`ERROR 404: Not found. The confirmed case with id ${req.params.id} was not found.`, 404));
     }
 
-    res.status(200).json(result[0]);
+    res.status(201).json(result2);
 
 });
 

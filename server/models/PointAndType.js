@@ -1,7 +1,7 @@
 /**
  * Represents a point and type from a request
  */
-class PointAndType{
+ class PointAndType{
 
     constructor(pointId, typeId) {
         this.pointId = pointId;
@@ -12,7 +12,7 @@ class PointAndType{
 
         let sql = `
             INSERT INTO pointandtypes(pointId, typeId)
-            VALUES('${this.pointId}', '${this.typeId}');
+            VALUES("${this.pointId}", ${this.typeId});
         `;
 
         return sql;
@@ -39,8 +39,8 @@ class PointAndType{
      */
     static UpdateById(id, newPointId, newTypeId) {
 
-        let sql = `UPDATE pointandtypes SET pointId = ${newPointId}, 
-                                    typeId = ${newTypeId}                               
+        let sql = `UPDATE pointandtypes SET pointId = "${newPointId}", 
+                                    typeId = ${newTypeId}                            
                     WHERE id = ${id};`;
 
         return sql;

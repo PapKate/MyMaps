@@ -1,7 +1,7 @@
 /**
  * Represents a Confirmed Case from a request
  */
-class ConfirmedCase{
+ class ConfirmedCase{
 
     constructor(userId, date) {
         this.userId = userId;
@@ -40,7 +40,7 @@ class ConfirmedCase{
 
     static UpdateById(id, newDate) {
 
-        let query = `UPDATE confirmedcases SET name = ${newDate},                               
+        let query = `UPDATE confirmedcases SET date = "${newDate}"                               
                     WHERE id = ${id};`;
 
         return query;

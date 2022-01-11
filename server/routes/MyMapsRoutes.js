@@ -38,7 +38,7 @@ router
     .delete(userControllers.DeleteUserById);
 
 router 
-    .route("/myMaps/file")
+    .route(Routes.FileRoute)
     .post(fileController.GetFile);
 
 /**
@@ -47,7 +47,8 @@ router
 router
     .route(Routes.PointsRoute)
     .get(pointControllers.GetAllPoints)
-    .post(pointControllers.CreateNewPoint);
+    .post(pointControllers.CreateNewPoint)
+    .delete(pointControllers.DeleteAllPoints);
 
 /**
 * @route GET and POST route -> /points/:id
@@ -89,6 +90,7 @@ router
 router
     .route(Routes.CoordinateRoute)
     .get(coordinateControllers.GetCoordinateById)
+    .put(coordinateControllers.UpdateCoordinateById)
     .delete(coordinateControllers.DeleteCoordinateById);
 
 /**
@@ -100,11 +102,12 @@ router
     .post(confirmedCaseControllers.CreateNewConfirmedCase);
 
 /**
- * @route GET and POST route -> /coordinates/:id
+ * @route GET and POST route -> /confirmedCases/:id
  */
 router
     .route(Routes.ConfirmedCaseRoute)
     .get(confirmedCaseControllers.GetConfirmedCaseById)
+    .put(confirmedCaseControllers.UpdateConfirmedCaseById)
     .delete(confirmedCaseControllers.DeleteConfirmedCaseById);
 
 /**

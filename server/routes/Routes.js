@@ -81,7 +81,7 @@ class Routes {
    ** The route to a file
    ** /myMaps/file
    */
-  static FileRoute = Routes.HomeRoute + "file";
+  static FileRoute = Routes.HomeRoute + "/file";
 
   /**
    ** The popularTimes' route
