@@ -1,12 +1,13 @@
 import { useState } from "react";
-
-
-import { Button, ThemeProvider } from '@material-ui/core';
+import { ThemeProvider, makeStyles } from '@material-ui/core';
 import { createTheme } from '@material-ui/core/styles';
-import TextInput from "../../Components/Inputs/TextInput";
+import axios from 'axios'
 
-const fs = require('fs');
-const http = require('http');
+import Constants from "../../Shared/Constants";
+import TextInput from "../../Components/Inputs/TextInput";
+import TextButton from "../../Components/Buttons/TextButton";
+import VectorButton from "../../Components/Buttons/VectorButton";
+import MessageDialog from "../../Components/Dialogs/MessageDialog";
 
 const theme = createTheme({
     palette: {
@@ -25,46 +26,135 @@ const theme = createTheme({
     },
 });
 
+const useStyles = makeStyles({
+  itemDisplayFlexContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'stretch',
+    gap: '1em'
+  },
+  deleteButtonContainer: {
+    position: "fixed",
+    bottom: '1rem',
+    right: '1rem'
+  }
+});
+
 const marginStyle = {
     margin: '2em'
   };
   
-  const flexContainerStyle = {
-    display: 'flex'
+  
+const PointsOfInterestPage = () => {
+  // Material UI Styles
+  const classes = useStyles();
+
+  const [filePath, setFilePath] = useState("");
+  // On text changed event
+  const OnFilePathChanged = event => {
+      setFilePath(event.target.value);
   };
 
-const PointsOfInterestPage = () => {
+  const [deleteDialog_IsOpen, deleteDialog_SetIsOpen] = useState(false);
+  const DeleteDialog_IsOpenHandler = () => deleteDialog_SetIsOpen(!deleteDialog_IsOpen);
 
-    const [filePath, setFilePath] = useState("");
+  const DeletePointsOfInterestOnClick = () =>
+  {
+    DeleteDialog_IsOpenHandler();
+    console.log("delete? :(")
+  }
+
+  const AddPointsOfInterestFromJSONFile = async() => {
+    try {
+      const response = await axios.post(`/api/myMaps/file`, {
+        path : filePath
+      });
+
+      // The json data from the response
+      let jsonData = response.data;
+      // Contains all the types 
+      let allTypes = [];
+
+      let allTimeSpent = [];
+
+      let allCoordinates = [];
+
+      // For each POI in the jsonData...
+      jsonData.forEach(x => {
+        // Gets the id
+        var id = x.id;
+        // Gets the name
+        var name = x.name;
         
-    // On text changed event
-    const OnFilePathChanged = event => {
-        setFilePath(event.target.value);
-    };
+        // For each type in the POI...
+        x.types.forEach(type =>{
+          // If the allTypes array does NOT contain the type...
+          if(allTypes.includes(type) === false)
+            // Adds it to the array
+            allTypes.push(type);
+        });
 
-    const GetFile = async () => {
-      
+        if(allTimeSpent.includes(x.time_spent) === false)
+          allTimeSpent.push(x.time_spent);
+
+        if(allCoordinates.includes(x.coordinates) === false)
+          allCoordinates.push(x.coordinates);
+      });
+
+      allTypes.forEach(async (x) => {
+        try{
+
+          var typeAddedToDataBase = await axios.post(`http://localhost:3001/api/myMaps/types`, {
+            name : x
+          });  
+          console.log(typeAddedToDataBase);
+        }catch(e)
+        {
+          console.log(e);
+        }
+      });
+    } 
+    catch (error) {
+      console.log(error)
     }
+   
+  }
 
-    return(
-      <div className="pointsOfInterestPage">
-          <ThemeProvider theme={theme}>
-            <div style={marginStyle}>
-              <div style={flexContainerStyle}>
-                <TextInput Text={filePath} 
-                          OnTextChanged={OnFilePathChanged} 
-                          HasFullWidth={true}
-                          Hint={"File path"} />
-                <Button color="secondary" 
-                        variant="contained"
-                        onClick={GetFile}>
-                  Enter
-                </Button>
-              </div>
+  return(
+    <div className="pointsOfInterestPage">
+        <ThemeProvider theme={theme}>
+          <div style={marginStyle}>
+            <div className={classes.itemDisplayFlexContainer}>
+              <TextInput Text={filePath} 
+                        OnTextChanged={OnFilePathChanged} 
+                        HasFullWidth={true}
+                        Hint={"File path"} />
+              <TextButton Text={"Add"} BackColor={Constants.Yellow}
+                          OnClick={AddPointsOfInterestFromJSONFile} />
             </div>
-          </ThemeProvider>
-      </div>
-    );
+          </div>
+          <div style={marginStyle}>
+            {/* Data Grid */}
+          </div>
+          <div className={classes.deleteButtonContainer}>
+              <VectorButton Size="3.5rem" 
+                          BackColor={Constants.Red}
+                          VectorSource={Constants.Delete}
+                          OnClick={DeletePointsOfInterestOnClick} />
+          </div>
+
+          <MessageDialog  Title={"Delete"}
+                            Text={"Are you sure you want to delete all points of interest?"}
+                            IsOpen={deleteDialog_IsOpen} 
+                            IsOpenHandler={DeleteDialog_IsOpenHandler}
+                            VectorSource={Constants.Delete}
+                            Color={Constants.Red}
+                            BackColor={Constants.VeryLightRed}
+                            YesOnClick={()=> { DeleteDialog_IsOpenHandler(); console.log("Yes!"); }}
+                            NoOnClick={()=> { DeleteDialog_IsOpenHandler(); console.log("No!"); }}/>
+        </ThemeProvider>
+    </div>
+  );
 };
 
 export default PointsOfInterestPage;

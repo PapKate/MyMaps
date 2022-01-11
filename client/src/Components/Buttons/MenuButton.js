@@ -15,7 +15,7 @@ const MenuButton = ({
     };
     return(
         <div className="menuButtonContainer">
-            <Button id="menuButton" style={menuButtonStyle}>
+            <Button id="menuButton" style={menuButtonStyle} onClick={OnClick} >
                 <div className="menuButtonContent">
                     <SvgIcon>
                         <path fill={`#${Color}`} d={VectorSource} />

@@ -15,8 +15,8 @@
         // Parses it to JSON
         var jsonData = JSON.parse(data);
 
-        // Return the json array
-        return jsonData;
+        // Set the body of the response
+        res.status(200).json(jsonData);
     } 
     catch(e) {
          console.log('Error:', e.stack);

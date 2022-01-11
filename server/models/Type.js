@@ -8,16 +8,14 @@ class Type{
     }
 
     async Create() {
-        let query = `
-            INSERT INTO types(name)
-            VALUES('${this.name}');
-        `;
+        let query = `INSERT INTO types(name)
+            VALUES('${this.name}');`;
 
         return query;
     }
 
     static GetAll() {
-        let query = "SELECT * FROM types";
+        let query = "SELECT * FROM types;";
 
         return query;
     }

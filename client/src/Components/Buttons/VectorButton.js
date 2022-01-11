@@ -34,22 +34,21 @@ const VectorButton = ({
     // Material UI Styles
     const classes = useStyles();
     
-    const menuButtonStyle = {
+    const vectorButtonStyle = {
         width: `${Size}`,
         height: `${Size}`,
         color: `#${Color}`,
         backgroundColor: `#${BackColor}`,
-        borderRadius: {BorderRadius}
+        borderRadius: `${BorderRadius}`
     };
     
     return(
-        <IconButton id="vectorButton" className={classes.vectorButtonContainer} style={menuButtonStyle}
+        <IconButton id="vectorButton" className={classes.vectorButtonContainer} style={vectorButtonStyle}
             onClick={OnClick}>
             <div className={classes.vectorButtonContent}>
                 <svg className={classes.svgContainer} viewBox="0 0 24 24">
                     <path fill={`#${Color}`} d={VectorSource} />
                 </svg>
-                <span className="menuButtonText">{Text}</span>
             </div>
         </IconButton>
     );
