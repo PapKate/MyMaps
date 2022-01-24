@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, makeStyles } from '@material-ui/core';
 
 import { DataGrid } from "@mui/x-data-grid";
+
 
 import VectorButton from '../../Components/Buttons/VectorButton';
 import EditUserDataDialog from '../../Components/Dialogs/EditUserDataDialog';
@@ -146,6 +147,15 @@ const ProfilePage = ({ User }) => {
         EditUserDataDialog_IsOpenHandler();
     }
 
+    var userObject = null;
+
+    
+
+    useEffect(() => {
+        userObject = JSON.parse(User);
+        console.log(userObject?.id);
+    });
+
     const visitsLogColumns = [
         {
           field: "arrivalDate",
@@ -216,12 +226,12 @@ const ProfilePage = ({ User }) => {
                 <div className={classes.profileTextDataContainer}>
                     <div className={classes.profileData}>
                         <span className={classes.profileDataBold}>Username</span>
-                        <span className={classes.profileDataValue}>0xTeli</span>
+                        <span className={classes.profileDataValue}>{userObject?.username}</span>
                     </div>
 
                     <div className={classes.profileData}>
                         <span className={classes.profileDataBold}>Email</span>
-                        <span className={classes.profileDataValue}>limeTequila@upater.com</span>
+                        <span className={classes.profileDataValue}>{userObject?.email}</span>
                     </div>
                 </div>
            </div>

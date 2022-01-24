@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { Button, makeStyles } from '@material-ui/core';
 
 import Constants from "../Shared/Constants";
-import IconTextInput from "../Components/Inputs/IconTextInput";
-import ErrorDialog from "../Components/Dialogs/ErrorDialog";
+import LoginForm from "./Pages/LoginRegisterForms/LoginForm";
+import SignupForm from "./Pages/LoginRegisterForms/SignupForm";
 
 const useStyles = makeStyles({
     headerBar: {
@@ -38,69 +38,25 @@ const loginButtonStyle = {
 
 
 const LoginPage = () => {
-    // Material UI Styles
-    const classes = useStyles();
+    // // Material UI Styles
+    // const classes = useStyles();
 
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [isSuccessfulLogin, setIsSuccessfulLogin] = useState(false);
-    const [isOpen, setIsOpen] = useState(false);
+    // const [isLogInVisible, setIsLogInVisible] = useState(true);
+    // const SetIsLogInVisible = () => setIsLogInVisible(!isLogInVisible);
+  
+    // useEffect(() => {
+    //     SetIsLogInVisible()
+    // },[isLogInVisible]) 
 
-
-    // On username changed event
-    const OnUsernameChanged = event => {
-        setUsername(event.target.value);
-    };
-
-    // On password changed event
-    const OnPasswordChanged = event => {
-        setPassword(event.target.value);
-    };
-
-   const IsOpenHandler = () => setIsOpen(!isOpen);
-
-
-    const Login = () => {
-        if(username === "" || password === "")
-        IsOpenHandler();
-        else
-            setIsSuccessfulLogin(true);
-
-        console.log(isSuccessfulLogin);
-    }
-
-    return(
-        <div className={classes.headerBar}>
-           
-                <div className={classes.headerBar}>
-                    <div className={classes.loginTextInput}>
-                        <IconTextInput Text={username} OnTextChanged={OnUsernameChanged}
-                            Size="small" 
-                            Hint="username"
-                            VectorSource={Constants.Account} 
-                            VectorColor={Constants.LightBlue}/>
-                    </div>
-                    <div className={classes.loginTextInput}>
-                        <IconTextInput Text={password} OnTextChanged={OnPasswordChanged}
-                            Size="small" 
-                            Hint="password"
-                            VectorSource={Constants.KeyVariant} 
-                            VectorColor={Constants.LightBlue}/>
-                    </div>
-                    <Button variant="contained" 
-                            className={classes.headerButton}
-                            style={loginButtonStyle}
-                            onClick={Login}>Login</Button>
-
-                    <ErrorDialog Text={"Error! Please fill out every input and try again!"}
-                        IsOpen={isOpen} 
-                        IsOpenHandler={IsOpenHandler}
-                        VectorSource={Constants.AccountCircle}
-                        />
-                </div>
-                
-        </div>
-    );
+    // return(
+    //     <div>
+    //         {isLogInVisible ? (
+    //             <LoginForm SignUpOnClick={SetIsLogInVisible}/>
+    //         ) : (
+    //             <SignupForm LoginOnClick={SetIsLogInVisible}/>
+    //         )}
+    //     </div>
+    // );
 };
 
 export default LoginPage;

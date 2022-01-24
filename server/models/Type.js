@@ -32,7 +32,7 @@ class Type{
      * @returns 
      */
     static Update(id, newName) {
-        let query = `UPDATE types SET name = ${newName}, 
+        let query = `UPDATE types SET name = "${newName}" 
                                   WHERE id = ${id};`;
 
         return query;

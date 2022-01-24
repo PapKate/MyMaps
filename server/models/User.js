@@ -38,6 +38,12 @@ class User{
         return query;
     }
 
+    static LoginUser(username, password) {
+        let query = `SELECT * FROM users WHERE username = "${username}" AND users.password = "${password}";`;
+
+        return query;
+    }
+
     /**
      * Updates the username and the password
      * @param {int} id 

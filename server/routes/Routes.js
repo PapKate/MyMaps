@@ -18,6 +18,12 @@ class Routes {
   static UserRoute = Routes.UsersRoute + "/:id";
 
   /**
+   ** The route to a user
+   ** /myMaps/users/2
+   */
+  static LoginRoute = Routes.HomeRoute + "/login";
+
+  /**
    ** The points' route
    ** /myMaps/points
    */
