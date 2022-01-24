@@ -65,14 +65,16 @@ exports.GetAdminById = (async (req, res, next) => {
  */
 exports.UpdateAdminById = (async (req, res, next) => {
     
-    let query = Admin.GetById(req.params.id);
+    let query = Admin.UpdateById(req.params.id, req.body.username, req.body.password);
     var result = await GetQueryResultAsync(query);
+    let query2 = Admin.GetById(req.params.id);
+    var result2 = await GetQueryResultAsync(query2);
 
-    if(!result.length == 0) {
+    if(result2.length == 0) {
         return next(new ErrorResponse(`ERROR 404: Not found. The username with id ${req.params.id} was not found.`, 404));
     }
 
-    let queryProperties = "";
+    /*let queryProperties = "";
 
     // username = ${newUsername}
 
@@ -81,8 +83,8 @@ exports.UpdateAdminById = (async (req, res, next) => {
 
     if(!ControllerHelpers.IsNullOrEmpty(req.body.password))
         queryProperties += `password = ${req.body.password}, `;
-
-    res.status(201).json(result);
+*/
+    res.status(201).json(result2);
 
 });
 
@@ -91,15 +93,15 @@ exports.UpdateAdminById = (async (req, res, next) => {
  */
 exports.DeleteAdminById = (async (req, res, next) => {
     
-    let query = Admin.GetById(req.params.id);
+    let query = Admin.DeleteById(req.params.id);
     var result = await GetQueryResultAsync(query);
 
-    if(!result.length == 0) {
+    if(result.length == 0) {
         return next(new ErrorResponse(`ERROR 404: Not found. The username with id ${req.params.id} was not found.`, 404));
     }
 
 
-    res.status(200).json(admin);
+    res.status(200).json(Admin);
 
 });
 

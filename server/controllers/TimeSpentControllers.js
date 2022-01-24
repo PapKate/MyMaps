@@ -64,22 +64,24 @@ exports.GetTimeSpentById = (async (req, res, next) => {
  */
 exports.UpdateTimeSpentById = (async (req, res, next) => {
     
-    let query = TimeSpent.GetById(req.params.id);
+    let query = TimeSpent.UpdateById(req.params.id, req.body.minValue, req.body.maxValue);
     var result = await GetQueryResultAsync(query);
+    let query2 = TimeSpent.GetById(req.params.id);
+    var result2 = await GetQueryResultAsync(query2);
 
-    if(!result.length == 0) {
+    if(result2.length == 0) {
         return next(new ErrorResponse(`ERROR 404: Not found. The timeSpent with id ${req.params.id} was not found.`, 404));
     }
 
-    let queryProperties = 0;
+    /*let queryProperties = 0;
 
     if(!ControllerHelpers.IsNullOrEmpty(req.body.minValue))
         queryProperties += `minValue = ${req.body.minValue}, `;
 
     if(!ControllerHelpers.IsNullOrEmpty(req.body.maxValue))
         queryProperties += `maxValue = ${req.body.maxValue}, `;
-
-    res.status(201).json(result);
+*/
+    res.status(201).json(result2);
 
 });
 
@@ -88,15 +90,15 @@ exports.UpdateTimeSpentById = (async (req, res, next) => {
  */
 exports.DeleteTimeSpentById = (async (req, res, next) => {
     
-    let query = TimeSpent.GetById(req.params.id);
+    let query = TimeSpent.DeleteById(req.params.id);
     var result = await GetQueryResultAsync(query);
 
-    if(!result.length == 0) {
+    if(result.length == 0) {
         return next(new ErrorResponse(`ERROR 404: Not found. The timeSpent with id ${req.params.id} was not found.`, 404));
     }
 
 
-    res.status(200).json(timeSpent);
+    res.status(200).json(TimeSpent);
 
 });
 

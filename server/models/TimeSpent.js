@@ -1,5 +1,3 @@
-//const db = require('../config/db');
-
 const ControllerHelpers = require('../helpers/ControllerHelpers');
 
 /**
@@ -13,10 +11,7 @@ class TimeSpent{
     }
 
     Create() {
-        let query = `
-            INSERT INTO timespent(minValue, timespent.maxValue)
-            VALUES(${this.minValue}, ${this.maxValue});
-        `;
+        let query = `INSERT INTO timespent(minValue, timespent.maxValue) VALUES(${this.minValue}, ${this.maxValue});`;
 
         return query;
     }
@@ -49,6 +44,19 @@ class TimeSpent{
 
         return query;
     }
+
+        /**
+     * Deletes the timespent
+     * @param {int} id 
+     * @returns 
+     * 
+     */
+         static DeleteById(id) {
+
+            let query = `DELETE FROM timespent WHERE id = ${id};`;
+   
+           return query;
+       }
 }
 
 module.exports = TimeSpent;

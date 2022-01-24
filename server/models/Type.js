@@ -8,7 +8,7 @@ class Type{
     }
 
     Create() {
-        let query = `INSERT INTO types(name) VALUES("${this.name}");`;
+        let query = `INSERT INTO types(name) VALUES('${this.name}');`;
 
         return query;
     }
@@ -32,11 +32,24 @@ class Type{
      * @returns 
      */
     static Update(id, newName) {
-        let query = `UPDATE types SET name = ${newName}, 
+        let query = `UPDATE types SET name = "${newName}"
                                   WHERE id = ${id};`;
 
         return query;
     }
+
+    /**
+     * Deletes the type
+     * @param {int} id 
+     * @returns 
+     * 
+     */
+         static DeleteById(id) {
+
+            let query = `DELETE FROM types WHERE id = ${id};`;
+   
+           return query;
+       }
 }
 
 module.exports = Type;

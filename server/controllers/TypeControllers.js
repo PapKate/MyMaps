@@ -64,19 +64,21 @@ exports.GetTypeById = (async (req, res, next) => {
  */
 exports.UpdateTypeById = (async (req, res, next) => {
     
-    let query = Type.GetById(req.params.id);
+    let query = Type.UpdateById(req.params.id, req.body.name);
     var result = await GetQueryResultAsync(query);
+    let query2 = Type.GetById(req.params.id);
+    var result2 = await GetQueryResultAsync(query2);
 
-    if(!result.length == 0) {
+    if(result2.length == 0) {
         return next(new ErrorResponse(`ERROR 404: Not found. The type with id ${req.params.id} was not found.`, 404));
     }
 
-    let queryProperties = "";
+   /* let queryProperties = "";
 
     if(!ControllerHelpers.IsNullOrEmpty(req.body.name))
-        queryProperties += `name = ${req.body.name}, `;
+        queryProperties += `name = ${req.body.name}, `;*/
 
-    res.status(201).json(result);
+    res.status(201).json(result2);
 
 });
 
@@ -85,15 +87,15 @@ exports.UpdateTypeById = (async (req, res, next) => {
  */
 exports.DeleteTypeById = (async (req, res, next) => {
     
-    let query = Type.GetById(req.params.id);
+    let query = Type.DeleteById(req.params.id);
     var result = await GetQueryResultAsync(query);
 
-    if(!result.length == 0) {
+    if(result.length == 0) {
         return next(new ErrorResponse(`ERROR 404: Not found. The type with id ${req.params.id} was not found.`, 404));
     }
 
 
-    res.status(200).json(type);
+    res.status(200).json(Type);
 
 });
 

@@ -1,5 +1,3 @@
-// const fs = require("fs").promises;
-
 const GetQueryResultAsync = require('../config/db');
 
 const Type = require('../models/Type');
