@@ -9,12 +9,9 @@ class Admin{
         this.password = password;
     }
 
-    async Create() {
+    Create() {
 
-        let query = `
-            INSERT INTO admins(username, password)
-            VALUES('${this.username}', '${this.password}');
-        `;
+        let query = `INSERT INTO admins(username, password) VALUES("${this.username}", "${this.password}");`;
 
         return query;
     }
@@ -39,22 +36,25 @@ class Admin{
      * @returns the sql query
      */
     static UpdateById(id, newUsername, newPassword) {
-        let query = `UPDATE admins SET username = ${newUsername}, 
-                                    password = ${newPassword}, 
+        let query = `UPDATE admins SET username = "${newUsername}", 
+                                    password = "${newPassword}"
                     WHERE id = ${id};`;
 
         return query;
     }
 
-    static DeleteById(id) {
+    /**
+     * Deletes the admin
+     * @param {int} id 
+     * @returns 
+     * 
+     */
+     static DeleteById(id) {
 
-        /* let query = `DELETE admins SET username = ${newUsername}, 
-                                     password = ${newPassword}, 
-                                     dateModified = ${dateModified} 
-                     WHERE id = ${id};`;
+        let query = `DELETE FROM admins WHERE id = ${id};`;
 
-        return query;*/
-    }
+       return query;
+   }
 }
 
 module.exports = Admin;

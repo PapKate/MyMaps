@@ -77,14 +77,17 @@ exports.GetPopularTimeByPointId = (async (req, res, next) => {
  */
 exports.UpdatePopularTimeById = (async (req, res, next) => {
     
-    let query = PopularTime.GetById(req.params.id);
+    let query = PopularTime.UpdateById(req.params.id, req.body.name, req.body.hour00, req.body.hour01, req.body.hour02, req.body.hour03, req.body.hour04, req.body.hour05, req.body.hour06, req.body.hour07, req.body.hour08, req.body.hour09, req.body.hour10, req.body.hour11, req.body.hour12, req.body.hour13, req.body.hour14, req.body.hour15, req.body.hour16, req.body.hour17, req.body.hour18, req.body.hour19, req.body.hour20, req.body.hour21, req.body.hour22, req.body.hour23);
     var result = await GetQueryResultAsync(query);
+    let query2 = PopularTime.GetById(req.params.id);
+    var result2 = await GetQueryResultAsync(query2);
+    
 
-    if(!result.length == 0) {
+    if(result2.length == 0) {
         return next(new ErrorResponse(`ERROR 404: Not found. The popular time with id ${req.params.id} was not found.`, 404));
     }
 
-    let queryProperties1 = "";
+    /*let queryProperties1 = "";
     let queryProperties2 = 0;
 
     if(!ControllerHelpers.IsNullOrEmpty(req.body.name))
@@ -161,9 +164,9 @@ exports.UpdatePopularTimeById = (async (req, res, next) => {
 
     if(!ControllerHelpers.IsNullOrEmpty(req.body.hour23))
        queryProperties2 += `hour23 = ${req.body.hour23}, `;
+*/
 
-
-    res.status(201).json(result);
+    res.status(201).json(result2);
 
 });
 
@@ -172,15 +175,15 @@ exports.UpdatePopularTimeById = (async (req, res, next) => {
  */
 exports.DeletePopularTimeById = (async (req, res, next) => {
     
-    let query = PopularTime.GetById(req.params.id);
+    let query = PopularTime.DeleteById(req.params.id);
     var result = await GetQueryResultAsync(query);
 
-    if(!result.length == 0) {
+    if(result.length == 0) {
         return next(new ErrorResponse(`ERROR 404: Not found. The popular time with id ${req.params.id} was not found.`, 404));
     }
 
 
-    res.status(200).json(popularTime);
+    res.status(200).json(PopularTime);
 
 });
 
