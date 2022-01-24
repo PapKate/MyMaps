@@ -245,6 +245,11 @@ label{
   justify-content: center;
   align-items: center;
   z-index: 1;
+  border: solid white;
+  border-radius: 12px;
+  background-color: white;
+  height: 64vh;
+  width: 32vw;
 }
 
 .loginText{
@@ -255,7 +260,19 @@ label{
   font-family: Calibri, sans-serif;
 }
 
+.signupText{
+  font-size: 200%;
+  color: #F2C14E;
+  margin-bottom: 30px; 
+  font-weight: 600;
+  font-family: Calibri, sans-serif;
+}
+
 .loginUsername{
+  margin-bottom: 30px; 
+}
+
+.signupUsername{
   margin-bottom: 30px; 
 }
 
@@ -263,11 +280,36 @@ label{
   margin-bottom: 30px; 
 }
 
-.loginButton{
+.signupPassword{
   margin-bottom: 30px; 
-
 }
 
+.signupEmail{
+  margin-bottom: 30px;
+}
 
+.loginButton{
+  margin-bottom: 30px; 
+}
 
+.signupButton{
+  margin-bottom: 30px; 
+}
 
+.signupTextChange {
+  font-size: 100%;
+  color: #F2C14E;
+}
+.signupTextChange:hover{
+  text-decoration: underline #F2C14E ;
+  cursor: pointer;
+}
+
+.loginTextChange {
+  font-size: 100%;
+  color: #018E42;
+}
+.loginTextChange:hover{
+  text-decoration: underline #018E42;
+  cursor: pointer;
+}

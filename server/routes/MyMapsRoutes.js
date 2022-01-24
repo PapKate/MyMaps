@@ -37,6 +37,13 @@ router
     .put(userControllers.UpdateUserById)
     .delete(userControllers.DeleteUserById);
 
+/**
+ * @route GET and POST route -> /login
+ */
+router
+    .route(Routes.LoginRoute)
+    .post(userControllers.GetLoginUser);
+
 router 
     .route(Routes.FileRoute)
     .post(fileController.GetFile);

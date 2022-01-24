@@ -22,7 +22,7 @@ const useStyles = makeStyles({
 
 
 
-const HeaderBar = ({ Username = "username", IsLoggedIn }) => {
+const HeaderBar = ({ Username, IsLoggedIn }) => {
     // Material UI Styles
     const classes = useStyles();
 

@@ -5,8 +5,9 @@ const ControllerHelpers = require('../helpers/ControllerHelpers');
  */
 class Point{
 
-    constructor(id, name, address, coordinatesId, rating, ratingNumber, currentPopularity, timespentId) {
+    constructor(id, name, address, coordinatesId, rating, ratingNumber, currentPopularity = null, timespentId) {
         this.id = id;
+        name = name.replace("\'","\\'")
         this.name = name;
         this.address = address;
         this.coordinatesId = coordinatesId;
@@ -22,10 +23,9 @@ class Point{
 
         let dateCreated = dateTimeNow;
         let dateModified = dateTimeNow;
-
         let query = `
             INSERT INTO points(id, name, address, coordinatesId, rating, ratingNumber, currentPopularity, timespentId, dateCreated, dateModified)
-            VALUES("${this.id}", "${this.name}", "${this.address}", ${this.coordinatesId}, ${this.rating}, ${this.ratingNumber}, ${this.currentPopularity}, ${this.timespentId}, "${dateCreated}", "${dateModified}");
+            VALUES("${this.id}",  '${this.name}', "${this.address}", ${this.coordinatesId}, ${this.rating}, ${this.ratingNumber}, ${this.currentPopularity}, ${this.timespentId}, "${dateCreated}", "${dateModified}");
         `;
 
         return query;
@@ -77,7 +77,7 @@ class Point{
         // Gets the current date time as string
         var dateModified = ControllerHelpers.GetCurrentDateTime();
 
-        let query = `UPDATE points SET name = "${newName}", 
+        let query = `UPDATE points SET name = '${newName}', 
                                     address = "${newAddress}", 
                                     coordinatesId = "${newCoordinatesId}",
                                     rating = "${newRating}",
