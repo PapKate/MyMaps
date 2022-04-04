@@ -1,68 +1,51 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 
-import { ThemeProvider } from "@material-ui/core";
 import { createTheme } from '@material-ui/core/styles';
 
-import UserResponseModel from "../src/ResponseModels/UserResponseModel";
+import axios from "axios";
 
-import Constants from "./Shared/Constants";
-
-import IconTextInput from "./Components/Inputs/IconTextInput";
-import MenuButton from "./Components/Buttons/MenuButton";
-import UserSideMenu from "./Components/SideMenus/UserSideMenu";
-import AdminSideMenu from "./Components/SideMenus/AdminSideMenu";
 import HeaderBar from './Components/HeaderBar';
 
-import PointsOfInterestPage from "./Pages/Admin/PointsOfInterestPage";
-import TestPage from "./Pages/TestPage";
 import ProfilePage from "./Pages/User/ProfilePage";
 import LoginForm from "./Pages/LoginRegisterForms/LoginForm";
 import SignupForm from "./Pages/LoginRegisterForms/SignupForm";
-import LoginPage from "./Pages/LoginRegisterForms/LoginForm";
-
-
-
-const theme = createTheme({
-  palette: {
-      primary: {
-        light: '#9cc9e1',
-        main: '#84BCDA',
-        dark: '#5c8398',
-        contrastText: '#F5F5F5',
-      },
-      secondary: {
-        light: '#f4cd71',
-        main: '#F2C14E',
-        dark: '#a98736',
-        contrastText: '#F5F5F5',
-      }
-  },
-});
+import HomePage from "./Pages/User/HomePage";
+import ConfirmCasePage from "./Pages/User/ConfirmCasePage";
+import CovidExposurePage from "./Pages/User/CovidExposurePage";
 
 const App = () => {
 
   const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
-  const SetUserIsLoggedIn = () => setUserIsLoggedIn(!userIsLoggedIn);
-  const [user, setUser] = useState(null);
   const [username, setUsername] = useState("");
-  var userObject = null;
-  useEffect(() => {
-    userObject = JSON.parse(user);
-    setUsername(userObject?.username);
-    console.log(userObject?.id);
 
-  });
+  const childToParent = async(childData) => {
+    const response = await axios.get(`/api/myMaps/users`);
+    // The json data from the response
+    let users = response.data;
+    
+    var userData = users.find(x => x.id === childData);
+    
+    setUsername(userData.username);
+
+    setUserIsLoggedIn(true);
+  }
+
+
+  useEffect(() => {
+  } );
 
   return (
     <>
-      <HeaderBar Username={username} IsLoggedIn={false}/>
-        {userObject?.id}
+      <HeaderBar Username={username} IsLoggedIn={userIsLoggedIn}/>
         <Router>
           <Routes>
-            <Route path='/' element={ <LoginForm SetParentUser={setUser}/> } />
-            <Route path='sign-up' element={ <SignupForm/> } /> 
-            <Route path='profile' element={ <ProfilePage User={user} /> } />
+            <Route exact path='/' element={ <LoginForm SetChildToParentUserId={childToParent}/> } />
+            <Route exact path='sign-up' element={ <SignupForm/> } /> 
+            <Route exact path='/user/:userId/home' element={ <HomePage /> } />
+            <Route exact path='/user/:userId/profile' element={ <ProfilePage /> } />
+            <Route exact path='/user/:userId/confirmCase' element={ <ConfirmCasePage /> } />
+            <Route exact path='/user/:userId/COVIDExposure' element={ <CovidExposurePage /> } />
           </Routes> 
         </Router>
     </>

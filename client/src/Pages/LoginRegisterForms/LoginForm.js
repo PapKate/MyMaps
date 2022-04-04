@@ -6,7 +6,6 @@ import { Button, makeStyles } from "@material-ui/core";
 import Constants from "../../Shared/Constants";
 import IconTextInput from "../../Components/Inputs/IconTextInput";
 import ErrorDialog from "../../Components/Dialogs/ErrorDialog";
-import UserResponseModel from "../../ResponseModels/UserResponseModel";
 
 const useStyles = makeStyles({
     headerBar: {
@@ -46,17 +45,16 @@ const signUpTextStyle = {
     color: `#${Constants.Yellow}`
 };
 
-const LoginForm = ({ SetParentUser }) => {
+const LoginForm = ({ SetChildToParentUserId }) => {
     // Material UI Styles
     const classes = useStyles();
+    const navigate = useNavigate();
 
     const [loginUsername, setUsername] = useState("");
     const [loginPassword, setPassword] = useState("");
     const [isSuccessfulLogin, setIsSuccessfulLogin] = useState(false);
     const [isCorrectLogin, setIsCorrectLogin] = useState(true);
     const [isOpen, setIsOpen] = useState(false);
-
-    const [user, setUser] = useState(null);
 
     // On username changed event
     const OnUsernameChanged = (event) => {
@@ -70,7 +68,6 @@ const LoginForm = ({ SetParentUser }) => {
 
     const IsOpenHandler = () => setIsOpen(!isOpen);
 
-    const navigate = useNavigate();
     const Login = async () => {
         if (loginUsername === "" || loginPassword === "") {
             IsOpenHandler();
@@ -83,14 +80,10 @@ const LoginForm = ({ SetParentUser }) => {
                 let users = response.data;
 
                 var userData = users.find(x => x.username === loginUsername && x.password === loginPassword);
+               
+                SetChildToParentUserId(userData.id);
 
-                setUser(JSON.stringify(userData));
-                
-                SetParentUser(JSON.stringify(userData));
-                
-                navigate('profile');
-
-                console.log(userData);
+                navigate(`user/${userData.id}/profile`, {state: { userData : JSON.stringify(userData) }});
             } catch (error) {
                 setIsCorrectLogin(false);
                 console.log(isCorrectLogin);
@@ -155,7 +148,10 @@ const LoginForm = ({ SetParentUser }) => {
                         />
                     </div>
                     <div className="signupTextChange">
-                        <Link style={signUpTextStyle} to="sign-up">Don't have an account? Sign up</Link> 
+                        <Link style={signUpTextStyle} 
+                              to={"/sign-up"}>
+                            Don't have an account? Sign up
+                        </Link> 
                     </div>
                 </div>
             </div>

@@ -1,24 +1,64 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import Constants from '../../Shared/Constants';
 import MenuButton from '../Buttons/MenuButton';
 import MessageDialog from '../Dialogs/MessageDialog';
 
 
-const UserSideMenu = () => {
+const UserSideMenu = ({ UserData }) => {
+    const navigate = useNavigate();
     
     const [exitDialog_IsOpen, exitDialog_SetIsOpen] = useState(false);
         
     const ExitDialog_IsOpenHandler = () => exitDialog_SetIsOpen(!exitDialog_IsOpen);
 
+    /**
+     ** Navigates to the home page of the user
+     */
+    const GoToHomePage = () => {
+        navigate(`user/${UserData.id}/home`, {state: { userData : UserData }, replace: true});
+    }
+
+    /**
+     ** Navigates to the profile page of the user
+     */
+     const GoToProfilePage = () => {
+        navigate(`user/${UserData.id}/profile`, {state: { userData : UserData }});
+    }
+
+    /**
+     ** Navigates to the confirm case page of the user
+     */
+     const GoToConfirmCasePage = () => {
+        navigate(`user/${UserData.id}/confirmCase`, {state: { userData : UserData }});
+    }
+
+    /**
+     ** Navigates to the COVID exposure page of the user
+     */
+     const GoToCOVIDExposurePage = () => {
+        navigate(`user/${UserData.id}/COVIDExposure`, {state: { userData : UserData }});
+    }
+
+    /**
+     ** Reveals the log out dialog
+     */
     const LogOutOnClick = () => ExitDialog_IsOpenHandler();
 
     return(
         <div className="sideMenu">
-            <MenuButton Text={"Home"} VectorSource={Constants.Home}/>
-            <MenuButton Text={"Profile"} VectorSource={Constants.AccountCircle}/>
-            <MenuButton Text={"Confirm case"} VectorSource={Constants.Virus}/>
-            <MenuButton Text={"COVID exposure"} VectorSource={Constants.AlarmLight}/>
+            <MenuButton Text={"Home"} 
+                        VectorSource={Constants.Home} 
+                        OnClick={GoToHomePage}/>
+            <MenuButton Text={"Profile"} 
+                        VectorSource={Constants.AccountCircle}
+                        OnClick={GoToProfilePage}/>
+            <MenuButton Text={"Confirm case"} 
+                        VectorSource={Constants.Virus}
+                        OnClick={GoToConfirmCasePage}/>
+            <MenuButton Text={"COVID exposure"} VectorSource={Constants.AlarmLight}
+                        OnClick={GoToCOVIDExposurePage}/>
 
             <div className="menuExitButton">
                 <MenuButton Text={"Log out"} 
