@@ -83,7 +83,7 @@ const LoginForm = ({ SetChildToParentUserId }) => {
                
                 SetChildToParentUserId(userData.id);
 
-                navigate(`user/${userData.id}/profile`, {state: { userData : JSON.stringify(userData) }});
+                navigate(`users/${userData.id}/profile`, {state: { userData : userData }});
             } catch (error) {
                 setIsCorrectLogin(false);
                 console.log(isCorrectLogin);
