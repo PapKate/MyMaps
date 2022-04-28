@@ -1,23 +1,41 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import Constants from '../../Shared/Constants';
 import MenuButton from '../Buttons/MenuButton';
 import MessageDialog from '../Dialogs/MessageDialog';
 
 const AdminSideMenu = () => {
+    const navigate = useNavigate();
     
     const [exitDialog_IsOpen, exitDialog_SetIsOpen] = useState(false);
         
     const ExitDialog_IsOpenHandler = () => exitDialog_SetIsOpen(!exitDialog_IsOpen);
     
-    const LogOutOnClick = () => {
-        ExitDialog_IsOpenHandler();
+    /**
+     ** Navigates to the points of interest page of the admin
+     */
+     const GoToPointsOfInterestPage = () => {
+        navigate(`pois`);
     }
 
+    /**
+     ** Navigates to the statistics page of the admin
+     */
+     const GoToStatisticsPage = () => {
+        navigate(`statistics`);
+    }
+
+    const LogOutOnClick = () => ExitDialog_IsOpenHandler();
+    
     return(
         <div className="sideMenu">
-            <MenuButton Text={"Points of interest"} VectorSource={Constants.Home}/>
-            <MenuButton Text={"Statistics"} VectorSource={Constants.AccountCircle}/>
+            <MenuButton Text={"Points of interest"} 
+                        VectorSource={Constants.Home}
+                        OnClick={ GoToPointsOfInterestPage } />
+            <MenuButton Text={"Statistics"} 
+                        VectorSource={Constants.AccountCircle}
+                        OnClick={ GoToStatisticsPage } />
 
             <div className="menuExitButton">
                 <MenuButton Text={"Log out"} 

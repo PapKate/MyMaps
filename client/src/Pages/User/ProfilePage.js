@@ -7,17 +7,12 @@ import { useLocation } from "react-router-dom";
 import VectorButton from "../../Components/Buttons/VectorButton";
 import EditUserDataDialog from "../../Components/Dialogs/EditUserDataDialog";
 import Constants from "../../Shared/Constants";
-import UserSideMenu from "../../Components/SideMenus/UserSideMenu";
 
 const useStyles = makeStyles({
   profilePageContainer: {
     width: "100%",
-    height: "max-content",
+    height: "100%",
     position: "relative",
-    display: "flex",
-    flexDirection: "column",
-    backgroundColor: `#${Constants.White}`,
-    gap: "2em",
   },
   profileDataContainer: {
     height: "24vh",
@@ -33,7 +28,7 @@ const useStyles = makeStyles({
     textOverflow: "ellipsis",
     "@media (max-width: 1000px)": {
       flexDirection: "column",
-      height: "100%",
+      height: "fit-content",
       padding: "2em 0",
     },
   },
@@ -105,7 +100,7 @@ const useStyles = makeStyles({
   profileDataGridsArea: {
     position: "relative",
     width: "100%",
-    height: "100%",
+    height: "max-content",
     display: "flex",
     flexDirection: "row",
     paddingBottom: "2em",
@@ -150,9 +145,9 @@ const ProfilePage = ({ UserId }) => {
     EditUserDataDialog_IsOpenHandler();
   };
 
-  const { userData } = location.state;
+  const user = location.state.userData;
 
-  const user = JSON.parse(userData);
+  //const user = JSON.parse(userData);
 
   const visitsLogColumns = [
     {
@@ -221,79 +216,76 @@ const ProfilePage = ({ UserId }) => {
   ];
 
   return (
-    <div className="page">
-      <UserSideMenu UserData={user}/>
-      <div className={classes.profilePageContainer}>
-        <div className={classes.profileDataContainer}>
-          <div className={classes.editButton}>
-            <VectorButton
-              OnClick={EditUserData}
-              BorderRadius={"4px"}
-              BackColor={Constants.Gray}
-              Color={Constants.White}
-              VectorSource={Constants.Edit}
-            />
-          </div>
-          <img
-            className={classes.profileImgContainer}
-            src={"/icons/ninja.png"}
-            alt="user"
+    <div className={classes.profilePageContainer}>
+      <div className={classes.profileDataContainer}>
+        <div className={classes.editButton}>
+          <VectorButton
+            OnClick={EditUserData}
+            BorderRadius={"4px"}
+            BackColor={Constants.Gray}
+            Color={Constants.White}
+            VectorSource={Constants.Edit}
           />
-          <div className={classes.profileTextDataContainer}>
-            <div className={classes.profileData}>
-              <span className={classes.profileDataBold}>Username</span>
-              <span className={classes.profileDataValue}>{user?.username}</span>
-            </div>
-            <div className={classes.profileData}>
-              <span className={classes.profileDataBold}>Email</span>
-              <span className={classes.profileDataValue}>{user?.email}</span>
-            </div>
-          </div>
         </div>
-
-        <div className={classes.profileDataGridsArea}>
-          <div>
-            <span className={classes.visitsLogTitle}>Visits Log</span>
-            <Box
-              sx={{
-                height: 500,
-                "& .visitsLogHeader": {
-                  backgroundColor: `#${Constants.LightBlue}`,
-                  color: `#${Constants.White}`,
-                  fontFamily: Constants.FontFamily,
-                  fontWeight: 600,
-                  fontSize: "140%",
-                },
-              }}
-            >
-              <DataGrid rows={visitsLogRows} columns={visitsLogColumns} />
-            </Box>
-          </div>
-
-          <div>
-            <span className={classes.visitsLogTitle}>Personal Cases Log</span>
-            <Box
-              sx={{
-                height: 500,
-                "& .personalCasesLogHeader": {
-                  backgroundColor: `#${Constants.Red}`,
-                  color: `#${Constants.White}`,
-                  fontFamily: Constants.FontFamily,
-                  fontWeight: "600",
-                  fontSize: "140%",
-                },
-              }}
-            >
-              <DataGrid rows={casesLogRows} columns={casesLogColumns} />
-            </Box>
-          </div>
-        </div>
-
-        <EditUserDataDialog
-          IsOpen={editUserDataDialog_IsOpen}
-          IsOpenHandler={EditUserDataDialog_IsOpenHandler}
+        <img
+          className={classes.profileImgContainer}
+          src={"/icons/ninja.png"}
+          alt="user"
         />
+        <div className={classes.profileTextDataContainer}>
+          <div className={classes.profileData}>
+            <span className={classes.profileDataBold}>Username</span>
+            <span className={classes.profileDataValue}>{user?.username}</span>
+          </div>
+          <div className={classes.profileData}>
+            <span className={classes.profileDataBold}>Email</span>
+            <span className={classes.profileDataValue}>{user?.email}</span>
+          </div>
+        </div>
       </div>
+
+      <div className={classes.profileDataGridsArea}>
+        <div>
+          <span className={classes.visitsLogTitle}>Visits Log</span>
+          <Box
+            sx={{
+              height: 500,
+              "& .visitsLogHeader": {
+                backgroundColor: `#${Constants.LightBlue}`,
+                color: `#${Constants.White}`,
+                fontFamily: Constants.FontFamily,
+                fontWeight: 600,
+                fontSize: "140%",
+              },
+            }}
+          >
+            <DataGrid rows={visitsLogRows} columns={visitsLogColumns} />
+          </Box>
+        </div>
+
+        <div>
+          <span className={classes.visitsLogTitle}>Personal Cases Log</span>
+          <Box
+            sx={{
+              height: 500,
+              "& .personalCasesLogHeader": {
+                backgroundColor: `#${Constants.Red}`,
+                color: `#${Constants.White}`,
+                fontFamily: Constants.FontFamily,
+                fontWeight: "600",
+                fontSize: "140%",
+              },
+            }}
+          >
+            <DataGrid rows={casesLogRows} columns={casesLogColumns} />
+          </Box>
+        </div>
+      </div>
+
+      <EditUserDataDialog
+        IsOpen={editUserDataDialog_IsOpen}
+        IsOpenHandler={EditUserDataDialog_IsOpenHandler}
+      />
     </div>
   );
 };

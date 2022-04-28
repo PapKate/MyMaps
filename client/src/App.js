@@ -1,18 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-
-import { createTheme } from '@material-ui/core/styles';
 
 import axios from "axios";
 
 import HeaderBar from './Components/HeaderBar';
-
 import ProfilePage from "./Pages/User/ProfilePage";
 import LoginForm from "./Pages/LoginRegisterForms/LoginForm";
 import SignupForm from "./Pages/LoginRegisterForms/SignupForm";
 import HomePage from "./Pages/User/HomePage";
 import ConfirmCasePage from "./Pages/User/ConfirmCasePage";
 import CovidExposurePage from "./Pages/User/CovidExposurePage";
+import PointsOfInterestPage from "./Pages/Admin/PointsOfInterestPage";
+import StatisticsPage from "./Pages/Admin/StatisticsPage";
+import LayoutPage from "./Pages/LayoutPage";
 
 const App = () => {
 
@@ -31,21 +31,23 @@ const App = () => {
     setUserIsLoggedIn(true);
   }
 
-
-  useEffect(() => {
-  } );
-
   return (
     <>
       <HeaderBar Username={username} IsLoggedIn={userIsLoggedIn}/>
         <Router>
           <Routes>
-            <Route exact path='/' element={ <LoginForm SetChildToParentUserId={childToParent}/> } />
-            <Route exact path='sign-up' element={ <SignupForm/> } /> 
-            <Route exact path='/user/:userId/home' element={ <HomePage /> } />
-            <Route exact path='/user/:userId/profile' element={ <ProfilePage /> } />
-            <Route exact path='/user/:userId/confirmCase' element={ <ConfirmCasePage /> } />
-            <Route exact path='/user/:userId/COVIDExposure' element={ <CovidExposurePage /> } />
+            <Route path='/' element={ <LoginForm SetChildToParentUserId={childToParent}/> } />
+            <Route path='sign-up' element={ <SignupForm/> } /> 
+            <Route path='admins/:adminId' element={ <LayoutPage /> } >
+              <Route path='pois' element={ <PointsOfInterestPage /> } />
+              <Route path='statistics' element={ <StatisticsPage /> } />
+            </Route>
+            <Route path='users/:userId' element={ <LayoutPage /> } >
+              <Route path='home' element={ <HomePage /> } />
+              <Route path='profile' element={ <ProfilePage /> } />
+              <Route path='confirmCase' element={ <ConfirmCasePage /> } />
+              <Route path='COVIDExposure' element={ <CovidExposurePage /> } />
+            </Route>
           </Routes> 
         </Router>
     </>

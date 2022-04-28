@@ -17,28 +17,28 @@ const UserSideMenu = ({ UserData }) => {
      ** Navigates to the home page of the user
      */
     const GoToHomePage = () => {
-        navigate(`user/${UserData.id}/home`, {state: { userData : UserData }, replace: true});
+        navigate(`home`, {state: { userData : UserData }});
     }
 
     /**
      ** Navigates to the profile page of the user
      */
      const GoToProfilePage = () => {
-        navigate(`user/${UserData.id}/profile`, {state: { userData : UserData }});
+        navigate(`profile`, {state: { userData : UserData }});
     }
 
     /**
      ** Navigates to the confirm case page of the user
      */
      const GoToConfirmCasePage = () => {
-        navigate(`user/${UserData.id}/confirmCase`, {state: { userData : UserData }});
+        navigate(`confirmCase`, {state: { userData : UserData }});
     }
 
     /**
      ** Navigates to the COVID exposure page of the user
      */
      const GoToCOVIDExposurePage = () => {
-        navigate(`user/${UserData.id}/COVIDExposure`, {state: { userData : UserData }});
+        navigate(`COVIDExposure`, {state: { userData : UserData }});
     }
 
     /**
