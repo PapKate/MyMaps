@@ -1,7 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-
-import { createTheme } from '@material-ui/core/styles';
 
 import axios from "axios";
 
@@ -12,6 +10,8 @@ import SignupForm from "./Pages/LoginRegisterForms/SignupForm";
 import HomePage from "./Pages/User/HomePage";
 import ConfirmCasePage from "./Pages/User/ConfirmCasePage";
 import CovidExposurePage from "./Pages/User/CovidExposurePage";
+import PointsOfInterestPage from "./Pages/Admin/PointsOfInterestPage";
+import StatisticsPage from "./Pages/Admin/StatisticsPage";
 import LayoutPage from "./Pages/LayoutPage";
 
 const App = () => {
@@ -31,10 +31,6 @@ const App = () => {
     setUserIsLoggedIn(true);
   }
 
-
-  useEffect(() => {
-  } );
-
   return (
     <>
       <HeaderBar Username={username} IsLoggedIn={userIsLoggedIn}/>
@@ -42,6 +38,10 @@ const App = () => {
           <Routes>
             <Route path='/' element={ <LoginForm SetChildToParentUserId={childToParent}/> } />
             <Route path='sign-up' element={ <SignupForm/> } /> 
+            <Route path='admins/:adminId' element={ <LayoutPage /> } >
+              <Route path='pois' element={ <PointsOfInterestPage /> } />
+              <Route path='statistics' element={ <StatisticsPage /> } />
+            </Route>
             <Route path='users/:userId' element={ <LayoutPage /> } >
               <Route path='home' element={ <HomePage /> } />
               <Route path='profile' element={ <ProfilePage /> } />

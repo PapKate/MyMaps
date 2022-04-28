@@ -5,12 +5,10 @@ import { useLocation } from "react-router-dom";
 import Constants from "../../Shared/Constants";
 
 const useStyles = makeStyles({
-    covidExposurePageContainer: {
+  covidExposurePageContainer: {
     width: "100%",
-    minHeight: "calc(100vh - 4rem)",
+    height: "100%",
     position: "relative",
-    display: "flex",
-    flexDirection: "column",
     backgroundColor: `#${Constants.White}`,
   }
 });

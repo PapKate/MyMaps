@@ -11,12 +11,8 @@ import Constants from "../../Shared/Constants";
 const useStyles = makeStyles({
   profilePageContainer: {
     width: "100%",
-    height: "max-content",
+    height: "100%",
     position: "relative",
-    display: "flex",
-    flexDirection: "column",
-    backgroundColor: `#${Constants.White}`,
-    gap: "2em",
   },
   profileDataContainer: {
     height: "24vh",
@@ -32,7 +28,7 @@ const useStyles = makeStyles({
     textOverflow: "ellipsis",
     "@media (max-width: 1000px)": {
       flexDirection: "column",
-      height: "100%",
+      height: "fit-content",
       padding: "2em 0",
     },
   },
@@ -104,7 +100,7 @@ const useStyles = makeStyles({
   profileDataGridsArea: {
     position: "relative",
     width: "100%",
-    height: "100%",
+    height: "max-content",
     display: "flex",
     flexDirection: "row",
     paddingBottom: "2em",
@@ -149,7 +145,7 @@ const ProfilePage = ({ UserId }) => {
     EditUserDataDialog_IsOpenHandler();
   };
 
-  const { user } = location.state;
+  const user = location.state.userData;
 
   //const user = JSON.parse(userData);
 

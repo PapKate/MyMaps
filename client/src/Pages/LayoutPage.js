@@ -6,17 +6,21 @@ import Constants from "../Shared/Constants";
 import UserSideMenu from "../Components/SideMenus/UserSideMenu";
 
 const useStyles = makeStyles({
-    homePageContainer: {
-    width: "100%",
-    minHeight: "calc(100vh - 4rem)",
-    position: "relative",
-    display: "flex",
-    flexDirection: "column",
-    backgroundColor: `#${Constants.White}`,
-  }
+    pageContainer: {
+        width: "100%",
+        height: "100%",
+        position: "relative",
+        display: "flex",
+        flexDirection: "column",
+        backgroundColor: `#${Constants.White}`,
+        gap: "2em",
+        overflow: "scroll"
+    }
 });
 
 const LayoutPage = () => {
+    // Material UI Styles
+    const classes = useStyles();
 
     const location = useLocation();
 
@@ -25,7 +29,9 @@ const LayoutPage = () => {
     return (
         <div className="page">
             <UserSideMenu UserData={userData}/>
-            <Outlet/>
+            <div className={classes.pageContainer}>
+                <Outlet/>
+            </div>
         </div>
     );
 };

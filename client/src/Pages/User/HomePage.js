@@ -6,12 +6,10 @@ import Constants from "../../Shared/Constants";
 
 const useStyles = makeStyles({
     homePageContainer: {
-    width: "100%",
-    minHeight: "calc(100vh - 4rem)",
-    position: "relative",
-    display: "flex",
-    flexDirection: "column",
-    backgroundColor: `#${Constants.White}`,
+      width: "100%",
+      height: "100%",
+      position: "relative",
+      backgroundColor: `#${Constants.White}`,
   }
 });
 
