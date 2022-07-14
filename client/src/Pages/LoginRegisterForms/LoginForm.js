@@ -107,8 +107,8 @@ const LoginForm = ({ SetChildToParentUserId }) => {
                         IsOpenHandler();
                         
                     }
-             
 
+                navigate(`users/${userData.id}/profile`, {state: { userData : userData }});
             } catch (error) {
                 setIsCorrectLogin(false);
                 console.log(isCorrectLogin);
