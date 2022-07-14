@@ -14,6 +14,7 @@ import PointsOfInterestPage from "./Pages/Admin/PointsOfInterestPage";
 import StatisticsPage from "./Pages/Admin/StatisticsPage";
 import LayoutPage from "./Pages/LayoutPage";
 
+
 const App = () => {
 
   const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
