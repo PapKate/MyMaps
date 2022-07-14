@@ -6,6 +6,7 @@ import { Button, makeStyles } from "@material-ui/core";
 import Constants from "../../Shared/Constants";
 import IconTextInput from "../../Components/Inputs/IconTextInput";
 import ErrorDialog from "../../Components/Dialogs/ErrorDialog";
+import { outlinedInputClasses } from "@mui/material";
 
 const useStyles = makeStyles({
     headerBar: {
@@ -75,15 +76,39 @@ const LoginForm = ({ SetChildToParentUserId }) => {
             setIsSuccessfulLogin(true);
 
             try {
-                const response = await axios.get(`/api/myMaps/users`);
+                const responseOne = await axios.get(`/api/myMaps/users`);
+                const responseTwo = await axios.get(`/api/MyMaps/admins`);
+
                 // The json data from the response
-                let users = response.data;
+                let users = responseOne.data;
+                let admins = responseTwo.data;
 
-                var userData = users.find(x => x.username === loginUsername && x.password === loginPassword);
                
-                SetChildToParentUserId(userData.id);
+               
+                    if (users.find(x => x.username === loginUsername && x.password === loginPassword)) {
 
-                navigate(`user/${userData.id}/profile`, {state: { userData : JSON.stringify(userData) }});
+                        var userData = users.find(x => x.username === loginUsername && x.password === loginPassword);  
+
+                        SetChildToParentUserId(userData.id);
+
+                        navigate(`user/${userData.id}/profile`, {state: { userData : JSON.stringify(userData) }}); 
+
+                    } else if(admins.find(x => x.username === loginUsername && x.password === loginPassword)) {
+
+                        var adminData = admins.find(x => x.username === loginUsername && x.password === loginPassword);
+
+                        SetChildToParentUserId(adminData.id);
+
+                        navigate(`admin/${adminData.id}/pointsOfInterest`, {state: { adminData : JSON.stringify(adminData) }});
+                    } else {
+
+                        setIsCorrectLogin(false);
+                        console.log(isCorrectLogin);
+                        IsOpenHandler();
+                        
+                    }
+             
+
             } catch (error) {
                 setIsCorrectLogin(false);
                 console.log(isCorrectLogin);
@@ -117,6 +142,7 @@ const LoginForm = ({ SetChildToParentUserId }) => {
                             <IconTextInput
                                 Text={loginPassword}
                                 OnTextChanged={OnPasswordChanged}
+                                variant = "outlined"
                                 Size="small"
                                 Hint="password"
                                 VectorSource={Constants.KeyVariant}

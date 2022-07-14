@@ -13,6 +13,7 @@ import SignupForm from "./Pages/LoginRegisterForms/SignupForm";
 import HomePage from "./Pages/User/HomePage";
 import ConfirmCasePage from "./Pages/User/ConfirmCasePage";
 import CovidExposurePage from "./Pages/User/CovidExposurePage";
+import PointsOfInterestPage from "./Pages/Admin/PointsOfInterestPage";
 
 const App = () => {
 
@@ -46,6 +47,7 @@ const App = () => {
             <Route exact path='/user/:userId/profile' element={ <ProfilePage /> } />
             <Route exact path='/user/:userId/confirmCase' element={ <ConfirmCasePage /> } />
             <Route exact path='/user/:userId/COVIDExposure' element={ <CovidExposurePage /> } />
+            <Route exact path='/admin/:adminId/pointsOfInterest' element={ <PointsOfInterestPage /> } />
           </Routes> 
         </Router>
     </>

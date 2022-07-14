@@ -1,7 +1,8 @@
 import { useState } from "react";
 
-import { Button, ThemeProvider, makeStyles } from '@material-ui/core';
+import { Box, Button, ThemeProvider, makeStyles } from '@material-ui/core';
 
+import { DataGrid } from "@mui/x-data-grid";
 import { createTheme } from '@material-ui/core/styles';
 import axios from 'axios'
 
@@ -10,6 +11,7 @@ import TextInput from "../../Components/Inputs/TextInput";
 import TextButton from "../../Components/Buttons/TextButton";
 import VectorButton from "../../Components/Buttons/VectorButton";
 import MessageDialog from "../../Components/Dialogs/MessageDialog";
+import AdminSideMenu from "../../Components/SideMenus/AdminSideMenu";
 
 const theme = createTheme({
     palette: {
@@ -39,7 +41,35 @@ const useStyles = makeStyles({
     position: "fixed",
     bottom: '1rem',
     right: '1rem'
-  }
+  },
+  pointsOfInterestDataGridsArea: {
+    position: "relative",
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "row",
+    paddingBottom: "2em",
+    gap: "2em",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+    "@media (max-width: 1000px)": {
+      flexDirection: "column",
+    },
+  },
+  PoinstOfInterestLogTitle: {
+    position: "relative",
+    width: "100%",
+    height: "auto",
+    fontSize: "180%",
+    fontWeight: "600",
+    color: `#${Constants.White}`,
+    fontFamily: Constants.FontFamily,
+    textAlign: "center",
+    display: "block",
+    padding: "4px 0",
+    borderRadius: "8px 8px 0 0",
+    backgroundColor: `#${Constants.Gray}`,
+  },
 });
 
 const marginStyle = {
@@ -76,16 +106,64 @@ const PointsOfInterestPage = () => {
       let jsonData = response.data;
 
       console.log(jsonData);
-      
-
     } 
     catch (error) {
       console.log(error)
     }
  }
 
+  const GetPointsOfInterestFromJSONFile = async() => {
+    try {
+      const response = await axios.get(`/api/myMaps/file`);
+
+      let pointsOfInterests = response.data;
+
+    } catch (error) {
+  
+      console.log();
+    
+  } 
+ }
+
+  
+
+  
+
+ const pointsOfInterestLogColumns = [
+  {
+    field: "pointsOfInterestName",
+    headerName: "Name",
+    flex: 1,
+    editable: false,
+    headerClassName: "pointsOfInterestLogHeader",
+    headerAlign: "center",
+  },
+  {
+    field: "pointsOfInterestAddress",
+    headerName: "Address",
+    flex: 1,
+    editable: false,
+    headerClassName: "pointsOfInterestLogHeader",
+    headerAlign: "center",
+  },
+  {
+    field: "pointsOfInterestCategories",
+    headerName: "Categories",
+    flex: 1,
+    editable: false,
+    headerClassName: "pointsOfInterestLogHeader",
+    headerAlign: "center",
+  },
+];
+
+const pointsOfInterestLogRows = [
+  
+];
+
   return(
-    <div className="pointsOfInterestPage">
+    <div className="page">
+      <AdminSideMenu />
+     <div className="pointsOfInterestPage">
         <ThemeProvider theme={theme}>
           <div style={marginStyle}>
             <div className={classes.itemDisplayFlexContainer}>
@@ -106,6 +184,27 @@ const PointsOfInterestPage = () => {
                           VectorSource={Constants.Delete}
                           OnClick={DeletePointsOfInterestOnClick} />
           </div>
+          
+       
+        <div className={classes.pointsOfInterestDataGridsArea}>
+          <div>
+            <span className={classes.PoinstOfInterestLogTitle}>Points Of interest Log</span>
+           <Box
+              sx={{
+                height: 500,
+                "& .pointsOfInterestLogHeader": {
+                  backgroundColor: `#${Constants.LightBlue}`,
+                  color: `#${Constants.White}`,
+                  fontFamily: Constants.FontFamily,
+                  fontWeight: 600,
+                  fontSize: "140%",
+                },
+              }}
+            >
+              <DataGrid rows={pointsOfInterestLogRows} columns={pointsOfInterestLogColumns} />
+            </Box>
+           </div>
+          </div>
 
           <MessageDialog  Title={"Delete"}
                             Text={"Are you sure you want to delete all points of interest?"}
@@ -117,7 +216,8 @@ const PointsOfInterestPage = () => {
                             YesOnClick={()=> { DeleteDialog_IsOpenHandler(); console.log("Yes!"); }}
                             NoOnClick={()=> { DeleteDialog_IsOpenHandler(); console.log("No!"); }}/>
         </ThemeProvider>
-    </div>
+     </div>
+   </div>
   );
 };
 
