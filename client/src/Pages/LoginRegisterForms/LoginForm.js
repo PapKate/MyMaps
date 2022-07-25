@@ -147,6 +147,7 @@ const LoginForm = ({ SetChildToParentUserId }) => {
                                 Hint="password"
                                 VectorSource={Constants.KeyVariant}
                                 VectorColor={Constants.LightBlue}
+                                Type={'password'}
                             />
                         </div>
                     </div>

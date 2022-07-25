@@ -129,7 +129,9 @@ const SignupForm = () => {
                                 Size="small"
                                 Hint="password"
                                 VectorSource={Constants.KeyVariant}
-                                VectorColor={Constants.LightBlue} />
+                                VectorColor={Constants.LightBlue} 
+                                Type={'password'}
+                                />
                         </div>
                     </div>
                     <div className="signupButton">
