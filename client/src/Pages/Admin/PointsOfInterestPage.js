@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Box, Button, ThemeProvider, makeStyles } from '@material-ui/core';
-import { ThemeProvider, makeStyles } from '@material-ui/core';
+
 
 import { DataGrid } from "@mui/x-data-grid";
 import { createTheme } from '@material-ui/core/styles';
@@ -56,7 +56,7 @@ const useStyles = makeStyles({
       flexDirection: "column",
     },
   },
-  PoinstOfInterestLogTitle: {
+  PointsOfInterestLogTitle: {
     position: "relative",
     width: "100%",
     height: "auto",
@@ -184,7 +184,7 @@ const pointsOfInterestLogRows = [
        
         <div className={classes.pointsOfInterestDataGridsArea}>
           <div>
-            <span className={classes.PoinstOfInterestLogTitle}>Points Of interest Log</span>
+            <span className={classes.PointsOfInterestLogTitle}>Points Of interest Log</span>
            <Box
               sx={{
                 height: 500,
