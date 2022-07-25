@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Box, Button, ThemeProvider, makeStyles } from '@material-ui/core';
-import { ThemeProvider, makeStyles } from '@material-ui/core';
 
 import { DataGrid } from "@mui/x-data-grid";
 import { createTheme } from '@material-ui/core/styles';
