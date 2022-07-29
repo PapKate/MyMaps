@@ -4,6 +4,7 @@ import { useLocation, Outlet } from "react-router-dom";
 
 import Constants from "../Shared/Constants";
 import UserSideMenu from "../Components/SideMenus/UserSideMenu";
+import AdminSideMenu from "../Components/SideMenus/AdminSideMenu";
 
 const useStyles = makeStyles({
     pageContainer: {
@@ -28,7 +29,15 @@ const LayoutPage = () => {
 
     return (
         <div className="page">
-            <UserSideMenu UserData={userData}/>
+            {userData == null 
+            ?
+            (
+                <AdminSideMenu />
+            )
+            :
+            (
+                <UserSideMenu UserData={userData}/>
+            )}
             <div className={classes.pageContainer}>
                 <Outlet/>
             </div>

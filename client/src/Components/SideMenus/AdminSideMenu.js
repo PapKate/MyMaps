@@ -16,16 +16,26 @@ const AdminSideMenu = () => {
      ** Navigates to the points of interest page of the admin
      */
      const GoToPointsOfInterestPage = () => {
-        navigate(`pois`);
+        navigate(`pointsOfInterest`, {state: { userData : null}});
     }
 
     /**
      ** Navigates to the statistics page of the admin
      */
      const GoToStatisticsPage = () => {
-        navigate(`statistics`);
+        navigate(`statistics`, {state: { userData : null}});
     }
 
+    /**
+     ** Navigates to the login page 
+     */
+     const GoToLogInPage = () => {
+        navigate(`/`, {state: { userData : null}});
+    }
+
+    /**
+     ** Shows the exit dialog if exitDialog_IsOpen is true
+     */
     const LogOutOnClick = () => ExitDialog_IsOpenHandler();
     
     return(
@@ -50,8 +60,8 @@ const AdminSideMenu = () => {
                             VectorSource={Constants.ExitToApp}
                             Color={Constants.LightBlue}
                             BackColor={Constants.VeryLightRed}
-                            YesOnClick={()=> { ExitDialog_IsOpenHandler(); console.log("Yes!"); }}
-                            NoOnClick={()=> { ExitDialog_IsOpenHandler(); console.log("No!"); }}/>
+                            YesOnClick={()=> { ExitDialog_IsOpenHandler(); GoToLogInPage(); }}
+                            NoOnClick={()=> { ExitDialog_IsOpenHandler(); }}/>
 
         </div>
     );

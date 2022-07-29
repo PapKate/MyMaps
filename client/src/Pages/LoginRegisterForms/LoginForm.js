@@ -1,12 +1,11 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
 import { Button, makeStyles } from "@material-ui/core";
 import Constants from "../../Shared/Constants";
 import IconTextInput from "../../Components/Inputs/IconTextInput";
 import ErrorDialog from "../../Components/Dialogs/ErrorDialog";
-import { outlinedInputClasses } from "@mui/material";
 
 const useStyles = makeStyles({
     headerBar: {
@@ -56,6 +55,7 @@ const LoginForm = ({ SetChildToParentUserId }) => {
     const [isSuccessfulLogin, setIsSuccessfulLogin] = useState(false);
     const [isCorrectLogin, setIsCorrectLogin] = useState(true);
     const [isOpen, setIsOpen] = useState(false);
+    const [userLocation, setUserLocation] = useState(null);
 
     // On username changed event
     const OnUsernameChanged = (event) => {
@@ -82,33 +82,29 @@ const LoginForm = ({ SetChildToParentUserId }) => {
                 // The json data from the response
                 let users = responseOne.data;
                 let admins = responseTwo.data;
-
                
-               
-                    if (users.find(x => x.username === loginUsername && x.password === loginPassword)) {
+                if (users.find(x => x.username === loginUsername && x.password === loginPassword)) {
 
-                        var userData = users.find(x => x.username === loginUsername && x.password === loginPassword);  
+                    var userData = users.find(x => x.username === loginUsername && x.password === loginPassword);  
 
-                        SetChildToParentUserId(userData.id);
+                    SetChildToParentUserId(userData.id);
 
-                        navigate(`user/${userData.id}/profile`, {state: { userData : JSON.stringify(userData) }}); 
+                    navigate(`users/${userData.id}/home`, {state: { userData : JSON.stringify(userData), userLocation: {"lat" : userLocation.lat, "lng" : userLocation.lng} }}); 
+                } 
+                else if(admins.find(x => x.username === loginUsername && x.password === loginPassword)) {
 
-                    } else if(admins.find(x => x.username === loginUsername && x.password === loginPassword)) {
+                    var adminData = admins.find(x => x.username === loginUsername && x.password === loginPassword);
 
-                        var adminData = admins.find(x => x.username === loginUsername && x.password === loginPassword);
+                    SetChildToParentUserId(adminData.id);
 
-                        SetChildToParentUserId(adminData.id);
+                    navigate(`admins/${adminData.id}/pointsOfInterest`, {state: { adminData : JSON.stringify(adminData) }});
+                } 
+                else {
 
-                        navigate(`admin/${adminData.id}/pointsOfInterest`, {state: { adminData : JSON.stringify(adminData) }});
-                    } else {
-
-                        setIsCorrectLogin(false);
-                        console.log(isCorrectLogin);
-                        IsOpenHandler();
-                        
-                    }
-
-                navigate(`users/${userData.id}/profile`, {state: { userData : userData }});
+                    setIsCorrectLogin(false);
+                    console.log(isCorrectLogin);
+                    IsOpenHandler();
+                }
             } catch (error) {
                 setIsCorrectLogin(false);
                 console.log(isCorrectLogin);
@@ -116,6 +112,15 @@ const LoginForm = ({ SetChildToParentUserId }) => {
             }
         }
     };
+
+    useEffect(() => {
+        if(userLocation === null)
+        {
+            navigator.geolocation.getCurrentPosition(function(position) {
+            setUserLocation({"lat" : position.coords.latitude, "lng" : position.coords.longitude})
+            });
+        }
+    });
 
     return (
         <>

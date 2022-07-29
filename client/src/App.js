@@ -40,7 +40,7 @@ const App = () => {
             <Route path='/' element={ <LoginForm SetChildToParentUserId={childToParent}/> } />
             <Route path='sign-up' element={ <SignupForm/> } /> 
             <Route path='admins/:adminId' element={ <LayoutPage /> } >
-              <Route path='pois' element={ <PointsOfInterestPage /> } />
+              <Route path='pointsOfInterest' element={ <PointsOfInterestPage /> } />
               <Route path='statistics' element={ <StatisticsPage /> } />
             </Route>
             <Route path='users/:userId' element={ <LayoutPage /> } >

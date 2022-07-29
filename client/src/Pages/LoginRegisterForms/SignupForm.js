@@ -138,7 +138,7 @@ const SignupForm = () => {
                         <Button variant="contained"
                             className={classes.headerButton}
                             style={signupButtonStyle}
-                            onClick={SignUp}>Signup</Button>
+                            onClick={SignUp}>Sign up</Button>
 
                         <ErrorDialog Text={"Error! Please fill out every input and try again!"}
                             IsOpen={isOpen}
