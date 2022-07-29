@@ -157,8 +157,6 @@ const pointsOfInterestLogRows = [
 ];
 
   return(
-    <div className="page">
-      <AdminSideMenu />
      <div className="pointsOfInterestPage">
         <ThemeProvider theme={theme}>
           <div style={marginStyle}>
@@ -213,7 +211,6 @@ const pointsOfInterestLogRows = [
                             NoOnClick={()=> { DeleteDialog_IsOpenHandler(); console.log("No!"); }}/>
         </ThemeProvider>
      </div>
-   </div>
   );
 };
 

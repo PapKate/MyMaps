@@ -37,19 +37,6 @@ exports.DeleteAllPoints = async (req, res, next) => {
     res.status(200).json(result);
 };
 
-
-/*  
-exports.GetAllPointsByRating = async (req, res, next) => {
-
-    var query = `SELECT * FROM points ORDER BY rating`;
-
-    // Execute the query
-    var results = await GetQueryResultAsync(query);
-
-    // Set the body of the response
-    res.status(200).json(results);
-}; */
-
 /**
  * 
  * @param {*} req 
