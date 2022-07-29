@@ -131,7 +131,7 @@ const useStyles = makeStyles({
   },
 });
 
-const ProfilePage = ({ UserId }) => {
+const ProfilePage = () => {
   // Material UI Styles
   const classes = useStyles();
 
@@ -145,9 +145,7 @@ const ProfilePage = ({ UserId }) => {
     EditUserDataDialog_IsOpenHandler();
   };
 
-  const user = location.state.userData;
-
-  //const user = JSON.parse(userData);
+  const user = JSON.parse(location.state.userData);
 
   const visitsLogColumns = [
     {

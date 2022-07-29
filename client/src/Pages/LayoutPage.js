@@ -36,7 +36,7 @@ const LayoutPage = () => {
             )
             :
             (
-                <UserSideMenu UserData={userData}/>
+                <UserSideMenu />
             )}
             <div className={classes.pageContainer}>
                 <Outlet/>
