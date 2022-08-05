@@ -110,6 +110,8 @@ const PointsOfInterestPage = () => {
     catch (error) {
       console.log(error)
     }
+
+    setFilePath("");
  }
 
   const GetPointsOfInterestFromJSONFile = async() => {

@@ -48,6 +48,18 @@ class Routes {
   static PointAndTypeRoute = Routes.PointAndTypesRoute + "/:id";
 
   /**
+   ** The point check ins' route
+   ** /myMaps/pointCheckIns and types
+   */
+   static PointCheckIns = Routes.HomeRoute + "/pointCheckIns";
+
+   /**
+    ** The route to a point check in
+    ** /myMaps/pointCheckIns/2
+    */
+   static PointCheckIn = Routes.PointAndTypesRoute + "/:id";
+
+  /**
    ** The coordinates' route
    ** /myMaps/coordinates
    */

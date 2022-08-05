@@ -89,7 +89,7 @@ const LoginForm = ({ SetChildToParentUserId }) => {
 
                     SetChildToParentUserId(userData.id);
 
-                    navigate(`users/${userData.id}/home`, {state: { userData : JSON.stringify(userData), userLocation: {"lat" : userLocation.lat, "lng" : userLocation.lng} }}); 
+                    navigate(`users/${userData.id}/home`, {state: { userData : userData, userLocation: {"lat" : userLocation.lat, "lng" : userLocation.lng} }}); 
                 } 
                 else if(admins.find(x => x.username === loginUsername && x.password === loginPassword)) {
 
@@ -97,7 +97,7 @@ const LoginForm = ({ SetChildToParentUserId }) => {
 
                     SetChildToParentUserId(adminData.id);
 
-                    navigate(`admins/${adminData.id}/pointsOfInterest`, {state: { adminData : JSON.stringify(adminData) }});
+                    navigate(`admins/${adminData.id}/pointsOfInterest`, {state: { adminData : adminData }});
                 } 
                 else {
 

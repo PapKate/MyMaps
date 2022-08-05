@@ -1,19 +1,15 @@
 const express = require('express');
 
 const userControllers = require('../controllers/UserControllers');
-const pointAndTypeControllers = require('../controllers/PointAndTypeControllers');
 const pointControllers = require('../controllers/PointControllers');
+const pointAndTypeControllers = require('../controllers/PointAndTypeControllers');
+const pointCheckInControllers = require('../controllers/PointCheckInControllers');
 const coordinateControllers = require('../controllers/CoordinateControllers');
 const confirmedCaseControllers = require('../controllers/ConfirmedCaseControllers');
-
 const adminControllers = require('../controllers/AdminControllers');
-
 const popularTimeControllers = require('../controllers/PopularTimeControllers');
-
 const typeControllers = require('../controllers/TypeControllers');
-
 const timeSpentControllers = require('../controllers/TimeSpentControllers');
-
 const fileController = require('../controllers/FileController');
 
 const router = express.Router();
@@ -82,6 +78,15 @@ router
     .get(pointAndTypeControllers.GetPointAndTypeById)
     .put(pointAndTypeControllers.UpdatePointAndTypeById)
     .delete(pointAndTypeControllers.DeletePointAndTypeById);
+
+/**
+ * @route GET, POST and DELETE route -> /pointCheckIns/
+ */
+router
+    .route(Routes.PointCheckIns)
+    .get(pointCheckInControllers.GetAllPointCheckIns)
+    .post(pointCheckInControllers.CreateNewPointCheckIn)
+    .delete(pointCheckInControllers.DeleteAllPointCheckIns);
 
 /**
  * @route GET and POST route -> /coordinates/

@@ -1,4 +1,7 @@
+import axios from 'axios'
+
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 
 import { Modal, Box, makeStyles } from '@material-ui/core';
 import Constants from '../../Shared/Constants';
@@ -72,6 +75,9 @@ const EditUserDataDialog = ({
 }) => {
     // Material UI Styles
     const classes = useStyles();
+
+    const location = useLocation();
+    const userData = location.state.userData;
     
     const dialogCircleStyle = {
         backgroundColor: `#${Constants.VeryLightRed}`
@@ -79,40 +85,71 @@ const EditUserDataDialog = ({
 
     const titleStyle = {
         color: `#${Constants.Gray}`
+    }   
+    
+    //#region Error Message
+
+    const [errorMessage, setErrorMessage] = useState("");
+    const errorMessageStyle = {
+        color: `#${Constants.Red}`,
+        fontFamily : Constants.FontFamily,
+        fontSize: "16px",
+        display: "block"
     }
 
-    const [newUsername, setNewUsername] = useState("");
-    const [newPassword, setNewPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [currentPassword, setCurrentPassword] = useState("");
+    //#endregion
 
+    //#region New Username
+    
+    const [newUsername, setNewUsername] = useState("");
+    
     /**
      ** Sets the newUsername as the value in the text input
     */
-    const OnNewUsernameChanged = event => {
+     const OnNewUsernameChanged = event => {
         setNewUsername(event.target.value);
     }
+
+    //#endregion
+    
+    //#region New Password
+    
+    const [newPassword, setNewPassword] = useState("");
 
     /**
      ** Sets the newPassword as the value in the text input
     */
-    const OnNewPasswordChanged = event => {
+     const OnNewPasswordChanged = event => {
         setNewPassword(event.target.value);
     }
+
+    //#endregion
+    
+    //#region Confirm Password
+    
+    const [confirmPassword, setConfirmPassword] = useState("");
 
     /**
      ** Sets the confirmPassword as the value in the text input
     */
-    const OnConfirmPasswordChanged = event => {
+     const OnConfirmPasswordChanged = event => {
         setConfirmPassword(event.target.value);
     }
+
+    //#endregion
+    
+    //#region Current Password
+
+    const [currentPassword, setCurrentPassword] = useState("");
 
     /**
      ** Sets the currentPassword as the value in the text input
     */
-    const OnCurrentPasswordChanged = event => {
+     const OnCurrentPasswordChanged = event => {
         setCurrentPassword(event.target.value);
     }
+
+    //#endregion
 
     /**
      ** Clears all data from the inputs
@@ -133,6 +170,54 @@ const EditUserDataDialog = ({
         // Closes the dialog
         IsOpenHandler();
     }
+
+    /**
+     * Updates the user's username and or password if inputs correct...
+     * Else shows error message
+     */
+    const SaveButton_OnClick = async() => {
+        // Try...
+        try {
+            // Of the new password does not match the confirm input...
+            if(newPassword !== confirmPassword)
+            {
+                // Sets the error message
+                setErrorMessage("The passwords do not match. Please try again!");
+                // Returns
+                return;
+            }          
+            // If the current password in the input is incorrect...      
+            else if(currentPassword !== userData.password)
+            {
+                // Sets the error message
+                setErrorMessage("Incorrect password. Please try again!");
+                // Returns
+                return;
+            }
+
+            // Updates the user data in the data base
+            await axios.put(`/api/myMaps/users/${userData.id}`, {
+                username: newUsername,
+                password: newPassword
+            });
+
+            // Gets the updated user from the data base
+            let response = await axios.get(`/api/myMaps/users/${userData.id}`);
+
+            // Sets the user data in the location's state
+            location.state.userData = response.data;
+
+            // Clears all text inputs
+            ClearData();
+            // Closes the dialog
+            IsOpenHandler();
+        }
+        // Catch if there is an error...
+        catch (error) {
+            // Prints the error
+            console.log(error)
+        }
+    };
 
     return(
         <Modal open={IsOpen} onClose={CloseDialog}>
@@ -167,8 +252,8 @@ const EditUserDataDialog = ({
                                         HasFullWidth={true}
                                         VectorSource={Constants.KeyVariant} 
                                         Hint='Current password'/>
-
-                        <TextButton Text={"Save"}/>
+                        <span style={errorMessageStyle}>{ errorMessage }</span>
+                        <TextButton Text={"Save"} OnClick={SaveButton_OnClick}/>
                     </div>
                 </div>
             </Box>

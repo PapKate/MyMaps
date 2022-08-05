@@ -51,6 +51,13 @@ const UserSideMenu = ({ UserData }) => {
     }
 
     /**
+     ** Navigates to the login page 
+     */
+     const GoToLogInPage = () => {
+        navigate(`/`, {state: { userData : null }});
+    }
+
+    /**
      ** Reveals the log out dialog
      */
     const LogOutOnClick = () => ExitDialog_IsOpenHandler();
@@ -82,8 +89,8 @@ const UserSideMenu = ({ UserData }) => {
                             VectorSource={Constants.AccountCircle}
                             Color={Constants.LightBlue}
                             BackColor={Constants.VeryLightRed}
-                            YesOnClick={()=> {console.log("Yes!")}}
-                            NoOnClick={()=> {console.log("No!")}}/>
+                            YesOnClick={()=> { ExitDialog_IsOpenHandler(); GoToLogInPage(); }}
+                            NoOnClick={()=> { ExitDialog_IsOpenHandler(); }}/>
         </div>
     );
 };

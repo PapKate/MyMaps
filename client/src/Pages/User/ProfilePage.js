@@ -145,7 +145,8 @@ const ProfilePage = () => {
     EditUserDataDialog_IsOpenHandler();
   };
 
-  const user = JSON.parse(location.state.userData);
+
+  const user = location.state.userData;
 
   const visitsLogColumns = [
     {
