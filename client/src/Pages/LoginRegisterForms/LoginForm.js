@@ -91,7 +91,7 @@ const LoginForm = ({ SetChildToParentUserId }) => {
 
                         SetChildToParentUserId(userData.id);
 
-                        navigate(`user/${userData.id}/profile`, {state: { userData : JSON.stringify(userData) }}); 
+                        navigate(`users/${userData.id}/profile`, {state: { userData : JSON.stringify(userData) }}); 
 
                     } else if(admins.find(x => x.username === loginUsername && x.password === loginPassword)) {
 
@@ -99,7 +99,7 @@ const LoginForm = ({ SetChildToParentUserId }) => {
 
                         SetChildToParentUserId(adminData.id);
 
-                        navigate(`admin/${adminData.id}/pointsOfInterest`, {state: { adminData : JSON.stringify(adminData) }});
+                        navigate(`admins/${adminData.id}/pointsOfInterest`, {state: { adminData : JSON.stringify(adminData) }});
                     } else {
 
                         setIsCorrectLogin(false);

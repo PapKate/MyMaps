@@ -16,7 +16,7 @@ const AdminSideMenu = () => {
      ** Navigates to the points of interest page of the admin
      */
      const GoToPointsOfInterestPage = () => {
-        navigate(`pois`);
+        navigate(`pointsOfInterest`);
     }
 
     /**
