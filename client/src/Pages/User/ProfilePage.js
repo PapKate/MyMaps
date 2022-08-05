@@ -145,6 +145,7 @@ const ProfilePage = () => {
     EditUserDataDialog_IsOpenHandler();
   };
 
+
   const user = location.state.userData;
 
   const visitsLogColumns = [

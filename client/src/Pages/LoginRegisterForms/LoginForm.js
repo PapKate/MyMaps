@@ -117,7 +117,7 @@ const LoginForm = ({ SetChildToParentUserId }) => {
         if(userLocation === null)
         {
             navigator.geolocation.getCurrentPosition(function(position) {
-            setUserLocation({"lat" : position.coords.latitude, "lng" : position.coords.longitude})
+                setUserLocation({"lat" : position.coords.latitude, "lng" : position.coords.longitude})
             });
         }
     });
