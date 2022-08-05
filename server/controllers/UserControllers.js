@@ -41,13 +41,9 @@ const ErrorResponse = require("../utils/errorResponse");
 };
 
 /**
- * 
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
- * @returns 
+ * Gets a user with id the specified id
  */
- exports.GetUserById = (async (req, res, next) => {
+ exports.GetUserById = async (req, res, next) => {
 
     let query = User.GetById(req.params.id);
 
@@ -58,9 +54,9 @@ const ErrorResponse = require("../utils/errorResponse");
     }
 
     res.status(200).json(result[0]);
-});
+};
 
- exports.GetLoginUser = (async (req, res, next) => {
+ exports.GetLoginUser = async (req, res, next) => {
 
     let query = User.LoginUser(req.body.username, req.body.password);
 
@@ -71,14 +67,14 @@ const ErrorResponse = require("../utils/errorResponse");
     }
 
     res.status(201).json(result);
-});
+};
  
 
 /**
  * 
  * TODO Update  
  */
- exports.UpdateUserById = (async (req, res, next) => {
+ exports.UpdateUserById = async (req, res, next) => {
     
     let query = User.UpdateById(req.params.id, req.body.username, req.body.password);
     
@@ -93,12 +89,12 @@ const ErrorResponse = require("../utils/errorResponse");
     }
 
     res.status(201).json(result2);
-});
+};
 
 /**
  * 
  */
- exports.DeleteUserById = (async (req, res, next) => {
+ exports.DeleteUserById = async (req, res, next) => {
     
     let query = User.DeleteById(req.params.id);
     var result = await GetQueryResultAsync(query);
@@ -108,5 +104,4 @@ const ErrorResponse = require("../utils/errorResponse");
     }
 
     res.status(200).json(User);
-
-});
+};

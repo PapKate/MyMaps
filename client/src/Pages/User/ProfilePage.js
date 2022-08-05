@@ -131,7 +131,7 @@ const useStyles = makeStyles({
   },
 });
 
-const ProfilePage = ({ UserId }) => {
+const ProfilePage = () => {
   // Material UI Styles
   const classes = useStyles();
 
@@ -146,8 +146,6 @@ const ProfilePage = ({ UserId }) => {
   };
 
   const user = location.state.userData;
-
-  //const user = JSON.parse(userData);
 
   const visitsLogColumns = [
     {

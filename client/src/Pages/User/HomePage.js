@@ -4,6 +4,8 @@ import { useLocation } from "react-router-dom";
 import { Icon } from 'leaflet';
 import { MapContainer, Popup, Marker, TileLayer, ZoomControl } from "react-leaflet"
 
+import axios from "axios";
+
 import Constants from "../../Shared/Constants";
 import pointsOfInterest from  '../../Shared/generic.json'
 import TitleAndText from "../../Components/TitleAndText";
@@ -55,6 +57,11 @@ const HomePage = ({ UserId }) => {
    */
   const { userData, userLocation } = location.state;
 
+  /**
+   * The days of a week
+   */
+  const weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
   //#region Current Hour
 
   /**
@@ -71,7 +78,21 @@ const HomePage = ({ UserId }) => {
    */
    const [currentDay, setCurrentDay] = useState(1);
 
-   //#endregion
+  //#endregion
+
+  //#region Points Of Interest
+
+  /**
+   ** The points of interest
+  */
+   const [points, setPoints] = useState(null);
+
+  /**
+   ** The unique points of interest
+  */
+   const [uniquePoints, setUniquePoints] = useState(null);
+
+  //#endregion
 
   //#region Search Text Input
   
@@ -140,41 +161,124 @@ const HomePage = ({ UserId }) => {
   };
 
   /**
-   ** Opens a dialog to submit the current popularity
+   ** Submits the current popularity
    */
-  const PopularityButtonOnClick = () => {
+  const PopularityButtonOnClick = async (point) => {
+    try {
+      await axios.post(`/api/myMaps/pointCheckIns`, {
+        userId: userData.id,
+        pointId: point.id,
+        customers: popularityText,
+      });
+
+      setPopularityText("");
+
+    } catch (error) {
+      console.log(error);
+      console.log("data not fetched");
+    }
   }
 
   /**
-   ** Calculates the estimated future popularity of a point of interest...
-   ** For the next given hours of the current hour of the day
-   * @param {poi} point The point of interest 
-   * @param {int} hours The next hours to create the estimation
+   * 
    */
-  const GetEstimatedFuturePopularity = (point, hours) => {
-    var totalPopularity = 0;
-    for(var i = 0; i < hours; i++)
-    {
-      var nextPopularity = point.populartimes[currentDay - 1].data[currentHour + i];
-      totalPopularity = totalPopularity + nextPopularity;
-    }
-
-    totalPopularity = Math.ceil(totalPopularity / hours);
-
-    return totalPopularity;
-  };
-
-  /**
-   ** On after render
-   */
-  useEffect(() => {
-    
+  const SetCurrentDayAndHour = () => {
     var currentDateAndTime = new Date();
 
-    setCurrentDay(currentDateAndTime.getDay())
+    var day = currentDateAndTime.getDay();
+
+    if(day == 0)
+      setCurrentDay(7);
+    else
+      setCurrentDay(day - 1)
 
     setCurrentHour(currentDateAndTime.getHours());
-  });
+  }
+
+  /**
+   * Gets the pois from the data base
+   */
+  const GetPOIS = async() => {
+    try {
+      const response = await axios.get(`/api/myMaps/points`);
+
+      // The json data from the response
+      let pois = response.data;
+
+      var uniquePois = [];
+      for(var i = 0; i < pois.length; i++)
+      {
+        if(i % 7 === 0)
+        uniquePois.push(pois[i]);
+      }
+      uniquePois.forEach(poi => {
+        var key = "next";
+        var value = 0;
+        poi[key] = value;
+      });
+
+      let dateTimeNow = new Date();
+      let day = dateTimeNow.getDay();
+      let hour = dateTimeNow.getHours();
+      
+      uniquePois.map((point) => {
+        let nextValue = 0;
+        for(let i = 0; i < 2; i ++)
+        {
+          let nextHourValue = 0;
+          if(hour - (i + 1) < 0)
+            nextHourValue = GetPointHourData(pois, point, day - 1, 24 - (i + 1));
+          else
+            nextHourValue = GetPointHourData(pois, point, day, hour - (i + 1));
+          nextValue += nextHourValue;
+        }
+
+        nextValue = Math.ceil(nextValue / 2); 
+        point["next"] = nextValue;
+
+        
+
+      });
+
+      setPoints(pois);
+      setUniquePoints(uniquePois);
+    } catch (error) {
+      console.log(error);
+      console.log("data not fetched");
+    }
+  }
+
+  /**
+   * Gets the "hourXX" data from the data base of the specified @point
+   * @param {List<poi>} points The points of interest
+   * @param {poi} point The point of interest
+   * @param {*} day The day
+   * @param {*} hour The hour
+   */
+  const GetPointHourData = (points, point, day, hour) => {
+    // Gets the point data from the points list with id the specified point's id
+    var pointData = points.filter(function(x) { return x.id === point.id; });
+    // Gets the day's name of the week 
+    let dayName = weekday[day];
+    // Formats the hour to 2 digits integer
+    let formattedHour = hour.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+    // Gets the data from the specified day
+    var dayData = pointData.find(function(x) { return x.day === dayName; });
+    // Creates the key to search the column name
+    var key = `hour${formattedHour}`;
+
+    // Return the value of the day data key 
+    return dayData[key];
+  }
+
+  /**
+   ** On initialized
+   */
+  useEffect(() => { 
+    SetCurrentDayAndHour();
+    GetPOIS();
+
+  }, []);
 
   //#endregion
 
@@ -201,35 +305,22 @@ const HomePage = ({ UserId }) => {
           <Marker position={[userLocation.lat, userLocation.lng]} icon={silhouette}>
           </Marker> 
 
-          {pointsOfInterest.map((point) => (
+          {uniquePoints !== null && uniquePoints?.map((point) => (
             
             <Marker key={point.id}
                     position={[
-                      point.coordinates.lat, 
-                      point.coordinates.lng
+                      point.lat, 
+                      point.lng
                     ]}
-                    icon={ GetPlaceHolder(point.current_popularity) }>
+                    icon={ GetPlaceHolder(point.next) }>
               <Popup closeButton={false} onClose={() => {setPopularityText("")}}>
                 <div className='poiPopUpContainer'>
                   <h2 className='poiTitle'>{point.name}</h2>
-                  {currentDay !== 0 
-                  ?
-                   point.populartimes[currentDay - 1].data[currentHour] === 0 
-                    ? 
-                      <h4 className='poiClosed'>Closed</h4>
-                    : 
-                      <h4 className='poiOpen'>Open</h4>
-                  :
-                    point.populartimes[7].data[currentHour] === 0 
-                    ? 
-                      <h4 className='poiClosed'>Closed</h4>
-                    : 
-                      <h4 className='poiOpen'>Open</h4>
-                  }
+                                                                                                                                                          
                   <TitleAndText title={'Address'} text={point.address} />
-                  <TitleAndText title={'Rating'} text={`${point.rating} / 5 by ${point.rating_n} reviews`} />
-                  <TitleAndText title={'Current popularity'} text={point.current_popularity == null ? '-' : point.current_popularity} />
-                  <TitleAndText title={'Next 2 hours estimated popularity'} text={GetEstimatedFuturePopularity(point, 2)} />
+                  <TitleAndText title={'Rating'} text={`${point.rating} / 5 by ${point.ratingNumber} reviews`} />
+                  <TitleAndText title={'Current popularity'} text={point.currentPopularity == null ? '-' : point.currentPopularity} />
+                  <TitleAndText title={'Next 2 hours estimated popularity'} text={point.next} />
                   <div className='popUpButtonsContainer'>
                     <IconTextInput  Text={popularityText}
                                     HasFullWidth={true}
@@ -243,7 +334,7 @@ const HomePage = ({ UserId }) => {
                                     BorderRadius={'8px'} 
                                     Size={'40px'}
                                     BackColor={Constants.LightBlue}
-                                    OnClick={PopularityButtonOnClick}
+                                    OnClick={() => PopularityButtonOnClick(point)}
                                     />
                       <span className="tooltipText">Submit popularity</span>
                     </div>

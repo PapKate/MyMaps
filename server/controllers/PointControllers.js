@@ -1,13 +1,9 @@
 const GetQueryResultAsync = require('../config/db');
-const ControllerHelpers = require('../helpers/ControllerHelpers');
 const Point = require('../models/Point');
-
-
-
 // Imports the custom error response 
 const ErrorResponse = require("../utils/errorResponse");
 
- exports.GetAllPoints = async (req, res, next) => {
+exports.GetAllPoints = async (req, res, next) => {
 
     let query = Point.GetAll();
 
@@ -62,7 +58,7 @@ exports.CreateNewPoint =  async (req, res, next) => {
  * @param {*} next 
  * @returns 
  */
-exports.GetPointById = (async (req, res, next) => {
+exports.GetPointById = async (req, res, next) => {
 
     let query = Point.GetById(req.params.id);
 
@@ -73,12 +69,12 @@ exports.GetPointById = (async (req, res, next) => {
     }
 
     res.status(200).json(result[0]);
-});
+};
 
 /**
  * 
  */
-exports.UpdatePointById = (async (req, res, next) => {
+exports.UpdatePointById = async (req, res, next) => {
     
     let query = Point.UpdateById(req.params.id, req.body.name, req.body.address, req.body.coordinatesId, req.body.rating, req.body.ratingNumber, req.body.currentPopularity, req.body.timespentId);
     
@@ -94,12 +90,12 @@ exports.UpdatePointById = (async (req, res, next) => {
 
     res.status(201).json(result2);
 
-});
+};
 
 /**
  * TODO Delete 
  */
-exports.DeletePointById = (async (req, res, next) => {
+exports.DeletePointById = async (req, res, next) => {
     
     let query = Point.DeleteById(req.params.id);
     var result = await GetQueryResultAsync(query);
@@ -110,4 +106,4 @@ exports.DeletePointById = (async (req, res, next) => {
 
     res.status(200).json(Point);
 
-});
+};
