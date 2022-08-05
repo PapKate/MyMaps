@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 import { Button, makeStyles } from '@material-ui/core';
 import Constants from "../../Shared/Constants";
@@ -44,17 +44,18 @@ const loginContainerStyle = {
 const SignupForm = () => {
     // Material UI Styles
     const classes = useStyles();
+    const navigate = useNavigate();
 
     const logInTextStyle = {
         color: `#${Constants.Green}`
     };
 
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+    const [signUpUsername, setUsername] = useState("");
+    const [signUpPassword, setPassword] = useState("");
     const [email, setEmail] = useState("");
     const [isSuccessfulSignUp, setIsSuccessfulSignUp] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
-
+    
     // On username changed event
     const OnUsernameChanged = event => {
         setUsername(event.target.value);
@@ -65,37 +66,64 @@ const SignupForm = () => {
         setPassword(event.target.value);
     };
 
+    // Password Regex
+    const passwordRegex = new RegExp("^(?=.*[0-9])(?=.*[A-Z])(?=.*[@$!%*?&])([a-zA-Z0-9@$!%*?&]{8,})$");
+
     // On email changed event
     const OnEmailChanged = event => {
         setEmail(event.target.value);
     };
 
     const IsOpenHandler = () => setIsOpen(!isOpen);
-
+    
     const SignUp = async () => {
-        if (username === "" || password === "" || email === "") {
+
+        if(passwordRegex.test(signUpPassword)) {
+        
+            if (signUpUsername === "" || signUpPassword === "" || email === "") {
+                IsOpenHandler();
+            
+            } else if(signUpUsername !== "" || signUpPassword !== "" || email !== "") {
+                    
+                        try{
+
+                            const responseCheck = await axios.get(`/api/myMaps/users`);
+
+                            let usersCheck = responseCheck.data;
+                        
+                            if(usersCheck.find(x => x.username === signUpUsername)) {
+                                IsOpenHandler();
+                            } 
+                            else {
+                                setIsSuccessfulSignUp(true);
+
+                                try {
+                    
+                                    const response = await axios.post(`/api/myMaps/users`, {
+                                    username: signUpUsername,
+                                    email: email,
+                                    password: signUpPassword
+                                    });
+                            
+                                    let user = response.data;
+                            
+                                    console.log(user);
+                                }
+                                catch (error) {
+                                    console.log(error)
+                                }
+                                
+                                navigate(`/`);
+                                console.log(isSuccessfulSignUp);
+                            }
+                        } catch(error) {
+                            setIsSuccessfulSignUp(false);
+                        }
+                }                  
+         } else {
             IsOpenHandler();
-        }
-        else {
-            setIsSuccessfulSignUp(true);
+         }
 
-            try {
-                const response = await axios.post(`/api/myMaps/users`, {
-                    username: username,
-                    email: email,
-                    password: password
-                });
-
-                let user = response.data;
-
-                console.log(user);
-            }
-            catch (error) {
-                console.log(error)
-            }
-
-            console.log(isSuccessfulSignUp);
-        }
     }
 
     return (
@@ -107,7 +135,7 @@ const SignupForm = () => {
                         <h2>Register</h2> </div>
                     <div className="signupUsername">
                         <div className={classes.signupTextInput}>
-                            <IconTextInput Text={username} OnTextChanged={OnUsernameChanged}
+                            <IconTextInput Text={signUpUsername} OnTextChanged={OnUsernameChanged}
                                 Size="small"
                                 Hint="username"
                                 VectorSource={Constants.Account}
@@ -125,7 +153,7 @@ const SignupForm = () => {
                     </div>
                     <div className="signupPassword">
                         <div className={classes.signupTextInput}>
-                            <IconTextInput Text={password} OnTextChanged={OnPasswordChanged}
+                            <IconTextInput Text={signUpPassword} OnTextChanged={OnPasswordChanged}
                                 Size="small"
                                 Hint="password"
                                 VectorSource={Constants.KeyVariant}

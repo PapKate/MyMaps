@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Button, ThemeProvider, makeStyles } from '@material-ui/core';
 
 
 import { DataGrid } from "@mui/x-data-grid";
 import { createTheme } from '@material-ui/core/styles';
-import axios from 'axios'
+import axios, { Axios } from 'axios'
 
 import Constants from "../../Shared/Constants";
 import TextInput from "../../Components/Inputs/TextInput";
@@ -114,18 +114,35 @@ const PointsOfInterestPage = () => {
     setFilePath("");
  }
 
-  const GetPointsOfInterestFromJSONFile = async() => {
-    try {
-      const response = await axios.get(`/api/myMaps/file`);
+const [gridPoi, setGridPoi] = useState([]);
+const [pointsName, setPointsName] = useState([]);
+const [pointsId, setPointsId] = useState([]);
 
-      let pointsOfInterests = response.data;
+var nameList = new Array();
+var idList = new Array();
 
-    } catch (error) {
-  
-      console.log();
+ useEffect(() => {
+  axios.get(`/api/myMaps/points`)
+  .then(response => {     
     
-  } 
- }
+    const points = response.data;
+    
+   // setGridPoi(response.data);
+
+    points.forEach(async points => {
+
+      //setPointsName(points.name);
+      nameList.push(points.name);
+      //setPointsId(points.id);
+      idList.push(points.id);
+    })
+
+  })
+  .catch(error => {
+    console.log(error);})    
+},[]);
+
+  console.log(nameList);
 
  const pointsOfInterestLogColumns = [
   {
@@ -136,26 +153,27 @@ const PointsOfInterestPage = () => {
     headerClassName: "pointsOfInterestLogHeader",
     headerAlign: "center",
   },
-  {
-    field: "pointsOfInterestAddress",
-    headerName: "Address",
-    flex: 1,
-    editable: false,
-    headerClassName: "pointsOfInterestLogHeader",
-    headerAlign: "center",
-  },
-  {
-    field: "pointsOfInterestCategories",
-    headerName: "Categories",
-    flex: 1,
-    editable: false,
-    headerClassName: "pointsOfInterestLogHeader",
-    headerAlign: "center",
-  },
+  //{
+  //   field: "pointsOfInterestAddress",
+  //   headerName: "Address",
+  //   flex: 1,
+  //   editable: false,
+  //   headerClassName: "pointsOfInterestLogHeader",
+  //   headerAlign: "center",
+  // },
+  // {
+  //   field: "pointsOfInterestCategories",
+  //   headerName: "Categories",
+  //   flex: 1,
+  //   editable: false,
+  //   headerClassName: "pointsOfInterestLogHeader",
+  //   headerAlign: "center",
+  // },
 ];
 
-const pointsOfInterestLogRows = [
-  
+
+const pointsOfInterestLogRows =  [
+ // {id: idList , name: nameList} 
 ];
 
   return(
@@ -184,10 +202,11 @@ const pointsOfInterestLogRows = [
        
         <div className={classes.pointsOfInterestDataGridsArea}>
           <div>
-            <span className={classes.PointsOfInterestLogTitle}>Points Of interest Log</span>
+            <span className={classes.PointsOfInterestLogTitle}>Points Of Interest Log</span>
            <Box
               sx={{
-                height: 500,
+                height: 600,
+                width: 500,
                 "& .pointsOfInterestLogHeader": {
                   backgroundColor: `#${Constants.LightBlue}`,
                   color: `#${Constants.White}`,
@@ -196,7 +215,7 @@ const pointsOfInterestLogRows = [
                   fontSize: "140%",
                 },
               }}
-            >
+            > 
               <DataGrid rows={pointsOfInterestLogRows} columns={pointsOfInterestLogColumns} />
             </Box>
            </div>
