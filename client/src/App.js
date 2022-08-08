@@ -16,28 +16,12 @@ import LayoutPage from "./Pages/LayoutPage";
 
 
 const App = () => {
-
-  const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState("");
-
-  const childToParent = async(childData) => {
-    const response = await axios.get(`/api/myMaps/users`);
-    // The json data from the response
-    let users = response.data;
-    
-    var userData = users.find(x => x.id === childData);
-    
-    setUsername(userData.username);
-
-    setUserIsLoggedIn(true);
-  }
-
   return (
     <>
-      <HeaderBar Username={username} IsLoggedIn={userIsLoggedIn}/>
+      <HeaderBar Username={"PapLimer"} IsLoggedIn={true}/>
         <Router>
           <Routes>
-            <Route path='/' element={ <LoginForm SetChildToParentUserId={childToParent}/> } />
+            <Route path='/' element={ <LoginForm /> } />
             <Route path='sign-up' element={ <SignupForm/> } /> 
             <Route path='admins/:adminId' element={ <LayoutPage /> } >
               <Route path='pointsOfInterest' element={ <PointsOfInterestPage /> } />

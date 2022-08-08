@@ -407,6 +407,9 @@ label{
   background: transparent;
 }
 
+element.style {
+  width: 100%;
+}
 
 @media (max-width: 800px)
 {
@@ -433,4 +436,3 @@ label{
     display: none;
   }
 }
-

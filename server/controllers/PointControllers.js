@@ -4,9 +4,8 @@ const Point = require('../models/Point');
 const ErrorResponse = require("../utils/errorResponse");
 
 exports.GetAllPoints = async (req, res, next) => {
-
     let query = Point.GetAll();
-
+    
     // Execute the query
     var result = await GetQueryResultAsync(query);
 

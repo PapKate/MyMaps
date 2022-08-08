@@ -42,7 +42,16 @@ class PopularTime{
     }
 
     static GetAll() {
-        let query = "SELECT * FROM populartimes";
+        let query = `SELECT points.id, points.name, points.address, points.currentPopularity, points.rating, points.ratingNumber, 
+                        coordinates.lat, coordinates.lng,
+                        timespent.maxValue, timespent.minValue,
+                        populartimes.name as "day", populartimes.hour00, populartimes.hour01, populartimes.hour02, populartimes.hour03, populartimes.hour04, populartimes.hour05, populartimes.hour06, populartimes.hour07, 
+                        populartimes.hour08, populartimes.hour09, populartimes.hour10, populartimes.hour11, populartimes.hour12, populartimes.hour13, populartimes.hour14, populartimes.hour15, populartimes.hour16, 
+                        populartimes.hour17, populartimes.hour18, populartimes.hour19, populartimes.hour20, populartimes.hour21, populartimes.hour22, populartimes.hour23
+                    FROM populartimes LEFT JOIN (points  
+                    LEFT JOIN timespent on points.timespentId = timespent.id 
+                    LEFT JOIN coordinates on points.coordinatesId = coordinates.id)
+                    on points.id = populartimes.pointId;`;
 
         return query;
     }
