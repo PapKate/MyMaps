@@ -12,6 +12,8 @@ import TextButton from "../../Components/Buttons/TextButton";
 import VectorButton from "../../Components/Buttons/VectorButton";
 import MessageDialog from "../../Components/Dialogs/MessageDialog";
 import AdminSideMenu from "../../Components/SideMenus/AdminSideMenu";
+import { sizeWidth, width } from "@mui/system";
+import { point } from "leaflet";
 
 const theme = createTheme({
     palette: {
@@ -72,6 +74,10 @@ const useStyles = makeStyles({
   },
 });
 
+const dataGridAreaStyle = {
+   width: "100%"
+};
+
 const marginStyle = {
     margin: '2em'
   };
@@ -90,11 +96,11 @@ const PointsOfInterestPage = () => {
   const [deleteDialog_IsOpen, deleteDialog_SetIsOpen] = useState(false);
   const DeleteDialog_IsOpenHandler = () => deleteDialog_SetIsOpen(!deleteDialog_IsOpen);
 
-  const DeletePointsOfInterestOnClick = () =>
-  {
-    DeleteDialog_IsOpenHandler();
-    console.log("delete? :(")
-  }
+  // const DeletePointsOfInterestOnClick = () => {}
+  // {
+  //   DeleteDialog_IsOpenHandler();
+  //   console.log("delete? :(")
+  // }
 
   const AddPointsOfInterestFromJSONFile = async() => {
     try {
@@ -114,66 +120,72 @@ const PointsOfInterestPage = () => {
     setFilePath("");
  }
 
-const [gridPoi, setGridPoi] = useState([]);
+
 const [pointsName, setPointsName] = useState([]);
-const [pointsId, setPointsId] = useState([]);
 
-var nameList = new Array();
-var idList = new Array();
+ useEffect(async () => {
+  try {
+    var response = await axios.get(`/api/myMaps/points`);
 
- useEffect(() => {
-  axios.get(`/api/myMaps/points`)
-  .then(response => {     
-    
+
     const points = response.data;
+    const pointAndTypes = responsePointAndType.data;
+    const types = responseType.data;
+
+    console.log(points);
+    console.log(pointAndTypes);
+    console.log(types);
     
-   // setGridPoi(response.data);
+    let pointTypes = [];
+    let typeList = [];
 
-    points.forEach(async points => {
-
-      //setPointsName(points.name);
-      nameList.push(points.name);
-      //setPointsId(points.id);
-      idList.push(points.id);
+    points.forEach(point => {
+      if(point.id === pointAndTypes.pointId) {
+        typeList.push()
+      } else
+      {
+        typeList.push({"name":pointAndTypes.name});
+        pointTypes.push({"id": point.id, "type": typeList.name});
+      }
     })
 
-  })
-  .catch(error => {
-    console.log(error);})    
+    let pointNames = [];
+    points.forEach(point => {
+      
+      pointNames.push({"id": point.id, "name": point.name, "address": point.address, "categories": pointAndTypes.name});
+    })
+    setPointsName(pointNames);
+  
+  } catch(error) {
+    console.log(error);
+  }   
 },[]);
-
-  console.log(nameList);
 
  const pointsOfInterestLogColumns = [
   {
-    field: "pointsOfInterestName",
+    field: "name",
     headerName: "Name",
     flex: 1,
     editable: false,
     headerClassName: "pointsOfInterestLogHeader",
     headerAlign: "center",
   },
-  //{
-  //   field: "pointsOfInterestAddress",
-  //   headerName: "Address",
-  //   flex: 1,
-  //   editable: false,
-  //   headerClassName: "pointsOfInterestLogHeader",
-  //   headerAlign: "center",
-  // },
-  // {
-  //   field: "pointsOfInterestCategories",
-  //   headerName: "Categories",
-  //   flex: 1,
-  //   editable: false,
-  //   headerClassName: "pointsOfInterestLogHeader",
-  //   headerAlign: "center",
-  // },
-];
-
-
-const pointsOfInterestLogRows =  [
- // {id: idList , name: nameList} 
+  {
+    field: "address",
+    headerName: "Address",
+    flex: 1,
+    editable: false,
+    headerClassName: "pointsOfInterestLogHeader",
+    headerAlign: "center",
+  },
+  {
+    field: "categories",
+    headerName: "Categories",
+    flex: 1,
+    editable: false,
+    headerClassName: "pointsOfInterestLogHeader",
+    headerAlign: "center",
+  }
 ];
 
   return(
@@ -190,36 +202,35 @@ const pointsOfInterestLogRows =  [
             </div>
           </div>
           <div style={marginStyle}>
-            {/* Data Grid */}
+            <div className={classes.pointsOfInterestDataGridsArea}>
+              <div className="DataGridArea" style={dataGridAreaStyle}>           
+                <span className={classes.PointsOfInterestLogTitle}>Points Of Interest Log</span>
+              <Box
+                  sx={{
+                    height: 640,
+                    "& .pointsOfInterestLogHeader": {
+                      backgroundColor: `#${Constants.LightBlue}`,
+                      color: `#${Constants.White}`,
+                      fontFamily: Constants.FontFamily,
+                      fontWeight: 600,
+                      fontSize: "140%",
+                    }
+                  }}
+                > 
+                  <DataGrid rows={pointsName} columns={pointsOfInterestLogColumns} />
+                </Box>
+              </div>
+            </div>
           </div>
           <div className={classes.deleteButtonContainer}>
               <VectorButton Size="3.5rem" 
                           BackColor={Constants.Red}
                           VectorSource={Constants.Delete}
-                          OnClick={DeletePointsOfInterestOnClick} />
+                          />
           </div>
           
        
-        <div className={classes.pointsOfInterestDataGridsArea}>
-          <div>
-            <span className={classes.PointsOfInterestLogTitle}>Points Of Interest Log</span>
-           <Box
-              sx={{
-                height: 600,
-                width: 500,
-                "& .pointsOfInterestLogHeader": {
-                  backgroundColor: `#${Constants.LightBlue}`,
-                  color: `#${Constants.White}`,
-                  fontFamily: Constants.FontFamily,
-                  fontWeight: 600,
-                  fontSize: "140%",
-                },
-              }}
-            > 
-              <DataGrid rows={pointsOfInterestLogRows} columns={pointsOfInterestLogColumns} />
-            </Box>
-           </div>
-          </div>
+        
 
           <MessageDialog  Title={"Delete"}
                             Text={"Are you sure you want to delete all points of interest?"}

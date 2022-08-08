@@ -19,7 +19,8 @@
     }
 
     static GetAll() {
-        let sql = `SELECT * FROM pointandtypes`;
+        let sql = `SELECT pointId, types.name FROM pointandtypes
+        LEFT JOIN types on pointandtypes.typeId = types.id;`;
 
         return sql;
     }

@@ -45,7 +45,7 @@ const signUpTextStyle = {
     color: `#${Constants.Yellow}`
 };
 
-const LoginForm = ({ SetChildToParentUserId }) => {
+const LoginForm = () => {
     // Material UI Styles
     const classes = useStyles();
     const navigate = useNavigate();
@@ -87,15 +87,11 @@ const LoginForm = ({ SetChildToParentUserId }) => {
 
                     var userData = users.find(x => x.username === loginUsername && x.password === loginPassword);  
 
-                    SetChildToParentUserId(userData.id);
-
                     navigate(`users/${userData.id}/home`, {state: { userData : userData, userLocation: {"lat" : userLocation.lat, "lng" : userLocation.lng} }}); 
                 } 
                 else if(admins.find(x => x.username === loginUsername && x.password === loginPassword)) {
 
                     var adminData = admins.find(x => x.username === loginUsername && x.password === loginPassword);
-
-                    SetChildToParentUserId(adminData.id);
 
                     navigate(`admins/${adminData.id}/pointsOfInterest`, {state: { adminData : adminData }});
                 } 
