@@ -113,7 +113,8 @@ const LoginForm = () => {
         if(userLocation === null)
         {
             navigator.geolocation.getCurrentPosition(function(position) {
-                setUserLocation({"lat" : position.coords.latitude, "lng" : position.coords.longitude})
+                //setUserLocation({"lat" : position.coords.latitude, "lng" : position.coords.longitude})
+                setUserLocation({"lat" : 38.2376827, "lng" : 21.7259359})
             });
         }
     });

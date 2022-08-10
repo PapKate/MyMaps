@@ -12,13 +12,13 @@ const ErrorResponse = require("../utils/errorResponse");
  */
  exports.GetAllPopularTimes = async (req, res, next) => {
 
-    var query = `SELECT * FROM populartimes`;
+   var query = PopularTime.GetAll();
 
-    // Execute the query
-    var results = await GetQueryResultAsync(query);
+   // Execute the query
+   var results = await GetQueryResultAsync(query);
 
-    // Set the body of the response
-    res.status(200).json(results);
+   // Set the body of the response
+   res.status(200).json(results);
 };
 
 /**
@@ -175,15 +175,13 @@ exports.UpdatePopularTimeById = (async (req, res, next) => {
  */
 exports.DeletePopularTimeById = (async (req, res, next) => {
     
-    let query = PopularTime.DeleteById(req.params.id);
-    var result = await GetQueryResultAsync(query);
+   let query = PopularTime.DeleteById(req.params.id);
+   var result = await GetQueryResultAsync(query);
 
-    if(result.length == 0) {
-        return next(new ErrorResponse(`ERROR 404: Not found. The popular time with id ${req.params.id} was not found.`, 404));
-    }
+   if(result.length == 0) {
+      return next(new ErrorResponse(`ERROR 404: Not found. The popular time with id ${req.params.id} was not found.`, 404));
+   }
 
-
-    res.status(200).json(PopularTime);
-
+   res.status(200).json(PopularTime);
 });
 

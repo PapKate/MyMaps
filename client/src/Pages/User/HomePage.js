@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles, Tooltip } from "@material-ui/core";
 import { useLocation } from "react-router-dom";
 import { Icon } from 'leaflet';
-import { MapContainer, Popup, Marker, TileLayer, ZoomControl } from "react-leaflet"
+import { MapContainer, Popup, Marker, TileLayer, ZoomControl, Circle } from "react-leaflet"
 
 import axios from "axios";
 
@@ -41,7 +41,7 @@ const redPlaceholder = new Icon({
   iconUrl: '/icons/redPlaceholder.png'
 });
 
-const HomePage = ({ UserId }) => {
+const HomePage = () => {
   /**
    ** Material UI Styles
    */
@@ -139,6 +139,34 @@ const HomePage = ({ UserId }) => {
   //#region Methods
 
   /**
+   * Converts the @degrees to radius
+   * @param {int} degrees The degrees
+   */
+  const DegreesToRadius = (degrees) => {
+    return degrees * (Math.PI/180)
+  }
+  /**
+   ** Gets the distance between two points 
+   * @param {double} lat1 Latitude for first
+   * @param {double} lon1 Longitude for first
+   * @param {double} lat2 Latitude for second
+   * @param {double} lon2 Longitude for second
+   */
+  const GetDistanceInKm = (lat1, lon1, lat2, lon2) => {
+    var R = 6371; // Radius of the earth in km
+    var dLat = DegreesToRadius(lat2-lat1);  
+    var dLon = DegreesToRadius(lon2-lon1); 
+    var a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(DegreesToRadius(lat1)) * Math.cos(DegreesToRadius(lat2)) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2)
+      ; 
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    var d = R * c; // Distance in km
+    return d;
+  }
+
+  /**
    ** Gets the correct place holder for the given current popularity
    * @param {int} currentPopularity The current popularity
    * @returns The placeholder
@@ -196,48 +224,91 @@ const HomePage = ({ UserId }) => {
   }
 
   /**
-   * Gets the pois from the data base
+   ** Gets the pois from the data base
    */
   const GetPOIS = async() => {
     try {
-      const response = await axios.get(`/api/myMaps/points`);
+      // Gets the popular times for all the points of interest from the database
+      const response = await axios.get(`/api/myMaps/popularTimes`);
+      // Gets the check ins of all the points of interest from the database
+      const checkInResponse = await axios.get(`/api/myMaps/pointCheckIns`);
 
       // The json data from the response
       let pois = response.data;
 
+      // Creates a new list for the unique references of a point of interest
       var uniquePois = [];
+      // For each...
       for(var i = 0; i < pois.length; i++)
       {
+        // If it is the first reference of a poi in the popular times list...
         if(i % 7 === 0)
-        uniquePois.push(pois[i]);
+          // Add it to the list 
+          uniquePois.push(pois[i]);
       }
+
+      // For each poi...
       uniquePois.forEach(poi => {
+        // Creates a new key
         var key = "next";
+        // Sets a the value 0
         var value = 0;
+        // Sets the key and value pair in the poi object
         poi[key] = value;
       });
 
+      // Gets the date time now
       let dateTimeNow = new Date();
+      // Gets the day of the week that is now
       let day = dateTimeNow.getDay();
+      // Gets the current hour
       let hour = dateTimeNow.getHours();
       
-      uniquePois.map((point) => {
+      // For each poi...
+      uniquePois.forEach((point) => {
+        // Sets as the next hours popularity value to 0
         let nextValue = 0;
+        // For two times...
         for(let i = 0; i < 2; i ++)
         {
+          // Sets as the next hour value to 0
           let nextHourValue = 0;
+          // If the next hour is on the next day...
           if(hour - (i + 1) < 0)
             nextHourValue = GetPointHourData(pois, point, day - 1, 24 - (i + 1));
+          // Else...
           else
             nextHourValue = GetPointHourData(pois, point, day, hour - (i + 1));
+          // Adds to the next hours value the value
           nextValue += nextHourValue;
         }
 
+        // Sets as the next hours value the next integer of the average of next hours value
         nextValue = Math.ceil(nextValue / 2); 
+        // Sets the value to the next key in the poi
         point["next"] = nextValue;
 
+        // Gets the date time now
+        let previousHours = new Date();
+        // Subtracts two hours
+        previousHours.setTime(previousHours.getTime() - 2 * 60 * 60 * 1000);
         
+        // Gets all the point check ins from the data base that have id the poi's id...
+        // And are between date time now and two hours previously
+        let pointCheckIns = checkInResponse.data.filter(function (x) {
+          var date = new Date(x.checkInDate);
+          return x.pointId == point.id && previousHours <= date && date <= dateTimeNow; 
+        })
 
+        let numberOfCheckIns = 0;
+        let averagePopularity = 0;
+        pointCheckIns.forEach(checkIn => {
+          numberOfCheckIns++;
+          averagePopularity += checkIn.customers;
+        });
+
+        averagePopularity = numberOfCheckIns == 0 ? 0 : Math.ceil(averagePopularity / numberOfCheckIns);
+        point["currentPopularity"] = averagePopularity;
       });
 
       setPoints(pois);
@@ -249,7 +320,7 @@ const HomePage = ({ UserId }) => {
   }
 
   /**
-   * Gets the "hourXX" data from the data base of the specified @point
+   ** Gets the "hourXX" data from the data base of the specified @point
    * @param {List<poi>} points The points of interest
    * @param {poi} point The point of interest
    * @param {*} day The day
@@ -304,6 +375,7 @@ const HomePage = ({ UserId }) => {
           <ZoomControl position="topright" />
           <Marker position={[userLocation.lat, userLocation.lng]} icon={silhouette}>
           </Marker> 
+          <Circle center={[userLocation.lat, userLocation.lng]} fillColor={"red"} radius={20} stroke={false} />
 
           {uniquePoints !== null && uniquePoints?.map((point) => (
             
@@ -316,36 +388,46 @@ const HomePage = ({ UserId }) => {
               <Popup closeButton={false} onClose={() => {setPopularityText("")}}>
                 <div className='poiPopUpContainer'>
                   <h2 className='poiTitle'>{point.name}</h2>
-                                                                                                                                                          
-                  <TitleAndText title={'Address'} text={point.address} />
-                  <TitleAndText title={'Rating'} text={`${point.rating} / 5 by ${point.ratingNumber} reviews`} />
-                  <TitleAndText title={'Current popularity'} text={point.currentPopularity == null ? '-' : point.currentPopularity} />
-                  <TitleAndText title={'Next 2 hours estimated popularity'} text={point.next} />
-                  <div className='popUpButtonsContainer'>
-                    <IconTextInput  Text={popularityText}
-                                    HasFullWidth={true}
-                                    Size="small"
-                                    Hint=''
-                                    OnTextChanged={OnPopularityTextChanged}
-                                    VectorSource={Constants.AccountGroup}
-                                    VectorColor={Constants.LightBlue}/>
-                    <div className="tooltip">
-                      <VectorButton VectorSource={Constants.AccountEye} 
-                                    BorderRadius={'8px'} 
-                                    Size={'40px'}
-                                    BackColor={Constants.LightBlue}
-                                    OnClick={() => PopularityButtonOnClick(point)}
-                                    />
-                      <span className="tooltipText">Submit popularity</span>
-                    </div>
-                    <div className="tooltip">
-                      <VectorButton VectorSource={Constants.Hand} 
-                                    BorderRadius={'8px'}
-                                    Size={'40px'} 
-                                    BackColor={Constants.Yellow}/>
-                      <span className="tooltipText">I was here</span>
-                    </div>
-                  </div>
+                  <h4>{point.lat}, {point.lng}</h4>
+                  <TitleAndText Title={'Address'} Text={point.address} />
+                  <TitleAndText Title={'Rating'} Text={`${point.rating} / 5 by ${point.ratingNumber} reviews`} />
+                  <TitleAndText Title={'Current popularity'} Text={point.currentPopularity} />
+                  <TitleAndText Title={'Next 2 hours estimated popularity'} Text={point.next} />
+                  { GetDistanceInKm(userLocation.lat, userLocation.lng, point.lat, point.lng) <= 0.020 
+                    ? 
+                    (
+                      <div className='popUpButtonsContainer'>
+                        <IconTextInput  Text={popularityText}
+                                        HasFullWidth={true}
+                                        Size="small"
+                                        Hint=''
+                                        OnTextChanged={OnPopularityTextChanged}
+                                        VectorSource={Constants.AccountGroup}
+                                        VectorColor={Constants.LightBlue}/>
+                        <div className="tooltip">
+                          <VectorButton VectorSource={Constants.AccountEye} 
+                                        BorderRadius={'8px'} 
+                                        Size={'40px'}
+                                        BackColor={Constants.LightBlue}
+                                        OnClick={() => PopularityButtonOnClick(point)}
+                                        />
+                          <span className="tooltipText">Submit popularity</span>
+                        </div>
+                        <div className="tooltip">
+                          <VectorButton VectorSource={Constants.Hand} 
+                                        BorderRadius={'8px'}
+                                        Size={'40px'} 
+                                        BackColor={Constants.Yellow}/>
+                          <span className="tooltipText">I was here</span>
+                        </div>
+                      </div>
+                    ) 
+                    :
+                    (
+                      <div></div>
+                    )
+                  }
+                  
                 </div>
               </Popup>
             </Marker>
