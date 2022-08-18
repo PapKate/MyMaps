@@ -5,8 +5,7 @@ import axios, { Axios } from 'axios'
 import { useLocation } from "react-router-dom";
 
 import Constants from "../../Shared/Constants";
-import { point } from "leaflet";
-import { useGridStrategyProcessing } from "@mui/x-data-grid/hooks/core/strategyProcessing";
+import Helpers from "../../Shared/Helpers"
 
 
 const useStyles = makeStyles({
@@ -54,45 +53,29 @@ const CovidExposurePage = ({ UserId }) => {
   const { userData } = location.state;
 
   const [exposure, setExposure] = useState([]);
-  const [cases, setCases] = useState([]);
  
   useEffect(async () => {
     try {
-      var responseConfirmedCases = await axios.get(`/api/myMaps/confirmedCases/caseWasHere`)
-
-      const pointsCheckIns = responseCheckIns.data;
-      const confirmedCasesCheckIns = responseConfirmedCases.data;
-
-      // ta check ins
-      console.log("check ins")
-      console.log(pointsCheckIns);
-
-      // ta krousmata me tis topothesies pou ekanan check in
-      console.log("krousmata kai to pou ekanan check in")
-      console.log(confirmedCasesCheckIns);
-
-      let helpMe = [];
-      let helpMeVol2 = [];
-
-      pointsCheckIns.forEach(pointsCheckIn => {
-        if(pointsCheckIn.userId === userData.id){
-          helpMe.push({"id": pointsCheckIn.id, "name": pointsCheckIn.name, "my check in date": pointsCheckIn.checkInDate})
+      var responseConfirmedCasesCaseWasHere = await axios.get(`/api/myMaps/confirmedCases/caseWasHere`,{
+        params: {
+          userId : userData.id,
+          date : `"${Helpers.FormatDateTime(new Date())}"`
         }
       })
 
-      confirmedCasesCheckIns.forEach(confirmedCasesCheckIn => {
-        if(confirmedCasesCheckIn.userId !== userData.id){
-          helpMeVol2.push({"id": confirmedCasesCheckIn.id, "case date": confirmedCasesCheckIn.checkInDate})
-        }
+      const caseWasHereCases = responseConfirmedCasesCaseWasHere.data;
+
+      let exposureList = [];
+      let id = 0;
+      caseWasHereCases.forEach(caseWasHereCase => {
+
+        exposureList.push({"id": id, "name": caseWasHereCase.name, "date": caseWasHereCase.checkInDate, "time": caseWasHereCase.checkInDate, "caseWasThere": caseWasHereCase.caseWasThere})
+        id++;
       })
-
-      console.log(helpMeVol2)
-
-      console.log(helpMe);
-    
-    } catch(error) {
-      console.log(error);
-    }   
+      setExposure(exposureList);
+       } catch(error) {
+       console.log(error);
+       }   
   },[]);
 
   const covidExposureDatagridColumns = [
@@ -104,9 +87,11 @@ const CovidExposurePage = ({ UserId }) => {
       editable: false,
       headerClassName: "covidExposureDatagridHeader",
       headerAlign: "center",
+      type: 'datetime',
+      valueGetter: params => moment(params?.value).format("DD/MM/YYYY")
     },
     {
-      field: "place",
+      field: "name",
       headerName: "Place",
       width: 80,
       flex: 1,
@@ -114,26 +99,28 @@ const CovidExposurePage = ({ UserId }) => {
       headerClassName: "covidExposureDatagridHeader",
       headerAlign: "center",
     },
-    // {
-    //   field: "time",
-    //   headerName: "Time",
-    //   type: "time",
-    //   width: 80,
-    //   flex: 1,
-    //   headerClassName: "covidExposureDatagridHeader",
-    //   headerAlign: "center",
-    //   editable: false,
-    // },
-    // {
-    //   field: "caseWasHere",
-    //   headerName: "Case was here",
-    //   type: "time",
-    //   width: 80,
-    //   flex: 1,
-    //   headerClassName: "covidExposureDatagridHeader",
-    //   headerAlign: "center",
-    //   editable: false,
-    // },
+    {
+      field: "time",
+      headerName: "Time",
+      width: 70,
+      flex: 1,
+      editable: false,
+      headerClassName: "covidExposureDatagridHeader",
+      headerAlign: "center",
+      type: 'datetime',
+      valueGetter: params => moment(params?.value).format("hh:mm A")
+    },
+    {
+      field: "caseWasThere",
+      headerName: "Case Was There",
+      width: 80,
+      flex: 1,
+      headerClassName: "covidExposureDatagridHeader",
+      headerAlign: "center",
+      editable: false,
+      type: 'datetime',
+      valueGetter: params => moment(params?.value).format("DD/MM/YYYY hh:mm A")
+    }
   ];
 
   const casesDatagridColumns = [
@@ -169,7 +156,7 @@ const CovidExposurePage = ({ UserId }) => {
             }}
           >
             <DataGrid rows={exposure} columns={covidExposureDatagridColumns} />
-            <DataGrid rows={cases} columns={casesDatagridColumns} />
+
           </Box>
       </div>
     </div>
