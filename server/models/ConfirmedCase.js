@@ -30,6 +30,20 @@
         return query;
     }
 
+    static GetAllConfirmedCasesCaseWasHere() {
+        let query = `SELECT pointcheckin.userId, pointcheckin.checkInDate, pointcheckin.pointId, confirmedcasesdata.caseWasThere, points.name FROM pointcheckin
+                        LEFT JOIN points ON pointcheckin.pointId = points.id,
+                    (SELECT pointcheckin.pointId AS pointId, confirmedcases.date AS confirmedCaseDate, pointcheckin.checkInDate AS caseWasThere FROM confirmedcases 
+                        LEFT JOIN pointcheckin ON confirmedcases.userId = pointcheckin.userId
+                        WHERE confirmedcases.date >= "2022-08-05 15:00:00") AS confirmedcasesdata
+                    WHERE pointcheckin.userId = 76 
+                    AND pointcheckin.pointId = confirmedcasesdata.pointId
+                    AND (DATE_SUB(confirmedcasesdata.confirmedCaseDate, INTERVAL 2 HOUR) <= pointcheckin.checkInDate 
+                    OR pointcheckin.checkInDate  <= DATE_ADD(confirmedcasesdata.confirmedCaseDate, INTERVAL 2 HOUR));`;
+
+        return query;
+    }
+
     /*
     static GetByUserId(userId) {
         let sql = `SELECT * FROM confirmedcases WHERE userId = ${userId};`;

@@ -96,12 +96,18 @@ const PointsOfInterestPage = () => {
   const [deleteDialog_IsOpen, deleteDialog_SetIsOpen] = useState(false);
   const DeleteDialog_IsOpenHandler = () => deleteDialog_SetIsOpen(!deleteDialog_IsOpen);
 
-  // const DeletePointsOfInterestOnClick = () => {}
-  // {
-  //   DeleteDialog_IsOpenHandler();
-  //   console.log("delete? :(")
-  // }
-
+  const DeletePointsOfInterest = async() => {
+    try {
+      await axios.delete(`/api/myMaps/pointAndTypes`);
+      await axios.delete(`/api/myMaps/popularTimes`);
+      await axios.delete(`/api/myMaps/pointCheckIns`);
+      await axios.delete(`/api/myMaps/points`);
+    
+    } catch (error) {
+        console.log(error)
+    }
+  }
+ 
   const AddPointsOfInterestFromJSONFile = async() => {
     try {
       const response = await axios.post(`/api/myMaps/file`, {
@@ -125,34 +131,16 @@ const [pointsName, setPointsName] = useState([]);
 
  useEffect(async () => {
   try {
-    var response = await axios.get(`/api/myMaps/points`);
+    var response = await axios.get(`/api/myMaps/points/types`);
 
 
-    const points = response.data;
-    const pointAndTypes = responsePointAndType.data;
-    const types = responseType.data;
+    const pointsTypes = response.data;
 
-    console.log(points);
-    console.log(pointAndTypes);
-    console.log(types);
-    
-    let pointTypes = [];
-    let typeList = [];
-
-    points.forEach(point => {
-      if(point.id === pointAndTypes.pointId) {
-        typeList.push()
-      } else
-      {
-        typeList.push({"name":pointAndTypes.name});
-        pointTypes.push({"id": point.id, "type": typeList.name});
-      }
-    })
 
     let pointNames = [];
-    points.forEach(point => {
+    pointsTypes.forEach(pointType => {
       
-      pointNames.push({"id": point.id, "name": point.name, "address": point.address, "categories": pointAndTypes.name});
+      pointNames.push({"id": pointType.id, "name": pointType.name, "address": pointType.address, "categories": pointType.categories});
     })
     setPointsName(pointNames);
   
@@ -226,12 +214,8 @@ const [pointsName, setPointsName] = useState([]);
               <VectorButton Size="3.5rem" 
                           BackColor={Constants.Red}
                           VectorSource={Constants.Delete}
-                          />
-          </div>
-          
-       
+                          OnClick = {DeleteDialog_IsOpenHandler}/>
         
-
           <MessageDialog  Title={"Delete"}
                             Text={"Are you sure you want to delete all points of interest?"}
                             IsOpen={deleteDialog_IsOpen} 
@@ -239,8 +223,9 @@ const [pointsName, setPointsName] = useState([]);
                             VectorSource={Constants.Delete}
                             Color={Constants.Red}
                             BackColor={Constants.VeryLightRed}
-                            YesOnClick={()=> { DeleteDialog_IsOpenHandler(); console.log("Yes!"); }}
-                            NoOnClick={()=> { DeleteDialog_IsOpenHandler(); console.log("No!"); }}/>
+                            YesOnClick={()=> { DeleteDialog_IsOpenHandler(); DeletePointsOfInterest();}}
+                            NoOnClick={()=> { DeleteDialog_IsOpenHandler(); }}/>
+          </div>
         </ThemeProvider>
      </div>
   );

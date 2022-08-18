@@ -39,6 +39,19 @@ exports.CreateNewPopularTime =  async (req, res, next) => {
     res.status(201).json(result);
 };
 
+exports.DeletePopularTimes = async (req, res, next) => {
+   let query = PopularTime.DeleteAll();
+   var result = await GetQueryResultAsync(query);
+
+   
+   if(!result.length == 0) {
+   return next(new ErrorResponse(`ERROR 404: Not found. The point and type with id ${req.params.id} was not found.`, 404));
+  }
+
+
+  res.status(200).json(PopularTime);
+}
+
 /**
  * 
  * @param {*} req 

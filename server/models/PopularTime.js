@@ -68,6 +68,12 @@ class PopularTime{
         return query;
     }
 
+    static DeleteAll() {
+        let query = `DELETE FROM populartimes;`
+
+        return query
+    }
+
     /**
      * Updates the hours
      * @param {int} id 
