@@ -29,7 +29,6 @@ code {
 {
   border: none;
   outline: none;
-  background: #D72638;
   width: 3rem;
   height: 3rem;
   display: inline-block;
@@ -378,8 +377,8 @@ label{
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 4px;
+  height: 4px;
 }
 ::-webkit-scrollbar-button {
   width: 0px;
@@ -388,7 +387,7 @@ label{
 ::-webkit-scrollbar-thumb {
   background: #84BCDA;
   border: 0px none;
-  border-radius: 4px;
+  border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #F2C14E;
@@ -415,14 +414,30 @@ element.style {
   width: 100%;
 }
 
+
+
 @media (max-width: 800px)
 {
+  .sideMenu {
+    width: 40px;
+  }
+
+  #menuButton {
+    width: 40px;
+    min-width: 40px;
+    padding: 1em 0;
+  }
   .menuButtonContent{
+    width: 40px;
     justify-content:center;
   }
 
   .menuButtonText{
     display:none;
+  }
+
+  .leafletSearchBar{
+    margin: 0;
   }
 }
 

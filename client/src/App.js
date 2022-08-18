@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 
 import axios from "axios";
 
-import HeaderBar from './Components/HeaderBar';
 import ProfilePage from "./Pages/User/ProfilePage";
 import LoginForm from "./Pages/LoginRegisterForms/LoginForm";
 import SignupForm from "./Pages/LoginRegisterForms/SignupForm";
@@ -16,9 +15,15 @@ import LayoutPage from "./Pages/LayoutPage";
 
 
 const App = () => {
+
+  const [username, setUsername] = useState("");
+
+  const GetUsernameOnLogin = username => {
+    setUsername(username);
+  }
+
   return (
     <>
-      <HeaderBar Username={"PapLimer"} IsLoggedIn={true}/>
         <Router>
           <Routes>
             <Route path='/' element={ <LoginForm /> } />

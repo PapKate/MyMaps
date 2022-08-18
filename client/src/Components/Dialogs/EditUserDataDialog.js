@@ -249,6 +249,7 @@ const EditUserDataDialog = ({
                                         Hint='Confirm password'/>
                         <IconTextInput  Text={currentPassword}
                                         OnTextChanged={OnCurrentPasswordChanged}
+                                        Type={"password"}
                                         HasFullWidth={true}
                                         VectorSource={Constants.KeyVariant} 
                                         Hint='Current password'/>

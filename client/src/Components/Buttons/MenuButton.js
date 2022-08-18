@@ -9,7 +9,7 @@ const MenuButton = ({
     Color = Constants.Gray,
 }) => {
     const menuButtonStyle = {
-        width: '100%',
+        width: "100%",
         padding: '1em',
         color: `#${Color}`
     };

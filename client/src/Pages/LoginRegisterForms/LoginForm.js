@@ -3,9 +3,12 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
 import { Button, makeStyles } from "@material-ui/core";
+
 import Constants from "../../Shared/Constants";
+
 import IconTextInput from "../../Components/Inputs/IconTextInput";
 import ErrorDialog from "../../Components/Dialogs/ErrorDialog";
+import HeaderBar from '../../Components/HeaderBar';
 
 const useStyles = makeStyles({
     headerBar: {
@@ -72,13 +75,12 @@ const LoginForm = () => {
     const Login = async () => {
         if (loginUsername === "" || loginPassword === "") {
             IsOpenHandler();
-        } else {
-            setIsSuccessfulLogin(true);
-
+        } 
+        else {
             try {
                 const responseOne = await axios.get(`/api/myMaps/users`);
                 const responseTwo = await axios.get(`/api/MyMaps/admins`);
-
+                
                 // The json data from the response
                 let users = responseOne.data;
                 let admins = responseTwo.data;
@@ -96,11 +98,12 @@ const LoginForm = () => {
                     navigate(`admins/${adminData.id}/pointsOfInterest`, {state: { adminData : adminData }});
                 } 
                 else {
-
+                    
                     setIsCorrectLogin(false);
                     console.log(isCorrectLogin);
                     IsOpenHandler();
                 }
+                setIsSuccessfulLogin(true);
             } catch (error) {
                 setIsCorrectLogin(false);
                 console.log(isCorrectLogin);
@@ -114,13 +117,15 @@ const LoginForm = () => {
         {
             navigator.geolocation.getCurrentPosition(function(position) {
                 //setUserLocation({"lat" : position.coords.latitude, "lng" : position.coords.longitude})
-                setUserLocation({"lat" : 38.2376827, "lng" : 21.7259359})
+                setUserLocation({"lat" : 38.2498044, "lng" : 21.7389391})
             });
         }
     });
 
     return (
         <>
+            <HeaderBar />
+
             <div className="loginPageContainer">
                 <div className="loginBackground" />
                 <div className="loginPage" style={loginContainerStyle}>

@@ -1,8 +1,10 @@
-import { useState } from "react";
-import { Box, makeStyles } from "@material-ui/core";
-
-import { DataGrid } from "@mui/x-data-grid";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+
+import axios from "axios";
+
+import { Box, makeStyles } from "@material-ui/core";
+import { DataGrid } from "@mui/x-data-grid";
 
 import VectorButton from "../../Components/Buttons/VectorButton";
 import EditUserDataDialog from "../../Components/Dialogs/EditUserDataDialog";
@@ -35,9 +37,8 @@ const useStyles = makeStyles({
   profileImgContainer: {
     height: "10rem",
     width: "10rem",
-    background: `#${Constants.Red}`,
     borderRadius: "50%",
-    boxShadow: Constants.BoxShadow,
+    filter: `drop-shadow(0 0 2px #${Constants.Gray})`,
     "@media (max-width: 450px)": {
       height: "6rem",
       width: "6rem",
@@ -50,6 +51,7 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "row",
     gap: "1em",
+    color: `#${Constants.Gray}`,
     justifyContent: "space-evenly",
     alignItems: "center",
     "@media (max-width: 1000px)": {
@@ -99,16 +101,17 @@ const useStyles = makeStyles({
   },
   profileDataGridsArea: {
     position: "relative",
-    width: "100%",
+    width: "initial",
     height: "max-content",
     display: "flex",
     flexDirection: "row",
-    paddingBottom: "2em",
+    padding: "0 2em 0 2em",
     gap: "2em",
     justifyContent: "space-evenly",
     alignItems: "center",
     "@media (max-width: 1000px)": {
       flexDirection: "column",
+      padding: "0 0 2em 0"
     },
   },
   svgContainer: {
@@ -132,35 +135,75 @@ const useStyles = makeStyles({
 });
 
 const ProfilePage = () => {
-  // Material UI Styles
+  /**
+   ** Material UI Styles
+   */
   const classes = useStyles();
-
+  
+  /**
+   ** The current location object, which represents the current URL in web browsers.
+   */
   const location = useLocation();
 
-  const [editUserDataDialog_IsOpen, editUserDataDialog_SetIsOpen] =
-    useState(false);
+  /**
+   ** The user data from the state
+   */
+  const user = location.state.userData;
+
+  //#region Edit user dialog
+  
+  /**
+   ** A flag indicating whether the edit user dialog is open
+   */
+  const [editUserDataDialog_IsOpen, editUserDataDialog_SetIsOpen] = useState(false);
+  
   const EditUserDataDialog_IsOpenHandler = () =>
     editUserDataDialog_SetIsOpen(!editUserDataDialog_IsOpen);
+  
   const EditUserData = () => {
     EditUserDataDialog_IsOpenHandler();
   };
 
+  //#endregion
 
-  const user = location.state.userData;
+  //#region Check Ins
 
+  /**
+   ** The user's check ins
+   */
+   const [checkIns, setCheckIns] = useState([]);
+
+  //#endregion
+
+  //#region Confirmed Cases
+
+  /**
+   ** The user's confirmed cases
+   */
+   const [confirmedCases, setConfirmedCases] = useState([]);
+
+  //#endregion
+
+  //#region Data grids
+
+  /**
+   ** The columns of the visits log data grid
+   */
   const visitsLogColumns = [
     {
-      field: "arrivalDate",
-      headerName: "Arrival date",
-      minWidth: 150,
-      maxWidth: 200,
+      field: "checkInDate",
+      headerName: "Check in date",
+      minWidth: 176,
+      maxWidth: 400,
       flex: 1,
       editable: false,
       headerClassName: "visitsLogHeader",
       headerAlign: "center",
+      type: 'datetime',
+      valueGetter: params => moment(params?.value).format("DD/MM/YYYY hh:mm A")
     },
     {
-      field: "place",
+      field: "name",
       headerName: "Place",
       flex: 1,
       editable: false,
@@ -168,10 +211,11 @@ const ProfilePage = () => {
       headerAlign: "center",
     },
     {
-      field: "currentPeople",
+      field: "customers",
       headerName: "People",
       type: "number",
-      width: 40,
+      minWidth: 40,
+      maxWidth: 60,
       headerClassName: "visitsLogHeader",
       headerAlign: "center",
       renderHeader: () => (
@@ -180,39 +224,83 @@ const ProfilePage = () => {
         </svg>
       ),
       editable: false,
+      valueGetter: params => params?.value ? params?.value : "__"
     },
   ];
-
+  
   const visitsLogRows = [
-    {
-      id: 1,
-      arrivalDate: "23/01/2019, 17:23:42",
-      place: "Snow",
-      currentPeople: 23,
-    },
-    {
-      id: 2,
-      arrivalDate: "21/01/2019, 17:23:42",
-      place: "Alpha",
-      currentPeople: 23,
-    },
   ];
 
+  /**
+   ** The column of the personal cases data grid
+   */
   const casesLogColumns = [
     {
-      field: "caseDate",
+      field: "date",
       headerName: "Date and time",
       flex: 1,
       editable: false,
       headerClassName: "personalCasesLogHeader",
       headerAlign: "center",
-    },
+      type: 'datetime',
+      valueGetter: params => moment(params?.value).format("DD/MM/YYYY hh:mm A")
+    }
   ];
 
-  const casesLogRows = [
-    { id: 1, caseDate: "23/01/2019, 17:23:42" },
-    { id: 2, caseDate: "23/01/2018, 17:23:42" },
-  ];
+  //#endregion
+  
+  //#region Methods
+
+  /**
+   ** Gets all the user's check ins
+   */
+  const GetCheckIns = async () => {
+    try {
+      // Gets the check ins of all the points of interest from the database
+      const checkInResponse = await axios.get(`/api/myMaps/pointCheckIns/points`, {
+        params: {
+          userId : user.id
+        }
+      });
+      // Gets all the check ins that have user id the user's id
+      let userCheckIns = checkInResponse.data;
+      
+      setCheckIns(userCheckIns);
+    } catch (error) {
+      console.log(error);
+      console.log("data not fetched");
+    }
+  }
+
+  /**
+   ** Gets all the user's confirmed cases 
+   */
+  const GetConfirmedCases = async () => {
+    try {
+      // Gets the confirmed cases from the database
+      const confirmedCasesResponse = await axios.get(`/api/myMaps/confirmedCases`);
+
+      // Gets all the confirmed cases that have user id the user's id
+      let userConfirmedCases = confirmedCasesResponse.data.filter(function (x) {
+        return x.userId == user.id;
+      });
+      
+      setConfirmedCases(userConfirmedCases);
+    } catch (error) {
+      console.log(error);
+      console.log("data not fetched");
+    }
+  }
+
+  //#endregion
+
+  /**
+   ** On initialized
+   */
+   useEffect(async() => { 
+    await GetCheckIns();
+    await GetConfirmedCases();
+  }, []);
 
   return (
     <div className={classes.profilePageContainer}>
@@ -228,7 +316,7 @@ const ProfilePage = () => {
         </div>
         <img
           className={classes.profileImgContainer}
-          src={"/icons/ninja.png"}
+          src={"/icons/user.png"}
           alt="user"
         />
         <div className={classes.profileTextDataContainer}>
@@ -244,7 +332,7 @@ const ProfilePage = () => {
       </div>
 
       <div className={classes.profileDataGridsArea}>
-        <div>
+        <div style={{"width":"100%"}}>
           <span className={classes.visitsLogTitle}>Visits Log</span>
           <Box
             sx={{
@@ -258,11 +346,11 @@ const ProfilePage = () => {
               },
             }}
           >
-            <DataGrid rows={visitsLogRows} columns={visitsLogColumns} />
+            <DataGrid rows={checkIns} columns={visitsLogColumns} />
           </Box>
         </div>
 
-        <div>
+        <div style={{"width":"100%"}}>
           <span className={classes.visitsLogTitle}>Personal Cases Log</span>
           <Box
             sx={{
@@ -276,7 +364,7 @@ const ProfilePage = () => {
               },
             }}
           >
-            <DataGrid rows={casesLogRows} columns={casesLogColumns} />
+            <DataGrid rows={confirmedCases} columns={casesLogColumns} />
           </Box>
         </div>
       </div>

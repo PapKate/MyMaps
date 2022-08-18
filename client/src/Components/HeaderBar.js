@@ -22,20 +22,20 @@ const useStyles = makeStyles({
 
 
 
-const HeaderBar = ({ Username, IsLoggedIn }) => {
+const HeaderBar = ({ Username }) => {
     // Material UI Styles
     const classes = useStyles();
 
     return(
         <div className={classes.headerBar}>
             <div className="headerLogoAndTitle">
-                <img className="headerLogo" src={"/icons/avatar.png"} alt="logo"/>
+                <img className="headerLogo" src={"/icons/infection.png"} alt="logo"/>
                 <div className="headerTitle">MyMaps</div>
             </div>
-            {IsLoggedIn ? (
+            {Username ? (
                 <div className="headerLogoAndTitle">
                     <div className="headerUsername">{Username}</div>
-                    <img className="headerLogo" src={"/icons/ninja.png"} alt="user"/>
+                    <img className="headerLogo" src={"/icons/user.png"} alt="user"/>
                 </div>
             ) : (
                 <div></div>
