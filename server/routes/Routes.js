@@ -1,3 +1,5 @@
+const { Route } = require("react-router-dom");
+
 class Routes {
   /**
    ** The home route
@@ -30,6 +32,12 @@ class Routes {
   static PointsRoute = Routes.HomeRoute + "/points";
 
   /**
+   ** The route to a pointTypes
+   ** /myMaps/points/types
+   */
+  static PointTypesRoute = Routes.PointsRoute + "/types";
+
+  /**
    ** The route to a point
    ** /myMaps/point/2
    */
@@ -49,7 +57,7 @@ class Routes {
 
   /**
    ** The point check ins' route
-   ** /myMaps/pointCheckIns and types
+   ** /myMaps/pointCheckIns
    */
    static PointCheckIns = Routes.HomeRoute + "/pointCheckIns";
 
@@ -76,6 +84,12 @@ class Routes {
    ** /myMaps/confirmedCases
    */
   static ConfirmedCasesRoute = Routes.HomeRoute + "/confirmedCases";
+
+    /**
+   ** The confirmed cases' route
+   ** /myMaps/confirmedCases/caseWasHere
+   */
+   static ConfirmedCasesCaseWasHere = Routes.ConfirmedCasesRoute + "/caseWasHere";
 
   /**
    ** The route to a confirmedCase

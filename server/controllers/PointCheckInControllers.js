@@ -22,6 +22,24 @@ exports.GetAllPointCheckIns = async (req, res, next) => {
 };
 
 /**
+ * Gets all the point check ins and points from the data base
+ */
+ exports.GetAllPointCheckInsPoints = async (req, res, next) => {
+
+    let query = PointCheckIn.GetAllPointsCheckInsPoints();
+    var home = req.query.checkInDate;
+    // Execute the query
+    var result = await GetQueryResultAsync(query);
+
+    if(result.length == 0) {
+        return next(new ErrorResponse(`ERROR 404: Not found.`, 404));
+    }
+
+    // Set the body of the response
+    res.status(200).json(result);
+};
+
+/**
  * Deletes all the point check ins from the data base
  */
 exports.DeleteAllPointCheckIns = async (req, res, next) => {
