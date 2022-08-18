@@ -55,6 +55,7 @@ const SignupForm = () => {
 
     const [signUpUsername, setUsername] = useState("");
     const [signUpPassword, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
     const [email, setEmail] = useState("");
     const [isSuccessfulSignUp, setIsSuccessfulSignUp] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
@@ -67,6 +68,11 @@ const SignupForm = () => {
     // On password changed event
     const OnPasswordChanged = event => {
         setPassword(event.target.value);
+    };
+
+    // On confirm password changed event
+    const onConfirmPasswordChanged = event => {
+        setConfirmPassword(event.target.value);
     };
 
     // Password Regex
@@ -83,7 +89,7 @@ const SignupForm = () => {
 
         if(passwordRegex.test(signUpPassword)) {
         
-            if (signUpUsername === "" || signUpPassword === "" || email === "") {
+            if (signUpUsername === "" || signUpPassword === "" || email === "" || confirmPassword !== signUpPassword) {
                 IsOpenHandler();
             
             } else if(signUpUsername !== "" || signUpPassword !== "" || email !== "") {
@@ -161,6 +167,17 @@ const SignupForm = () => {
                             <IconTextInput Text={signUpPassword} OnTextChanged={OnPasswordChanged}
                                 Size="small"
                                 Hint="password"
+                                VectorSource={Constants.KeyVariant}
+                                VectorColor={Constants.LightBlue} 
+                                Type={'password'}
+                                />
+                        </div>
+                    </div>
+                    <div className="signupConfirmPassword">
+                        <div className={classes.signupTextInput}>
+                            <IconTextInput Text={confirmPassword} OnTextChanged={onConfirmPasswordChanged}
+                                Size="small"
+                                Hint="confirm password"
                                 VectorSource={Constants.KeyVariant}
                                 VectorColor={Constants.LightBlue} 
                                 Type={'password'}

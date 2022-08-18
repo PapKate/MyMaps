@@ -47,8 +47,8 @@
         return sql;
     }
 
-    static DeleteById(id) {
-        let sql = `DELETE FROM pointandtypes WHERE id = ${id};`;
+    static DeleteById() {
+        let sql = `DELETE FROM pointandtypes;`;
 
         return sql;
     }

@@ -83,7 +83,7 @@ exports.UpdatePointAndTypeById = (async (req, res, next) => {
 /**
  * TODO Delete 
  */
-exports.DeletePointAndTypeById = (async (req, res, next) => {
+exports.DeletePointAndType = (async (req, res, next) => {
     
     let query = PointAndType.DeleteById(req.params.id);
     var result = await GetQueryResultAsync(query);

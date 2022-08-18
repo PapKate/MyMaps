@@ -36,6 +36,7 @@ exports.GetAllPointCheckInAndPoints = async(req, res, next) => {
     res.status(200).json(result);
 }
 
+
 /**
  * Deletes all the point check ins from the data base
  */

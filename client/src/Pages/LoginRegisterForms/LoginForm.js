@@ -89,7 +89,7 @@ const LoginForm = () => {
 
                     var userData = users.find(x => x.username === loginUsername && x.password === loginPassword);  
 
-                    navigate(`users/${userData.id}/home`, {state: { userData : userData, userLocation: {"lat" : userLocation.lat, "lng" : userLocation.lng} }}); 
+                    navigate(`users/${userData.id}/home`, {state: { userData : userData, userLocation: {"lat" : 38.246, "lng" : 21.734} }}); 
                 } 
                 else if(admins.find(x => x.username === loginUsername && x.password === loginPassword)) {
 

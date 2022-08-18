@@ -54,6 +54,13 @@ router
     .delete(pointControllers.DeleteAllPoints);
 
 /**
+ * @route GET route -> /points/types
+ */   
+ router
+    .route(Routes.PointTypesRoute)
+    .get(pointControllers.GetPointTypes);
+
+/**
 * @route GET and POST route -> /points/:id
 */
 router
@@ -68,7 +75,8 @@ router
 router
     .route(Routes.PointAndTypesRoute)
     .get(pointAndTypeControllers.GetAllPointAndTypes)
-    .post(pointAndTypeControllers.CreateNewPointAndType);
+    .post(pointAndTypeControllers.CreateNewPointAndType)
+    .delete(pointAndTypeControllers.DeletePointAndType);
 
 /**
  * @route GET and POST route -> /pointAndTypes/:id
@@ -76,8 +84,8 @@ router
 router
     .route(Routes.PointAndTypeRoute)
     .get(pointAndTypeControllers.GetPointAndTypeById)
-    .put(pointAndTypeControllers.UpdatePointAndTypeById)
-    .delete(pointAndTypeControllers.DeletePointAndTypeById);
+    .put(pointAndTypeControllers.UpdatePointAndTypeById);
+
 
 /**
  * @route GET, POST and DELETE route -> /pointCheckIns/
@@ -121,6 +129,13 @@ router
     .post(confirmedCaseControllers.CreateNewConfirmedCase);
 
 /**
+ * @route GET and POST route -> /confirmedCases/caseWasHere
+ */
+router
+    .route(Routes.ConfirmedCasesCaseWasHere)
+    .get(confirmedCaseControllers.GetAllConfirmedCasesCaseWasHere)
+
+/**
  * @route GET and POST route -> /confirmedCases/:id
  */
 router
@@ -152,8 +167,8 @@ router
 router
     .route(Routes.PopularTimesRoute)
     .get(popularTimeControllers.GetAllPopularTimes)
-    .post(popularTimeControllers.CreateNewPopularTime);
-
+    .post(popularTimeControllers.CreateNewPopularTime)
+    .delete(popularTimeControllers.DeletePopularTimes);
 /**
  * @route GET and POST route -> /popularTimes/:id
  */
@@ -197,5 +212,6 @@ router
     .get(timeSpentControllers.GetTimeSpentById)
     .put(timeSpentControllers.UpdateTimeSpentById)
     .delete(timeSpentControllers.DeleteTimeSpentById);
+
 
 module.exports = router;

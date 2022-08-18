@@ -100,6 +100,14 @@ class PointCheckIn{
         query += ";";
         return query;
     }
+    /**
+     * Gets all the point check ins and points from the data base
+     */
+     static GetAllPointsCheckInsPoints() {
+        let query = `SELECT pointcheckin.id, userId, pointId, checkInDate, name FROM pointcheckin LEFT JOIN points ON pointcheckin.pointId = points.id;`;
+        return query;
+    }
+    
 
     /**
      * Deletes all the point check ins from the data base
@@ -118,6 +126,7 @@ class PointCheckIn{
         let query = `SELECT * FROM pointcheckin WHERE pointId = ${pointId};`;
         return query;
     }
+
 
 }
 

@@ -1,9 +1,13 @@
 import { Box, makeStyles } from "@material-ui/core";
 import { DataGrid } from "@mui/x-data-grid";
-
+import { useEffect, useState } from "react";
+import axios, { Axios } from 'axios'
 import { useLocation } from "react-router-dom";
 
 import Constants from "../../Shared/Constants";
+import { point } from "leaflet";
+import { useGridStrategyProcessing } from "@mui/x-data-grid/hooks/core/strategyProcessing";
+
 
 const useStyles = makeStyles({
   covidExposurePageContainer: {
@@ -28,6 +32,19 @@ const useStyles = makeStyles({
   },
 });
 
+const dataGridAreaStyle = {
+  position: "relative",
+  width: "100%",
+  height: "max-content",
+  display: "flex",
+  flexDirection: "row",
+  paddingBottom: "2em",
+  gap: "2em",
+  justifyContent: "space-evenly",
+  alignItems: "center",
+  margin: '4em'
+};
+
 const CovidExposurePage = ({ UserId }) => {
   // Material UI Styles
   const classes = useStyles();
@@ -35,6 +52,48 @@ const CovidExposurePage = ({ UserId }) => {
   const location = useLocation();
   
   const { userData } = location.state;
+
+  const [exposure, setExposure] = useState([]);
+  const [cases, setCases] = useState([]);
+ 
+  useEffect(async () => {
+    try {
+      var responseConfirmedCases = await axios.get(`/api/myMaps/confirmedCases/caseWasHere`)
+
+      const pointsCheckIns = responseCheckIns.data;
+      const confirmedCasesCheckIns = responseConfirmedCases.data;
+
+      // ta check ins
+      console.log("check ins")
+      console.log(pointsCheckIns);
+
+      // ta krousmata me tis topothesies pou ekanan check in
+      console.log("krousmata kai to pou ekanan check in")
+      console.log(confirmedCasesCheckIns);
+
+      let helpMe = [];
+      let helpMeVol2 = [];
+
+      pointsCheckIns.forEach(pointsCheckIn => {
+        if(pointsCheckIn.userId === userData.id){
+          helpMe.push({"id": pointsCheckIn.id, "name": pointsCheckIn.name, "my check in date": pointsCheckIn.checkInDate})
+        }
+      })
+
+      confirmedCasesCheckIns.forEach(confirmedCasesCheckIn => {
+        if(confirmedCasesCheckIn.userId !== userData.id){
+          helpMeVol2.push({"id": confirmedCasesCheckIn.id, "case date": confirmedCasesCheckIn.checkInDate})
+        }
+      })
+
+      console.log(helpMeVol2)
+
+      console.log(helpMe);
+    
+    } catch(error) {
+      console.log(error);
+    }   
+  },[]);
 
   const covidExposureDatagridColumns = [
     {
@@ -55,55 +114,51 @@ const CovidExposurePage = ({ UserId }) => {
       headerClassName: "covidExposureDatagridHeader",
       headerAlign: "center",
     },
+    // {
+    //   field: "time",
+    //   headerName: "Time",
+    //   type: "time",
+    //   width: 80,
+    //   flex: 1,
+    //   headerClassName: "covidExposureDatagridHeader",
+    //   headerAlign: "center",
+    //   editable: false,
+    // },
+    // {
+    //   field: "caseWasHere",
+    //   headerName: "Case was here",
+    //   type: "time",
+    //   width: 80,
+    //   flex: 1,
+    //   headerClassName: "covidExposureDatagridHeader",
+    //   headerAlign: "center",
+    //   editable: false,
+    // },
+  ];
+
+  const casesDatagridColumns = [
     {
-      field: "time",
-      headerName: "Time",
-      type: "time",
-      width: 80,
+      field: "date",
+      headerName: "Date",
+      width: 70,
       flex: 1,
+      editable: false,
       headerClassName: "covidExposureDatagridHeader",
       headerAlign: "center",
-      editable: false,
-    },
-    {
-      field: "caseWasHere",
-      headerName: "Case was here",
-      type: "time",
-      width: 80,
-      flex: 1,
-      headerClassName: "covidExposureDatagridHeader",
-      headerAlign: "center",
-      editable: false,
     },
   ];
 
-  const covidExposureDatagridRows = [
-    {
-      id: 1,
-      date: "29/01/2019",
-      place: "Bodegas",
-      time: "17:23:42",
-      caseWasHere: "16:23:42",
-    },
-    {
-      id: 2,
-      date: "27/01/2019",
-      place: "Bardot",
-      time: "15:23:42",
-      caseWasHere: "15:23:42",
-    },
-  ];
 
 
   return (
     <div className={classes.covidExposurePageContainer}>
-     <div className={classes.covidExposureDataGridArea}>
-     <div>
+      <div className={classes.covidExposureDataGridArea}>
+       <div className="DataGridArea" style={dataGridAreaStyle}>
           <Box
             sx={{
               width: 800,
               position: "center",
-              height: 600,
+              height: 640,
               "& .covidExposureDatagridHeader": {
                 backgroundColor: `#${Constants.Yellow}`,
                 color: `#${Constants.White}`,
@@ -113,11 +168,12 @@ const CovidExposurePage = ({ UserId }) => {
               },
             }}
           >
-            <DataGrid rows={covidExposureDatagridRows} columns={covidExposureDatagridColumns} />
+            <DataGrid rows={exposure} columns={covidExposureDatagridColumns} />
+            <DataGrid rows={cases} columns={casesDatagridColumns} />
           </Box>
-        </div>
-        </div>
-        </div>
+      </div>
+    </div>
+  </div>
 
   );
 };
