@@ -6,8 +6,8 @@ import { MapContainer, Popup, Marker, TileLayer, ZoomControl, Circle } from "rea
 
 import axios from "axios";
 
+import Helpers from "../../Shared/Helpers"
 import Constants from "../../Shared/Constants";
-import pointsOfInterest from  '../../Shared/generic.json'
 import TitleAndText from "../../Components/TitleAndText";
 import IconTextInput from '../../Components/Inputs/IconTextInput';
 import VectorButton from '../../Components/Buttons/VectorButton';
@@ -23,7 +23,7 @@ const useStyles = makeStyles({
 
 const silhouette = new Icon({
   iconSize:[60, 60],
-  iconUrl: '/icons/personBlack.png'
+  iconUrl: '/icons/personBlue.png'
 });
 
 const greenPlaceholder = new Icon({
@@ -45,12 +45,12 @@ const HomePage = () => {
   /**
    ** Material UI Styles
    */
-   const classes = useStyles();
+  const classes = useStyles();
 
   /**
    ** The current location object, which represents the current URL in web browsers.
    */
-   const location = useLocation();
+  const location = useLocation();
 
   /**
    ** The user data and location from the state
@@ -85,12 +85,19 @@ const HomePage = () => {
   /**
    ** The points of interest
   */
-   const [points, setPoints] = useState(null);
+  const [points, setPoints] = useState(null);
 
   /**
    ** The unique points of interest
   */
-   const [uniquePoints, setUniquePoints] = useState(null);
+  const [uniquePoints, setUniquePoints] = useState(null);
+
+  /**
+   ** The searched points of interest
+   */
+  const [searchedPoints, setSearchedPoints] = useState(null);
+  
+  //#endregion
 
   //#endregion
 
@@ -207,6 +214,20 @@ const HomePage = () => {
     }
   }
 
+  const CheckInButtonOnClick = async (point) => {
+    try {
+      await axios.post(`/api/myMaps/pointCheckIns`, {
+        userId: userData.id,
+        pointId: point.id,
+        customers: null
+      });
+
+    } catch (error) {
+      console.log(error);
+      console.log("data not fetched");
+    }
+  }
+
   /**
    * 
    */
@@ -224,15 +245,60 @@ const HomePage = () => {
   }
 
   /**
+   ** Gets the next two hours popularity according to the current day and time 
+   * @param {List<pois>} popularTimes 
+   * @param {poi} point 
+   * @param {*} day 
+   * @param {*} hour 
+   */
+  const GetNextHoursPopularity = (popularTimes, point, day, hour) => {
+    // Sets as the next hours popularity value to 0
+    let nextValue = 0;
+    // For two times...
+    for(let i = 0; i < 2; i ++)
+    {
+      // Sets as the next hour value to 0
+      let nextHourValue = 0;
+      // If the next hour is on the next day...
+      if(hour - (i + 1) < 0)
+        nextHourValue = GetPointHourData(popularTimes, point, day - 1, 24 - (i + 1));
+      // Else...
+      else
+        nextHourValue = GetPointHourData(popularTimes, point, day, hour - (i + 1));
+      // Adds to the next hours value the value
+      nextValue += nextHourValue;
+    }
+
+    // Sets as the next hours value the next integer of the average of next hours value
+    nextValue = Math.ceil(nextValue / 2); 
+    // Returns the value
+    return nextValue;
+  }
+
+  /**
+   ** Gets the average popularity for the previous two hoours from the point check ins 
+   * @param {List<poiCheckIn>} pointCheckIns 
+   */
+  const GetPreviousHoursAveragePopularity = (pointCheckIns) => {
+    let numberOfCheckIns = 0;
+    let averagePopularity = 0;
+    pointCheckIns.forEach(checkIn => {
+      numberOfCheckIns++;
+      averagePopularity += checkIn.customers;
+    });
+
+    averagePopularity = numberOfCheckIns == 0 ? 0 : Math.ceil(averagePopularity / numberOfCheckIns);
+    return averagePopularity;
+  }
+
+  /**
    ** Gets the pois from the data base
    */
   const GetPOIS = async() => {
     try {
       // Gets the popular times for all the points of interest from the database
       const response = await axios.get(`/api/myMaps/popularTimes`);
-      // Gets the check ins of all the points of interest from the database
-      const checkInResponse = await axios.get(`/api/myMaps/pointCheckIns`);
-
+      
       // The json data from the response
       let pois = response.data;
 
@@ -265,26 +331,8 @@ const HomePage = () => {
       let hour = dateTimeNow.getHours();
       
       // For each poi...
-      uniquePois.forEach((point) => {
-        // Sets as the next hours popularity value to 0
-        let nextValue = 0;
-        // For two times...
-        for(let i = 0; i < 2; i ++)
-        {
-          // Sets as the next hour value to 0
-          let nextHourValue = 0;
-          // If the next hour is on the next day...
-          if(hour - (i + 1) < 0)
-            nextHourValue = GetPointHourData(pois, point, day - 1, 24 - (i + 1));
-          // Else...
-          else
-            nextHourValue = GetPointHourData(pois, point, day, hour - (i + 1));
-          // Adds to the next hours value the value
-          nextValue += nextHourValue;
-        }
-
-        // Sets as the next hours value the next integer of the average of next hours value
-        nextValue = Math.ceil(nextValue / 2); 
+      uniquePois.forEach(async(point) => {
+        let nextValue = GetNextHoursPopularity(pois, point, day, hour);
         // Sets the value to the next key in the poi
         point["next"] = nextValue;
 
@@ -292,22 +340,19 @@ const HomePage = () => {
         let previousHours = new Date();
         // Subtracts two hours
         previousHours.setTime(previousHours.getTime() - 2 * 60 * 60 * 1000);
-        
-        // Gets all the point check ins from the data base that have id the poi's id...
-        // And are between date time now and two hours previously
-        let pointCheckIns = checkInResponse.data.filter(function (x) {
-          var date = new Date(x.checkInDate);
-          return x.pointId == point.id && previousHours <= date && date <= dateTimeNow; 
-        })
-
-        let numberOfCheckIns = 0;
-        let averagePopularity = 0;
-        pointCheckIns.forEach(checkIn => {
-          numberOfCheckIns++;
-          averagePopularity += checkIn.customers;
+        // Gets the check ins of all the points of interest from the database
+        const checkInResponse = await axios.get(`/api/myMaps/pointCheckIns/points`, {
+          params: {
+            pointId : `${point.id}`,
+            checkInDate : [`gt.${Helpers.FormatDateTime(previousHours)}`, `lt.${Helpers.FormatDateTime(dateTimeNow)}`]
+          }
         });
 
-        averagePopularity = numberOfCheckIns == 0 ? 0 : Math.ceil(averagePopularity / numberOfCheckIns);
+        // Gets all the point check ins from the data base that have id the poi's id...
+        // And are between date time now and two hours previously
+        let pointCheckIns = checkInResponse.data;
+
+        let averagePopularity = GetPreviousHoursAveragePopularity(pointCheckIns);
         point["currentPopularity"] = averagePopularity;
       });
 
@@ -351,6 +396,20 @@ const HomePage = () => {
 
   }, []);
 
+  /**
+   ** Fires when the search text is updated.
+   ** Gets the points that contain the searched text in their name or categories 
+   */
+  useEffect(() => {
+    // If the search text is not null or empty...
+    // Gets the points that contain in their name //TODO or categories the text
+    // Else returns an empty array
+    let points = searchText ? uniquePoints?.filter(function (x) {
+      return x.name.toLowerCase().includes(searchText.toLowerCase()) ;
+    }) : null;
+    setSearchedPoints(points);
+  }, [searchText])
+
   //#endregion
 
   return (
@@ -367,24 +426,29 @@ const HomePage = () => {
         </div>
       </div>
       <div className='leaflet-container'>
-        <MapContainer center={[userLocation.lat, userLocation.lng]} zoom={15} scrollWheelZoom={true} zoomControl={false}>
+        <MapContainer center={[userLocation.lat, userLocation.lng]} zoom={14} scrollWheelZoom={true} zoomControl={false}>
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png"
           />
           <ZoomControl position="topright" />
+          <Circle center={[userLocation.lat, userLocation.lng]} fillColor={"red"} radius={20} stroke={false} />
           <Marker position={[userLocation.lat, userLocation.lng]} icon={silhouette}>
           </Marker> 
-          <Circle center={[userLocation.lat, userLocation.lng]} fillColor={"red"} radius={20} stroke={false} />
 
-          {uniquePoints !== null && uniquePoints?.map((point) => (
+          {searchedPoints !== null && searchedPoints?.map((point) => (
             
-            <Marker key={point.id}
+            <Marker key={point.id} 
                     position={[
                       point.lat, 
                       point.lng
                     ]}
-                    icon={ GetPlaceHolder(point.next) }>
+                    icon={ GetPlaceHolder(point.next) }
+                    eventHandlers={{
+                      click: () => {
+                        console.log(`marker ${point.name} clicked`)
+                      },
+                    }}>
               <Popup closeButton={false} onClose={() => {setPopularityText("")}}>
                 <div className='poiPopUpContainer'>
                   <h2 className='poiTitle'>{point.name}</h2>
@@ -409,7 +473,7 @@ const HomePage = () => {
                                         BorderRadius={'8px'} 
                                         Size={'40px'}
                                         BackColor={Constants.LightBlue}
-                                        OnClick={() => PopularityButtonOnClick(point)}
+                                        OnClick={async() => await PopularityButtonOnClick(point)}
                                         />
                           <span className="tooltipText">Submit popularity</span>
                         </div>
@@ -417,7 +481,8 @@ const HomePage = () => {
                           <VectorButton VectorSource={Constants.Hand} 
                                         BorderRadius={'8px'}
                                         Size={'40px'} 
-                                        BackColor={Constants.Yellow}/>
+                                        BackColor={Constants.Yellow}
+                                        OnClick={async() => await CheckInButtonOnClick(point)}/>
                           <span className="tooltipText">I was here</span>
                         </div>
                       </div>

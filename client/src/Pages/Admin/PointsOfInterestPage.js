@@ -7,7 +7,7 @@ import { createTheme } from '@material-ui/core/styles';
 import axios, { Axios } from 'axios'
 
 import Constants from "../../Shared/Constants";
-import TextInput from "../../Components/Inputs/TextInput";
+import IconTextInput from "../../Components/Inputs/IconTextInput";
 import TextButton from "../../Components/Buttons/TextButton";
 import VectorButton from "../../Components/Buttons/VectorButton";
 import MessageDialog from "../../Components/Dialogs/MessageDialog";
@@ -193,10 +193,12 @@ const [pointsName, setPointsName] = useState([]);
         <ThemeProvider theme={theme}>
           <div style={marginStyle}>
             <div className={classes.itemDisplayFlexContainer}>
-              <TextInput Text={filePath} 
+              <IconTextInput Text={filePath} 
                         OnTextChanged={OnFilePathChanged} 
                         HasFullWidth={true}
-                        Hint={"File path"} />
+                        Hint={"File path"} 
+                        VectorSource={Constants.JSON}
+                        VectorColor={Constants.LightBlue}/>
               <TextButton Text={"Add"} BackColor={Constants.Yellow}
                           OnClick={AddPointsOfInterestFromJSONFile} />
             </div>
@@ -229,9 +231,6 @@ const [pointsName, setPointsName] = useState([]);
                           />
           </div>
           
-       
-        
-
           <MessageDialog  Title={"Delete"}
                             Text={"Are you sure you want to delete all points of interest?"}
                             IsOpen={deleteDialog_IsOpen} 

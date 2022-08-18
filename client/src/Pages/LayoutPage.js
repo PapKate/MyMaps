@@ -5,6 +5,7 @@ import { useLocation, Outlet } from "react-router-dom";
 import Constants from "../Shared/Constants";
 import UserSideMenu from "../Components/SideMenus/UserSideMenu";
 import AdminSideMenu from "../Components/SideMenus/AdminSideMenu";
+import HeaderBar from "../Components/HeaderBar";
 
 const useStyles = makeStyles({
     pageContainer: {
@@ -25,23 +26,26 @@ const LayoutPage = () => {
 
     const location = useLocation();
 
-    let { userData } = location.state;
+    let { userData, adminData } = location.state;
 
     return (
-        <div className="page">
-            {userData == null 
-            ?
-            (
-                <AdminSideMenu />
-            )
-            :
-            (
-                <UserSideMenu />
-            )}
-            <div className={classes.pageContainer}>
-                <Outlet/>
+        <>
+            <HeaderBar Username={userData ? userData.username : adminData.username}/>
+            <div className="page">
+                {userData == null 
+                ?
+                (
+                    <AdminSideMenu />
+                )
+                :
+                (
+                    <UserSideMenu />
+                )}
+                <div className={classes.pageContainer}>
+                    <Outlet/>
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 

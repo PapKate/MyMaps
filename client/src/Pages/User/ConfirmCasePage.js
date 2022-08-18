@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLocation } from "react-router-dom";
 import { makeStyles } from "@material-ui/core";
 
 import DatePicker from 'react-datepicker';
@@ -7,7 +8,6 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import TextButton from "../../Components/Buttons/TextButton";
 import Constants from "../../Shared/Constants";
-import { useLocation } from "react-router-dom";
 
 const marginStyle = {
   margin: '3em'
@@ -83,22 +83,24 @@ const ConfirmCasePage = ({ UserId }) => {
     );
 
   return (
-    <div className="confirmCasePage">
-       <div style={marginStyle}>
-       <div className={classes.confirmCasePageContainer}>
-        <div className={classes.confirmCaseDisplay}>
-            <span className={classes.confirmCaseText}>Confirm Case</span>
-           <DatePicker
-              selected={startDate}
-              onChange={(date) => setStartDate(date)}
-              showTimeInput
-              customTimeInput={<ExampleCustomTimeInput />}
-            />
-           <TextButton Text={"Report"} BackColor={Constants.Red} />
-         </div>
+    <>
+      <div className="confirmCasePage">
+        <div style={marginStyle}>
+        <div className={classes.confirmCasePageContainer}>
+          <div className={classes.confirmCaseDisplay}>
+              <span className={classes.confirmCaseText}>Confirm Case</span>
+            <DatePicker
+                selected={startDate}
+                onChange={(date) => setStartDate(date)}
+                showTimeInput
+                customTimeInput={<ExampleCustomTimeInput />}
+              />
+            <TextButton Text={"Report"} BackColor={Constants.Red} />
+          </div>
+          </div>
         </div>
-       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

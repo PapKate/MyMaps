@@ -89,6 +89,13 @@ router
     .delete(pointCheckInControllers.DeleteAllPointCheckIns);
 
 /**
+ * @route GET route -> /pointCheckIns/points
+ */
+ router
+ .route(Routes.PointCheckInAndPoints)
+    .get(pointCheckInControllers.GetAllPointCheckInAndPoints);
+
+/**
  * @route GET and POST route -> /coordinates/
  */
 router

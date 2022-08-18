@@ -3,9 +3,12 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
 import { Button, makeStyles } from '@material-ui/core';
+
 import Constants from "../../Shared/Constants";
+
 import IconTextInput from "../../Components/Inputs/IconTextInput";
 import ErrorDialog from "../../Components/Dialogs/ErrorDialog";
+import HeaderBar from '../../Components/HeaderBar';
 
 const useStyles = makeStyles({
     headerBar: {
@@ -128,6 +131,8 @@ const SignupForm = () => {
 
     return (
         <>
+            <HeaderBar />
+
             <div className="loginPageContainer">
                 <div className="loginBackground" />
                 <div className="loginPage" style={loginContainerStyle}>
