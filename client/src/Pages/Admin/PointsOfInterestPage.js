@@ -217,7 +217,7 @@ const [pointsName, setPointsName] = useState([]);
                           BackColor={Constants.Red}
                           VectorSource={Constants.Delete}
                           OnClick = {DeleteDialog_IsOpenHandler}/>
-          </div>
+        
           <MessageDialog  Title={"Delete"}
                             Text={"Are you sure you want to delete all points of interest?"}
                             IsOpen={deleteDialog_IsOpen} 

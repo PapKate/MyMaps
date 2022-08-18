@@ -89,7 +89,7 @@ const LoginForm = () => {
 
                     var userData = users.find(x => x.username === loginUsername && x.password === loginPassword);  
 
-                    navigate(`users/${userData.id}/home`, {state: { userData : userData, userLocation: {"lat" : 38.246, "lng" : 21.734} }}); 
+                    navigate(`users/${userData.id}/home`, {state: { userData : userData, userLocation: {"lat" : userLocation.lat, "lng" : userLocation.lng} }}); 
                 } 
                 else if(admins.find(x => x.username === loginUsername && x.password === loginPassword)) {
 
@@ -117,7 +117,8 @@ const LoginForm = () => {
         {
             navigator.geolocation.getCurrentPosition(function(position) {
                 //setUserLocation({"lat" : position.coords.latitude, "lng" : position.coords.longitude})
-                setUserLocation({"lat" : 38.2498044, "lng" : 21.7389391})
+                setUserLocation({"lat" : 38.249669, "lng" : 21.7373873})
+                // 38.249669, 21.7373873
             });
         }
     });
