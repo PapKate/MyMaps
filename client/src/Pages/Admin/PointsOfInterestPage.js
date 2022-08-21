@@ -11,9 +11,6 @@ import IconTextInput from "../../Components/Inputs/IconTextInput";
 import TextButton from "../../Components/Buttons/TextButton";
 import VectorButton from "../../Components/Buttons/VectorButton";
 import MessageDialog from "../../Components/Dialogs/MessageDialog";
-import AdminSideMenu from "../../Components/SideMenus/AdminSideMenu";
-import { sizeWidth, width } from "@mui/system";
-import { point } from "leaflet";
 
 const theme = createTheme({
     palette: {

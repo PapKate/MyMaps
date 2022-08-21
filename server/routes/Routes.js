@@ -73,6 +73,12 @@ class Routes {
   static PointCheckInAndPoints = Routes.PointCheckIns + "/points";
 
   /**
+   ** The point check ins' route
+   ** /myMaps/pointCheckIns/confirmedCases
+   */
+  static PointCheckInAndCases = Routes.PointCheckIns + "/confirmedCases";
+
+  /**
    ** The coordinates' route
    ** /myMaps/coordinates
    */
