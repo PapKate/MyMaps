@@ -59,6 +59,12 @@ class Routes {
    ** /myMaps/pointCheckIns
    */
   static PointCheckIns = Routes.HomeRoute + "/pointCheckIns";
+ 
+  /**
+   ** The point check ins' route
+   ** /myMaps/pointCheckIns/types
+   */
+  static PointCheckInsTypes = Routes.PointCheckIns + "/types";
 
    /**
     ** The route to a point check in
@@ -95,6 +101,12 @@ class Routes {
    ** /myMaps/confirmedCases
    */
   static ConfirmedCasesRoute = Routes.HomeRoute + "/confirmedCases";
+
+  /**
+   ** The confirmed cases' route
+   ** /myMaps/confirmedCases/types
+   */
+  static ConfirmedCasesTypes = Routes.ConfirmedCasesRoute + "/types";
 
     /**
    ** The confirmed cases' route

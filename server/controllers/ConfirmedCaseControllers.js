@@ -37,6 +37,15 @@ exports.GetAllConfirmedCasesCaseWasHere = async (req, res, next) => {
     res.status(200).json(result);
 };
 
+exports.GetAllConfirmedCasesTypes = async (req, res, next) => {
+    let query = ConfirmedCase.GetAllConfirmedCasesTypes();
+
+    var result = await GetQueryResultAsync(query);
+
+    // Set the body of the response
+    res.status(200).json(result); 
+};
+
 /**
  * 
  * @param {*} req 

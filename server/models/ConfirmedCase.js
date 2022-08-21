@@ -44,6 +44,19 @@
         return query;
     }
 
+    static GetAllConfirmedCasesTypes() {
+        let query = `SELECT types.name, confirmedcases.userId FROM pointcheckin 
+                        INNER JOIN confirmedcases ON pointcheckin.userId = confirmedcases.userId
+                        LEFT JOIN (points 
+                        LEFT JOIN pointandtypes ON points.id = pointandtypes.pointId
+                        LEFT JOIN types ON types.id = pointandtypes.typeId) 
+                        ON pointcheckin.pointId = points.id
+                        WHERE pointcheckin.checkInDate >= DATE_SUB(confirmedcases.date, INTERVAL 7 DAY) AND
+                        pointcheckin.checkInDate <= DATE_ADD(confirmedcases.date, INTERVAL 14 DAY)
+                        ORDER BY types.name;    `;
+        return query;
+    }
+
     /*
     static GetByUserId(userId) {
         let sql = `SELECT * FROM confirmedcases WHERE userId = ${userId};`;
