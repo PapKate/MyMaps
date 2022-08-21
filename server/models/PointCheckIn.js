@@ -32,6 +32,15 @@ class PointCheckIn{
         return query;
     }
 
+    static GetAllPointCheckInCases() {
+        let query = `SELECT * FROM pointcheckin 
+		INNER JOIN confirmedcases ON pointcheckin.userId = confirmedcases.userId
+        WHERE pointcheckin.checkInDate >= DATE_SUB(confirmedcases.date, INTERVAL 7 DAY) AND
+        pointcheckin.checkInDate <= DATE_ADD(confirmedcases.date, INTERVAL 14 DAY);`;
+
+        return query;
+    }
+
     static GetAllWithPoints(queryParams = null)
     {
         let query = `SELECT pointcheckin.id, userId,pointId, customers, checkInDate, points.name FROM pointcheckin 

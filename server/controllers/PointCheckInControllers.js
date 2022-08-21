@@ -36,6 +36,14 @@ exports.GetAllPointCheckInAndPoints = async(req, res, next) => {
     res.status(200).json(result);
 }
 
+exports.GetAllPointCheckInAndCases = async(req, res, next) => {
+    let query = PointCheckIn.GetAllPointCheckInCases(req.query);
+    // Execute the query
+    var result = await GetQueryResultAsync(query);
+
+    // Set the body of the response
+    res.status(200).json(result);
+}
 
 /**
  * Deletes all the point check ins from the data base

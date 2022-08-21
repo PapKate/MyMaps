@@ -104,6 +104,13 @@ router
     .get(pointCheckInControllers.GetAllPointCheckInAndPoints);
 
 /**
+ * @route GET route -> /pointCheckIns/confirmedCases
+ */
+ router
+    .route(Routes.PointCheckInAndCases)
+        .get(pointCheckInControllers.GetAllPointCheckInAndCases);
+
+/**
  * @route GET and POST route -> /coordinates/
  */
 router

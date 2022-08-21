@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 import Constants from '../../Shared/Constants';
 import MenuButton from '../Buttons/MenuButton';
@@ -8,6 +9,16 @@ import MessageDialog from '../Dialogs/MessageDialog';
 const AdminSideMenu = () => {
     const navigate = useNavigate();
     
+    /**
+     ** The current location object, which represents the current URL in web browsers.
+    */
+    const location = useLocation();
+
+    /**
+     ** The user data from the state
+    */
+    const adminData = location.state.adminData;
+
     const [exitDialog_IsOpen, exitDialog_SetIsOpen] = useState(false);
         
     const ExitDialog_IsOpenHandler = () => exitDialog_SetIsOpen(!exitDialog_IsOpen);
@@ -16,21 +27,21 @@ const AdminSideMenu = () => {
      ** Navigates to the points of interest page of the admin
      */
      const GoToPointsOfInterestPage = () => {
-        navigate(`pointsOfInterest`, {state: { userData : null}});
+        navigate(`pointsOfInterest`, {state: { userData : null, adminData : adminData }});
     }
 
     /**
      ** Navigates to the statistics page of the admin
      */
      const GoToStatisticsPage = () => {
-        navigate(`statistics`, {state: { userData : null}});
+        navigate(`statistics`, {state: { userData : null, adminData : adminData}});
     }
 
     /**
      ** Navigates to the login page 
      */
      const GoToLogInPage = () => {
-        navigate(`/`, {state: { userData : null}});
+        navigate(`/`, {state: { userData : null, adminData : adminData}});
     }
 
     /**
