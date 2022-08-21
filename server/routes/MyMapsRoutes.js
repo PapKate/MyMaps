@@ -104,6 +104,14 @@ router
     .get(pointCheckInControllers.GetAllPointCheckInAndPoints);
 
 /**
+ * @route GET route -> /pointCheckIns/points
+ */
+router
+    .route(Routes.PointCheckInsTypes)
+        .get(pointCheckInControllers.GetAllPointCheckInsTypes);
+
+
+/**
  * @route GET route -> /pointCheckIns/confirmedCases
  */
  router
@@ -135,6 +143,12 @@ router
     .get(confirmedCaseControllers.GetAllConfirmedCases)
     .post(confirmedCaseControllers.CreateNewConfirmedCase);
 
+/**
+ * @route GET and POST route -> /confirmedCases/types
+ */
+router
+    .route(Routes.ConfirmedCasesTypes)
+    .get(confirmedCaseControllers.GetAllConfirmedCasesTypes);
 /**
  * @route GET and POST route -> /confirmedCases/caseWasHere
  */

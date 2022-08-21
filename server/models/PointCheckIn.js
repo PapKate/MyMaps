@@ -32,6 +32,17 @@ class PointCheckIn{
         return query;
     }
 
+    static GetAllPointCheckInsTypes() {
+        let query = `SELECT types.name, points.id FROM pointcheckin 
+                        LEFT JOIN (points 
+                        LEFT JOIN pointandtypes ON points.id = pointandtypes.pointId
+                        LEFT JOIN types ON types.id = pointandtypes.typeId) 
+                        ON pointcheckin.pointId = points.id
+                        ORDER BY types.name;`
+        
+        return query;
+    }
+
     static GetAllPointCheckInCases() {
         let query = `SELECT * FROM pointcheckin 
 		INNER JOIN confirmedcases ON pointcheckin.userId = confirmedcases.userId
