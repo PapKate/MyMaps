@@ -5,7 +5,7 @@ import {Chart as ChartJS} from 'chart.js/auto';
 const BarChart = ({chartData}) => {
 
     return(
-        <div>
+        <>
             {chartData 
             ? 
             (
@@ -16,7 +16,7 @@ const BarChart = ({chartData}) => {
                 <div></div>
             )
             }
-        </div>
+        </>
     );
 };
 

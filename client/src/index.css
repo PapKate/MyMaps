@@ -33,7 +33,6 @@ code {
   height: 3rem;
   display: inline-block;
   padding: 0;
-  border-radius: 50%;
   overflow: hidden;
 }
 
@@ -124,22 +123,6 @@ label{
   background-color: rgb(227, 255, 219);
   border-radius: 8px;
   padding: 4px 8px;
-}
-.titleAndTextContainer{
-  position: relative;
-  flex-direction: row;
-  align-items:flex-start;
-  justify-content: left;
-  gap: 12px;
-}
-
-.title{
-  font-weight: 600;
-  margin: 0;
-}
-
-.text{
-  margin-left: 4px;
 }
 
 .leafletSearchBarContainer {
@@ -414,6 +397,23 @@ element.style {
   width: 100%;
 }
 
+@keyframes animMarker {
+  0% {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+  100% {
+    transform: rotate(45deg) translate(-5px, -5px);
+  }
+}
+
+@keyframes animShadow {
+  0% {
+    transform: scale(0.5);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
 
 
 @media (max-width: 800px)
