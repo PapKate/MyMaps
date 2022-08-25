@@ -8,7 +8,7 @@ const ErrorResponse = require("../utils/errorResponse");
  */
 exports.GetAllPointCheckIns = async (req, res, next) => {
 
-    let query = PointCheckIn.GetAll();
+    let query = PointCheckIn.GetAll(req.query, "checkInDate");
     // Execute the query
     var result = await GetQueryResultAsync(query);
 

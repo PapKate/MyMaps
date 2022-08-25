@@ -55,9 +55,9 @@ const LoginForm = () => {
 
     const [loginUsername, setUsername] = useState("");
     const [loginPassword, setPassword] = useState("");
-    const [isSuccessfulLogin, setIsSuccessfulLogin] = useState(false);
     const [isCorrectLogin, setIsCorrectLogin] = useState(true);
     const [isOpen, setIsOpen] = useState(false);
+    const [isEmptyInputsOpen, setIsEmptyInputsOpen] = useState(false);
     const [userLocation, setUserLocation] = useState(null);
 
     // On username changed event
@@ -71,10 +71,11 @@ const LoginForm = () => {
     };
 
     const IsOpenHandler = () => setIsOpen(!isOpen);
+    const IsEmptyInputsOpenHandler = () => setIsEmptyInputsOpen(!isEmptyInputsOpen);
 
     const Login = async () => {
         if (loginUsername === "" || loginPassword === "") {
-            IsOpenHandler();
+            IsEmptyInputsOpenHandler();
         } 
         else {
             try {
@@ -103,7 +104,6 @@ const LoginForm = () => {
                     console.log(isCorrectLogin);
                     IsOpenHandler();
                 }
-                setIsSuccessfulLogin(true);
             } catch (error) {
                 setIsCorrectLogin(false);
                 console.log(isCorrectLogin);
@@ -169,14 +169,14 @@ const LoginForm = () => {
                         </Button>
 
                         <ErrorDialog
-                            Text={"Error! Please fill out every input and try again!"}
-                            IsOpen={isOpen}
-                            IsOpenHandler={IsOpenHandler}
+                            Text={"Please fill out every input and try again!"}
+                            IsOpen={isEmptyInputsOpen}
+                            IsOpenHandler={IsEmptyInputsOpenHandler}
                             VectorSource={Constants.AccountCircle}
                         />
 
                         <ErrorDialog
-                            Text={"Error! Wrong Username or Password try again!"}
+                            Text={"Wrong Username or Password. Please try again!"}
                             IsOpen={isOpen}
                             IsOpenHandler={IsOpenHandler}
                             VectorSource={Constants.AccountCircle}

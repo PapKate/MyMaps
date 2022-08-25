@@ -18,6 +18,31 @@ class Helpers {
 
         return dateToString;
     }
+
+    /**
+     * Gets the @date and returns the full date 
+     * @param {Date} date The date
+     * @returns The date time with 00:00:00
+     */
+    static GetFullDate(date)
+    {
+        let year = date.getFullYear();
+        let month = date.getMonth();
+        let day = date.getDate();
+
+        let dateToString = `${year}-${month}-${day}`;
+        return new Date(year, month, day);
+    }
+
+    static GetFullDateToString(date)
+    {
+        let year = date.getFullYear();
+        let month = date.getMonth() + 1;
+        let day = date.getDate();
+
+        return `${year}-${month}-${day}`;
+    }
+
 }
 
 export default Helpers;

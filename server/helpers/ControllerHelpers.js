@@ -1,64 +1,76 @@
 class ControllerHelpers{
 
-    static  FormatQueryFromParams(queryParams)
+    static  FormatQueryFromParams(query, queryParams, orderBy = null)
     {
-        // Adds the where statement
-        let query = `WHERE `
-            
-        // Sets as the current index 0
-        let index = 0;
         // Gets the entries from the query parameters
         let entries = Object.entries(queryParams)
         let length = entries.length;
         
-        // For each key value pair in the JSON object...
-        for (const [key, value] of entries) {
-            let values = [];
-            if(Array.isArray(value)) {
-                value.forEach(x => {
-                    values.push(x); 
-                    length++;
-                });
-                length--;
-            }
+        if(length > 0)
+        {
+            if(query.includes("WHERE"))
+                query +=" AND "
             else
-                values.push(value);
-
-            values.forEach(x => {
-                // Adds the key name to the string
-                query += `${key} `
-
-                // Splits the value at '.' 
-                let valueArray = x.split(".");
-
-                // If the value array's length i greater than 1...
-                if(valueArray.length > 1)
-                {
-                    if(valueArray[0] === "lt")
-                        query += "<= ";
-                    else if(valueArray[0] === "gt")
-                        query += ">= ";
-                    
-                    if(isNaN(valueArray[1]))
-                        query += `\"${valueArray[1]}\" `
-                    else
-                        query += `${valueArray[1] }`
+                // Adds the where statement
+                query += ` WHERE `
+                
+            // Sets as the current index 0
+            let index = 0;
+           
+            // For each key value pair in the JSON object...
+            for (const [key, value] of entries) {
+                let values = [];
+                if(Array.isArray(value)) {
+                    value.forEach(x => {
+                        values.push(x); 
+                        length++;
+                    });
+                    length--;
                 }
                 else
-                {
-                    if(isNaN(x))
-                        query += `= \"${x}\" `
+                    values.push(value);
+
+                values.forEach(x => {
+                    // Adds the key name to the string
+                    query += `${key} `
+
+                    // Splits the value at '.' 
+                    let valueArray = x.split(".");
+
+                    // If the value array's length i greater than 1...
+                    if(valueArray.length > 1)
+                    {
+                        if(valueArray[0] === "lt")
+                            query += "<= ";
+                        else if(valueArray[0] === "gt")
+                            query += ">= ";
+                        
+                        if(isNaN(valueArray[1]))
+                            query += `\"${valueArray[1]}\" `
+                        else
+                            query += `${valueArray[1] }`
+                    }
                     else
-                        query += `= ${x}`
-                }
+                    {
+                        if(isNaN(x))
+                            query += `= \"${x}\" `
+                        else
+                            query += `= ${x}`
+                    }
 
-                if(index < length - 1)
-                    query +=" AND ";
-                index++;
-            });
-
-            return query;
+                    if(index < length - 1)
+                        query +=" AND ";
+                    index++;
+                });
+            }
         }
+
+        if(orderBy !== null)
+            query += `  ORDER BY ${orderBy}`
+
+        query += ";";
+
+        return query;
     }
 
     /**

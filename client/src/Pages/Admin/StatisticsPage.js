@@ -6,6 +6,8 @@ import BarChart from "../../Components/Stats/BarChart"
 import Constants from "../../Shared/Constants";
 import Loading from "../../Components/Animations/Loading";
 import TitleAndText from "../../Components/TitleAndText";
+import Helpers from "../../Shared/Helpers"
+import DateRangePicker from "../../Components/DatePickers/DateRangePicker";
 
 const useStyles = makeStyles({
   statisticsPageContainer: {
@@ -71,6 +73,10 @@ const StatisticsPage = () => {
   const [totalCheckInCases, setTotalCheckInCases] = useState(null);
   const [totalCheckInTypes, setTotalCheckInTypes] = useState(null);
   const [totalCategoriesByCases, setTotalCategoriesByCases] = useState(null);
+  const [totalCheckInTimespan, setTotalCheckInTimeSpan] = useState(null);
+
+  const [dateStart, setDateStart] = useState(new Date());
+  const [dateEnd, setDateEnd] = useState(new Date());
 
   const CreateNameWithReferencesList = (list) => {
     let nameWithReferences = [];
@@ -90,6 +96,25 @@ const StatisticsPage = () => {
     return nameWithReferences;
   }
 
+  const CreateCheckInDateWithReferencesList = (list) => {
+    let checkInDateWithReferences = [];
+    let referencesIndex = 0;
+    let loopIndex = 0;
+
+    list.forEach(x => {
+      referencesIndex++;
+      var currentCheckInDate = Helpers.GetFullDate(new Date(x.checkInDate));
+      if((loopIndex !== list.length - 1 && currentCheckInDate.getTime() !== Helpers.GetFullDate(new Date(list[loopIndex + 1].checkInDate)).getTime()) || loopIndex === list.length - 1)
+      {
+        checkInDateWithReferences.push({"checkInDate" : currentCheckInDate, "references" : referencesIndex});
+        referencesIndex = 0;
+      }
+
+      loopIndex++;
+    })
+    return checkInDateWithReferences;
+  }
+
   /**
    ** On initialized
   */
@@ -101,6 +126,10 @@ const StatisticsPage = () => {
       var checkInTypesResponse = await axios.get(`/api/myMaps/pointCheckIns/types`);
       var categoriesByCasesResponse = await axios.get(`/api/myMaps/confirmedCases/types`);
 
+      var dateTimeNow = new Date();
+      setDateStart(new Date(dateTimeNow.getFullYear(), dateTimeNow.getMonth(), 1)); 
+      setDateEnd(new Date(dateTimeNow.getFullYear(), dateTimeNow.getMonth() + 1, 0)); 
+      
       setTotalCheckIns(checkInsResponse.data);
       setTotalCases(casesResponse.data);
       setTotalCheckInCases(checkInCasesResponse.data);
@@ -173,6 +202,69 @@ const StatisticsPage = () => {
   }, []);
 
 
+  useEffect (async () => {
+    var timespanCheckInResponse = await axios.get(`/api/myMaps/pointCheckIns`, {
+      params: {
+        checkInDate : [`gt.${Helpers.FormatDateTime(dateStart)}`, `lt.${Helpers.FormatDateTime(dateEnd)}`]
+      }
+    });
+
+    var timespanCheckInCasesResponse = await axios.get(`/api/myMaps/pointCheckIns/confirmedCases`, {
+      params: {
+        checkInDate : [`gt.${Helpers.FormatDateTime(dateStart)}`, `lt.${Helpers.FormatDateTime(dateEnd)}`]
+      }
+    });
+    var timespanCheckInsCases = timespanCheckInCasesResponse.data;
+
+    var timespanCheckIns = timespanCheckInResponse.data;
+
+    var timespanCheckInData = CreateCheckInDateWithReferencesList(timespanCheckIns);
+
+    var timespanCheckInsCasesData = CreateCheckInDateWithReferencesList(timespanCheckInsCases);
+
+    var days = [];
+    var daysCases = [];
+    for(let i = dateStart.getDate(); i <= dateEnd.getDate() - 1; i++)
+    {
+      var current = new Date(dateStart.getFullYear(), dateStart.getMonth(), i + 1)
+
+      days.push({"checkInDate" : current, "references" : 0 });
+      daysCases.push({"checkInDate" : current, "references" : 0});
+    }
+
+    days.forEach(day => {
+      let checkIns = timespanCheckInData?.find(x => x.checkInDate.getTime() === day.checkInDate.getTime())?.references;
+      if(checkIns != null)
+        day.references = checkIns;
+    })
+
+    daysCases.forEach(dayCase => {
+      let checkIns = timespanCheckInsCasesData?.find(x => x.checkInDate.getTime() === dayCase.checkInDate.getTime())?.references;
+      if(checkIns != null)
+        dayCase.references = checkIns;
+    })
+
+    setTotalCheckInTimeSpan({
+      labels : days.map((day) => Helpers.GetFullDateToString(day.checkInDate)),
+      datasets : [
+        {
+          label : "Check Ins",
+          data : days.map((day) => day.references),
+          backgroundColor: [
+            `#${Constants.LightBlue}`,
+          ]
+        },
+        {
+          label : "COVID cases Check Ins",
+          data : daysCases.map((dayCase) => dayCase.references),
+          backgroundColor: [
+            `#${Constants.LightGreen}`,
+          ]
+        }
+      ]
+    })
+  }, [dateEnd])
+
   return (
     <div className={classes.statisticsPageContainer}>
       {isLoading 
@@ -204,6 +296,10 @@ const StatisticsPage = () => {
               </div>
               <div className={classes.statisticContainer}>
                 <BarChart chartData={totalCategoriesByCases}/>
+              </div>
+              <div className={classes.statisticContainer}>
+                <DateRangePicker OnDateStartChanged={(date) => setDateStart(date)} OnDateEndChanged={(date)=> setDateEnd(date)}/>
+                <BarChart chartData={totalCheckInTimespan}/>
               </div>
             </div>
           </div>

@@ -27,8 +27,10 @@ class PointCheckIn{
     /**
      * Gets all the point check ins from the data base
      */
-    static GetAll() {
-        let query = `SELECT id, userId, pointId, customers, checkInDate FROM pointcheckin;`;
+    static GetAll(queryParams = null, orderBy = null) {
+        let query = `SELECT id, userId, pointId, customers, checkInDate FROM pointcheckin`;
+        query = ControllerHelpers.FormatQueryFromParams(query, queryParams, orderBy);
+
         return query;
     }
 
@@ -57,67 +59,7 @@ class PointCheckIn{
         let query = `SELECT pointcheckin.id, userId,pointId, customers, checkInDate, points.name FROM pointcheckin 
                         LEFT JOIN points ON pointcheckin.pointId = points.id `;
 
-        // If there are query parameters...
-        if(queryParams)
-        {
-            // Adds the where statement
-            query += `WHERE `
-            
-            // Sets as the current index 0
-            let index = 0;
-            // Gets the entries from the query parameters
-            let entries = Object.entries(queryParams)
-            let length = entries.length;
-            
-            // For each key value pair in the JSON object...
-            for (const [key, value] of entries) {
-                let values = [];
-                if(Array.isArray(value)) {
-                    value.forEach(x => {
-                        values.push(x); 
-                        length++;
-                    });
-                    length--;
-                }
-                else
-                    values.push(value);
-
-                values.forEach(x => {
-                    // Adds the key name to the string
-                    query += `${key} `
-
-                    // Splits the value at '.' 
-                    let valueArray = x.split(".");
-
-                    // If the value array's length i greater than 1...
-                    if(valueArray.length > 1)
-                    {
-                        if(valueArray[0] === "lt")
-                            query += "<= ";
-                        else if(valueArray[0] === "gt")
-                            query += ">= ";
-                        
-                        if(isNaN(valueArray[1]))
-                            query += `\"${valueArray[1]}\" `
-                        else
-                            query += `${valueArray[1] }`
-                    }
-                    else
-                    {
-                        if(isNaN(valueArray[1]))
-                            query += `= \"${x}\" `
-                        else
-                            query += `= ${x}`
-                    }
-
-                    if(index < length - 1)
-                        query +=" AND ";
-                    index++;
-                });
-            }
-        }
-        
-        query += ";";
+        query = ControllerHelpers.FormatQueryFromParams(query, queryParams);
         return query;
     }
     /**
