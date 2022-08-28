@@ -25,33 +25,22 @@ const theme = createTheme({
     },
 });
 
-export default function DateRangePicker({OnDateStartChanged, OnDateEndChanged}) {
-    const [dateStart, setDateStart] = useState(null);
-    const [dateEnd, setDateEnd] = useState(null);
+export default function SingleDatePicker({OnDateChanged}) {
+    const [date, setDate] = useState(null);
 
     return (
         <ThemeProvider theme={theme}>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DatePicker
-                    label="Date start"
-                    value={dateStart}
+                    label="Date"
+                    value={date}
                     onChange={(newValue) => {
-                        setDateStart(newValue);
-                        OnDateStartChanged(newValue);
-                    }}
-                    renderInput={(params) => <TextField {...params} />}
-                />
-
-                <DatePicker
-                    label="Date end"
-                    value={dateEnd}
-                    onChange={(newValue) => {
-                        setDateEnd(newValue);
-                        OnDateEndChanged(newValue);
+                        setDate(newValue);
+                        OnDateChanged(newValue);
                     }}
                     renderInput={(params) => <TextField {...params} />}
                 />
             </LocalizationProvider>
         </ThemeProvider>
-  );
+    );
 }

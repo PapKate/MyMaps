@@ -8,6 +8,7 @@ import Loading from "../../Components/Animations/Loading";
 import TitleAndText from "../../Components/TitleAndText";
 import Helpers from "../../Shared/Helpers"
 import DateRangePicker from "../../Components/DatePickers/DateRangePicker";
+import SingleDatePicker from "../../Components/DatePickers/SingleDatePicker";
 
 const useStyles = makeStyles({
   statisticsPageContainer: {
@@ -60,6 +61,16 @@ const useStyles = makeStyles({
     padding: "32px",
     background: `#FFFFFF`,
     borderRadius: "8px",
+  },
+  dateRangePickerContainer : {
+    position: "relative",
+    width: "100%",
+    height: "40px",
+    display: "flex",
+    flexDirection : "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: "8px"
   }
 });
 
@@ -68,13 +79,16 @@ const StatisticsPage = () => {
   const classes = useStyles();
 
   const [isLoading, setIsLoading] = useState(true);
+  
   const [totalCheckIns, setTotalCheckIns] = useState(null);
   const [totalCases, setTotalCases] = useState(null);
   const [totalCheckInCases, setTotalCheckInCases] = useState(null);
   const [totalCheckInTypes, setTotalCheckInTypes] = useState(null);
   const [totalCategoriesByCases, setTotalCategoriesByCases] = useState(null);
   const [totalCheckInTimespan, setTotalCheckInTimeSpan] = useState(null);
+  const [totalHourlyCheckInChanges, setTotalHourlyCheckInChanges] = useState(null);
 
+  const [date, setDate] = useState(new Date());
   const [dateStart, setDateStart] = useState(new Date());
   const [dateEnd, setDateEnd] = useState(new Date());
 
@@ -113,6 +127,32 @@ const StatisticsPage = () => {
       loopIndex++;
     })
     return checkInDateWithReferences;
+  }
+
+  const CreateCheckInDateHourWithReferencesList = (list) => {
+    let checkInDateHourWithReferences = [];
+    let referencesIndex = 0;
+    let loopIndex = 0;
+
+    list.forEach(x => {
+      referencesIndex++;
+      var currentCheckInDateAndHour = Helpers.GetDateHour(new Date(x.checkInDate));
+      var nextCheckInDateAndHour = Helpers.GetDateHour(new Date(x.checkInDate));;
+      
+      if(loopIndex !== list.length - 1)
+        nextCheckInDateAndHour = Helpers.GetDateHour(new Date(list[loopIndex + 1].checkInDate))
+      
+      if((loopIndex !== list.length - 1 
+        && currentCheckInDateAndHour.hour !== nextCheckInDateAndHour.hour) 
+        || loopIndex === list.length - 1)
+      {
+        checkInDateHourWithReferences.push({"dateAndHour" : currentCheckInDateAndHour, "references" : referencesIndex});
+        referencesIndex = 0;
+      }
+
+      loopIndex++;
+    })
+    return checkInDateHourWithReferences;
   }
 
   /**
@@ -265,6 +305,73 @@ const StatisticsPage = () => {
     })
   }, [dateEnd])
 
+  useEffect (async () => {
+    
+    var lastMinutesOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
+    
+    var timespanCheckInResponse = await axios.get(`/api/myMaps/pointCheckIns`, {
+      params: {
+        checkInDate : [`gt.${Helpers.FormatDateTime(date)}`, `lt.${Helpers.FormatDateTime(lastMinutesOfDay)}`]
+      }
+    });
+
+    var timespanCheckInCasesResponse = await axios.get(`/api/myMaps/pointCheckIns/confirmedCases`, {
+      params: {
+        checkInDate : [`gt.${Helpers.FormatDateTime(date)}`, `lt.${Helpers.FormatDateTime(lastMinutesOfDay)}`]
+      }
+    });
+    var timespanCheckInsCases = timespanCheckInCasesResponse.data;
+
+    var timespanCheckIns = timespanCheckInResponse.data;
+
+    var hourlyCheckInChangesData = CreateCheckInDateHourWithReferencesList(timespanCheckIns);
+
+    var hourlyCheckInCasesChangesData = CreateCheckInDateHourWithReferencesList(timespanCheckInsCases);
+
+    var hours = [];
+    var hourCases = [];
+    for(let i = 0; i <= 24 - 1; i++)
+    {
+      var current = i;
+
+      hours.push({"hour" : current, "references" : 0 });
+      hourCases.push({"hour" : current, "references" : 0 });
+    }
+
+    hours.forEach(hour => {
+      let checkInsChanges = hourlyCheckInChangesData?.find(x => x.dateAndHour.hour === hour.hour)?.references;
+      if(checkInsChanges != null)
+        hour.references = checkInsChanges;
+    })
+
+    hourCases.forEach(hourCase => {
+      let checkInsChanges = hourlyCheckInCasesChangesData?.find(x => x.dateAndHour.hour === hourCase.hour)?.references;
+      if(checkInsChanges != null)
+        hourCase.references = checkInsChanges;
+    })
+
+    setTotalHourlyCheckInChanges({
+      labels : hours.map((hour) => hour.hour),
+      datasets : [
+        {
+          label : "Check Ins",
+          data : hours.map((hour) => hour.references),
+          backgroundColor: [
+            `#${Constants.Yellow}`,
+          ]
+        },
+        {
+          label : "COVID cases Check Ins",
+          data : hourCases.map((hourCase) => hourCase.references),
+          backgroundColor: [
+            `#${Constants.Red}`,
+          ]
+        }
+      ]
+    })
+  }, [date])
+
+
   return (
     <div className={classes.statisticsPageContainer}>
       {isLoading 
@@ -298,8 +405,14 @@ const StatisticsPage = () => {
                 <BarChart chartData={totalCategoriesByCases}/>
               </div>
               <div className={classes.statisticContainer}>
-                <DateRangePicker OnDateStartChanged={(date) => setDateStart(date)} OnDateEndChanged={(date)=> setDateEnd(date)}/>
+                <div className={classes.dateRangePickerContainer}>
+                  <DateRangePicker OnDateStartChanged={(date) => setDateStart(date)} OnDateEndChanged={(date)=> setDateEnd(date)}/>
+                </div>
                 <BarChart chartData={totalCheckInTimespan}/>
+              </div>
+              <div className={classes.statisticContainer}>
+                <SingleDatePicker OnDateChanged={(date) => setDate(date)}/>
+                <BarChart chartData={totalHourlyCheckInChanges}/>
               </div>
             </div>
           </div>

@@ -29,8 +29,6 @@ class Helpers {
         let year = date.getFullYear();
         let month = date.getMonth();
         let day = date.getDate();
-
-        let dateToString = `${year}-${month}-${day}`;
         return new Date(year, month, day);
     }
 
@@ -43,6 +41,13 @@ class Helpers {
         return `${year}-${month}-${day}`;
     }
 
+    static GetDateHour(date)
+    {
+        let fullDate = this.GetFullDate(date);
+        let hour = date.getHours();
+
+        return {"date" : fullDate, "hour" : hour};
+    }
 }
 
 export default Helpers;

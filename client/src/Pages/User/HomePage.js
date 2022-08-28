@@ -11,6 +11,7 @@ import Constants from "../../Shared/Constants";
 import TitleAndText from "../../Components/TitleAndText";
 import IconTextInput from '../../Components/Inputs/IconTextInput';
 import VectorButton from '../../Components/Buttons/VectorButton';
+import Loading from "../../Components/Animations/Loading";
 
 const useStyles = makeStyles({
   homePageContainer: {
@@ -61,6 +62,12 @@ const HomePage = () => {
    * The days of a week
    */
   const weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
+  //#region Is Loading Flag
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  //#endregion
 
   //#region Current Hour
 
@@ -393,7 +400,7 @@ const HomePage = () => {
   useEffect(() => { 
     SetCurrentDayAndHour();
     GetPOIS();
-
+    setIsLoading(false);
   }, []);
 
   /**
@@ -414,93 +421,102 @@ const HomePage = () => {
 
   return (
     <div className={classes.homePageContainer}>
-      <div className="leafletSearchBarContainer">
-        <div className="leafletSearchBar">
-          <IconTextInput  Text={searchText}
-                          HasFullWidth={true}
-                          Size="small"
-                          OnTextChanged={OnSearchTextChanged}
-                          Hint="Search for a place or category..."
-                          VectorSource={Constants.Magnify}
-                          VectorColor={Constants.Gray}/>
-        </div>
-      </div>
-      <div className='leaflet-container'>
-        <MapContainer center={[userLocation.lat, userLocation.lng]} zoom={14} scrollWheelZoom={true} zoomControl={false}>
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png"
-          />
-          <ZoomControl position="topright" />
-          <Circle center={[userLocation.lat, userLocation.lng]} fillColor={"red"} radius={20} stroke={false} />
-          <Marker position={[userLocation.lat, userLocation.lng]} icon={silhouette}>
-          </Marker> 
+      {isLoading 
+        ? 
+        (
+          <Loading/>
+        )
+        :
+        (
+          <div>
+            <div className="leafletSearchBarContainer">
+              <div className="leafletSearchBar">
+                <IconTextInput  Text={searchText}
+                                HasFullWidth={true}
+                                Size="small"
+                                OnTextChanged={OnSearchTextChanged}
+                                Hint="Search for a place or category..."
+                                VectorSource={Constants.Magnify}
+                                VectorColor={Constants.Gray}/>
+              </div>
+            </div>
+            <div className='leaflet-container'>
+              <MapContainer center={[userLocation.lat, userLocation.lng]} zoom={14} scrollWheelZoom={true} zoomControl={false}>
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png"
+                />
+                <ZoomControl position="topright" />
+                <Circle center={[userLocation.lat, userLocation.lng]} fillColor={"red"} radius={20} stroke={false} />
+                <Marker position={[userLocation.lat, userLocation.lng]} icon={silhouette}>
+                </Marker> 
 
-          {searchedPoints !== null && searchedPoints?.map((point) => (
-            
-            <Marker key={point.id} 
-                    position={[
-                      point.lat, 
-                      point.lng
-                    ]}
-                    icon={ GetPlaceHolder(point.next) }
-                    eventHandlers={{
-                      click: () => {
-                        console.log(`marker ${point.name} clicked`)
-                      },
-                    }}>
-              <Popup closeButton={false} onClose={() => {setPopularityText("")}}>
-                <div className='poiPopUpContainer'>
-                  <h2 className='poiTitle'>{point.name}</h2>
-                  <h4>{point.lat}, {point.lng}</h4>
-                  <TitleAndText Title={'Address'} Text={point.address} />
-                  <TitleAndText Title={'Rating'} Text={`${point.rating} / 5 by ${point.ratingNumber} reviews`} />
-                  <TitleAndText Title={'Current popularity'} Text={point.currentPopularity} />
-                  <TitleAndText Title={'Next 2 hours estimated popularity'} Text={point.next} />
-                  { GetDistanceInKm(userLocation.lat, userLocation.lng, point.lat, point.lng) <= 0.020 
-                    ? 
-                    (
-                      <div className='popUpButtonsContainer'>
-                        <IconTextInput  Text={popularityText}
-                                        HasFullWidth={true}
-                                        Size="small"
-                                        Hint=''
-                                        OnTextChanged={OnPopularityTextChanged}
-                                        VectorSource={Constants.AccountGroup}
-                                        VectorColor={Constants.LightBlue}/>
-                        <div className="tooltip">
-                          <VectorButton VectorSource={Constants.AccountEye} 
-                                        BorderRadius={'8px'} 
-                                        Size={'40px'}
-                                        BackColor={Constants.LightBlue}
-                                        OnClick={async() => await PopularityButtonOnClick(point)}
-                                        />
-                          <span className="tooltipText">Submit popularity</span>
-                        </div>
-                        <div className="tooltip">
-                          <VectorButton VectorSource={Constants.Hand} 
-                                        BorderRadius={'8px'}
-                                        Size={'40px'} 
-                                        BackColor={Constants.Yellow}
-                                        OnClick={async() => await CheckInButtonOnClick(point)}/>
-                          <span className="tooltipText">I was here</span>
-                        </div>
-                      </div>
-                    ) 
-                    :
-                    (
-                      <div></div>
-                    )
-                  }
+                {searchedPoints !== null && searchedPoints?.map((point) => (
                   
-                </div>
-              </Popup>
-            </Marker>
-          ))}
-
-         </MapContainer>
-      </div>
-
+                  <Marker key={point.id} 
+                          position={[
+                            point.lat, 
+                            point.lng
+                          ]}
+                          icon={ GetPlaceHolder(point.next) }
+                          eventHandlers={{
+                            click: () => {
+                              console.log(`marker ${point.name} clicked`)
+                            },
+                          }}>
+                    <Popup closeButton={false} onClose={() => {setPopularityText("")}}>
+                      <div className='poiPopUpContainer'>
+                        <h2 className='poiTitle'>{point.name}</h2>
+                        <h4>{point.lat}, {point.lng}</h4>
+                        <TitleAndText Title={'Address'} Text={point.address} />
+                        <TitleAndText Title={'Rating'} Text={`${point.rating} / 5 by ${point.ratingNumber} reviews`} />
+                        <TitleAndText Title={'Current popularity'} Text={point.currentPopularity} />
+                        <TitleAndText Title={'Next 2 hours estimated popularity'} Text={point.next} />
+                        { GetDistanceInKm(userLocation.lat, userLocation.lng, point.lat, point.lng) <= 0.020 
+                          ? 
+                          (
+                            <div className='popUpButtonsContainer'>
+                              <IconTextInput  Text={popularityText}
+                                              HasFullWidth={true}
+                                              Size="small"
+                                              Hint=''
+                                              OnTextChanged={OnPopularityTextChanged}
+                                              VectorSource={Constants.AccountGroup}
+                                              VectorColor={Constants.LightBlue}/>
+                              <div className="tooltip">
+                                <VectorButton VectorSource={Constants.AccountEye} 
+                                              BorderRadius={'8px'} 
+                                              Size={'40px'}
+                                              BackColor={Constants.LightBlue}
+                                              OnClick={async() => await PopularityButtonOnClick(point)}
+                                              />
+                                <span className="tooltipText">Submit popularity</span>
+                              </div>
+                              <div className="tooltip">
+                                <VectorButton VectorSource={Constants.Hand} 
+                                              BorderRadius={'8px'}
+                                              Size={'40px'} 
+                                              BackColor={Constants.Yellow}
+                                              OnClick={async() => await CheckInButtonOnClick(point)}/>
+                                <span className="tooltipText">I was here</span>
+                              </div>
+                            </div>
+                          ) 
+                          :
+                          (
+                            <div></div>
+                          )
+                        }
+                        
+                      </div>
+                    </Popup>
+                  </Marker>
+                ))}
+              </MapContainer>
+            </div>
+          </div>
+        )
+      }
     </div>
   );
 };
