@@ -212,9 +212,8 @@ const HomePage = () => {
         pointId: point.id,
         customers: popularityText,
       });
-
+      GetPOIS();
       setPopularityText("");
-
     } catch (error) {
       console.log(error);
       console.log("data not fetched");
@@ -303,6 +302,10 @@ const HomePage = () => {
    */
   const GetPOIS = async() => {
     try {
+      var pointsTypesResponse = await axios.get(`/api/myMaps/points/types`);
+
+      const pointsTypes = pointsTypesResponse.data;
+
       // Gets the popular times for all the points of interest from the database
       const response = await axios.get(`/api/myMaps/popularTimes`);
       
@@ -316,8 +319,14 @@ const HomePage = () => {
       {
         // If it is the first reference of a poi in the popular times list...
         if(i % 7 === 0)
-          // Add it to the list 
-          uniquePois.push(pois[i]);
+        {
+          var currentPoint = pois[i];  
+          var currentPointAndTypes = pointsTypes.find(function(x) { return x.id === currentPoint.id; });
+          currentPoint["categories"] = currentPointAndTypes.categories;
+  
+            // Add it to the list 
+            uniquePois.push(currentPoint);
+        }
       }
 
       // For each poi...
@@ -409,10 +418,10 @@ const HomePage = () => {
    */
   useEffect(() => {
     // If the search text is not null or empty...
-    // Gets the points that contain in their name //TODO or categories the text
+    // Gets the points that contain in their name and categories the text
     // Else returns an empty array
     let points = searchText ? uniquePoints?.filter(function (x) {
-      return x.name.toLowerCase().includes(searchText.toLowerCase()) ;
+      return x.name.toLowerCase().includes(searchText.toLowerCase()) || x.categories.toLowerCase().includes(searchText.toLowerCase()) ;
     }) : null;
     setSearchedPoints(points);
   }, [searchText])
@@ -459,12 +468,8 @@ const HomePage = () => {
                             point.lng
                           ]}
                           icon={ GetPlaceHolder(point.next) }
-                          eventHandlers={{
-                            click: () => {
-                              console.log(`marker ${point.name} clicked`)
-                            },
-                          }}>
-                    <Popup closeButton={false} onClose={() => {setPopularityText("")}}>
+                          >
+                    <Popup closeButton={false} onClose={() => {setPopularityText(""); }}>
                       <div className='poiPopUpContainer'>
                         <h2 className='poiTitle'>{point.name}</h2>
                         <h4>{point.lat}, {point.lng}</h4>
@@ -507,7 +512,6 @@ const HomePage = () => {
                             <div></div>
                           )
                         }
-                        
                       </div>
                     </Popup>
                   </Marker>

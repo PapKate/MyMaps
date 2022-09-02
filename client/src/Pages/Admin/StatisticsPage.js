@@ -87,6 +87,7 @@ const StatisticsPage = () => {
   const [totalCategoriesByCases, setTotalCategoriesByCases] = useState(null);
   const [totalCheckInTimespan, setTotalCheckInTimeSpan] = useState(null);
   const [totalHourlyCheckInChanges, setTotalHourlyCheckInChanges] = useState(null);
+  const [totalHourlyCheckInCasesChanges, setTotalHourlyCheckInCasesChanges] = useState(null);
 
   const [date, setDate] = useState(new Date());
   const [dateStart, setDateStart] = useState(new Date());
@@ -241,7 +242,7 @@ const StatisticsPage = () => {
 
   }, []);
 
-
+ // Check In Bar Chart
   useEffect (async () => {
     var timespanCheckInResponse = await axios.get(`/api/myMaps/pointCheckIns`, {
       params: {
@@ -305,37 +306,39 @@ const StatisticsPage = () => {
     })
   }, [dateEnd])
 
+  // Check In Change Bar Chart
   useEffect (async () => {
     
     var lastMinutesOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
     
-    var timespanCheckInResponse = await axios.get(`/api/myMaps/pointCheckIns`, {
+    var timespanHourlyCheckInResponse = await axios.get(`/api/myMaps/pointCheckIns`, {
       params: {
         checkInDate : [`gt.${Helpers.FormatDateTime(date)}`, `lt.${Helpers.FormatDateTime(lastMinutesOfDay)}`]
       }
     });
 
-    var timespanCheckInCasesResponse = await axios.get(`/api/myMaps/pointCheckIns/confirmedCases`, {
+    var timespanHourlyCheckInCasesResponse = await axios.get(`/api/myMaps/pointCheckIns/confirmedCases`, {
       params: {
         checkInDate : [`gt.${Helpers.FormatDateTime(date)}`, `lt.${Helpers.FormatDateTime(lastMinutesOfDay)}`]
       }
     });
-    var timespanCheckInsCases = timespanCheckInCasesResponse.data;
 
-    var timespanCheckIns = timespanCheckInResponse.data;
+    var timespanHourlyCheckIns = timespanHourlyCheckInResponse.data;
 
-    var hourlyCheckInChangesData = CreateCheckInDateHourWithReferencesList(timespanCheckIns);
+    var timespanHourlyCheckInsCases = timespanHourlyCheckInCasesResponse.data;
 
-    var hourlyCheckInCasesChangesData = CreateCheckInDateHourWithReferencesList(timespanCheckInsCases);
+    var hourlyCheckInChangesData = CreateCheckInDateHourWithReferencesList(timespanHourlyCheckIns);
+
+    var hourlyCheckInCasesChangesData = CreateCheckInDateHourWithReferencesList(timespanHourlyCheckInsCases);
 
     var hours = [];
-    var hourCases = [];
+    var hoursCases = [];
     for(let i = 0; i <= 24 - 1; i++)
     {
       var current = i;
 
       hours.push({"hour" : current, "references" : 0 });
-      hourCases.push({"hour" : current, "references" : 0 });
+      hoursCases.push({"hour" : current, "references" : 0 });
     }
 
     hours.forEach(hour => {
@@ -344,7 +347,7 @@ const StatisticsPage = () => {
         hour.references = checkInsChanges;
     })
 
-    hourCases.forEach(hourCase => {
+    hoursCases.forEach(hourCase => {
       let checkInsChanges = hourlyCheckInCasesChangesData?.find(x => x.dateAndHour.hour === hourCase.hour)?.references;
       if(checkInsChanges != null)
         hourCase.references = checkInsChanges;
@@ -362,7 +365,7 @@ const StatisticsPage = () => {
         },
         {
           label : "COVID cases Check Ins",
-          data : hourCases.map((hourCase) => hourCase.references),
+          data : hoursCases.map((hourCase) => hourCase.references),
           backgroundColor: [
             `#${Constants.Red}`,
           ]

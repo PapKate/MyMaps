@@ -130,9 +130,7 @@ const [pointsName, setPointsName] = useState([]);
   try {
     var response = await axios.get(`/api/myMaps/points/types`);
 
-
     const pointsTypes = response.data;
-
 
     let pointNames = [];
     pointsTypes.forEach(pointType => {

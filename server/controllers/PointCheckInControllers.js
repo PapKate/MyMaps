@@ -37,7 +37,7 @@ exports.GetAllPointCheckInAndPoints = async(req, res, next) => {
 }
 
 exports.GetAllPointCheckInAndCases = async(req, res, next) => {
-    let query = PointCheckIn.GetAllPointCheckInCases(req.query);
+    let query = PointCheckIn.GetAllPointCheckInCases(req.query, "checkInDate");
     // Execute the query
     var result = await GetQueryResultAsync(query);
 
