@@ -5,8 +5,7 @@ const ControllerHelpers = require('../helpers/ControllerHelpers');
  */
 class PointCheckIn{
 
-    constructor(id, userId, pointId, customers, checkInDate) {
-        this.id = id;
+    constructor(userId, pointId, customers, checkInDate) {
         this.userId = userId;
         this.pointId = pointId;
         this.customers = customers;
@@ -24,6 +23,12 @@ class PointCheckIn{
         return query;
     }
 
+    static BulkCreate(valuesString) {
+        let query = `INSERT INTO pointcheckin(userId, pointId, customers, checkInDate)
+        VALUES ${valuesString};`;
+
+        return query;
+    }
     /**
      * Gets all the point check ins from the data base
      */

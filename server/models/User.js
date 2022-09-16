@@ -26,6 +26,12 @@ class User{
         return query;
     }
 
+    static BulkCreate(valuesString) {
+        let query = `INSERT INTO users(username, email, password, dateCreated, dateModified) VALUES ${valuesString};`;
+
+        return query;
+    }
+
     static GetAll() {
         let query = `SELECT * FROM users`;
 
