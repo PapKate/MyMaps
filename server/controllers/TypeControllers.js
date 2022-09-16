@@ -8,12 +8,11 @@ const Type = require('../models/Type');
 const ErrorResponse = require("../utils/errorResponse");
 
 /**
- * TODO Call the method from the Model with the return query
+ * Get all
  */
  exports.GetAllTypes = async (req, res, next) => {
 
-    var query = `SELECT * FROM types`;
-
+    var query = Type.GetAll();
     // Execute the query
     var results = await GetQueryResultAsync(query);
 
@@ -27,7 +26,7 @@ const ErrorResponse = require("../utils/errorResponse");
  * @param {*} res 
  * @param {*} next 
  */
-exports.CreateNewType =  async (req, res, next) => {
+ exports.CreateNewType =  async (req, res, next) => {
     let type = new Type(req.body.name);
     
     // Gets the sql query for creating the type
@@ -46,7 +45,7 @@ exports.CreateNewType =  async (req, res, next) => {
  * @param {*} next 
  * @returns 
  */
-exports.GetTypeById = (async (req, res, next) => {
+ exports.GetTypeById = (async (req, res, next) => {
 
     let query = Type.GetById(req.params.id);
 
@@ -60,9 +59,9 @@ exports.GetTypeById = (async (req, res, next) => {
 });
 
 /**
- * TODO Update  
+ * Update  
  */
-exports.UpdateTypeById = (async (req, res, next) => {
+ exports.UpdateTypeById = (async (req, res, next) => {
     
     let query = Type.UpdateById(req.params.id, req.body.name);
     var result = await GetQueryResultAsync(query);
@@ -73,29 +72,17 @@ exports.UpdateTypeById = (async (req, res, next) => {
         return next(new ErrorResponse(`ERROR 404: Not found. The type with id ${req.params.id} was not found.`, 404));
     }
 
-   /* let queryProperties = "";
-
-    if(!ControllerHelpers.IsNullOrEmpty(req.body.name))
-        queryProperties += `name = ${req.body.name}, `;*/
-
     res.status(201).json(result2);
-
 });
 
 /**
- * TODO Delete 
+ * Delete 
  */
-exports.DeleteTypeById = (async (req, res, next) => {
+ exports.DeleteTypeById = (async (req, res, next) => {
     
     let query = Type.DeleteById(req.params.id);
     var result = await GetQueryResultAsync(query);
 
-    if(result.length == 0) {
-        return next(new ErrorResponse(`ERROR 404: Not found. The type with id ${req.params.id} was not found.`, 404));
-    }
-
-
     res.status(200).json(Type);
-
 });
 

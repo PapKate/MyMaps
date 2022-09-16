@@ -18,6 +18,12 @@
         return query;    
     }
 
+    static BulkCreate(valuesString) {
+        let query = `INSERT INTO coordinates(lat,lng) VALUES ${valuesString};`;
+
+        return query;
+    }
+
     static GetAll() {
         let query = `SELECT * FROM coordinates`;
 
@@ -33,7 +39,7 @@
     static UpdateById(id, newLat, newLng) {
 
         let query = `UPDATE coordinates SET lat = ${newLat}, 
-                                      lng = ${newLng}
+                                            lng = ${newLng}
                     WHERE id = ${id};`;
 
         return query;

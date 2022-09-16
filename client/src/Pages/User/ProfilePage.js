@@ -228,9 +228,6 @@ const ProfilePage = () => {
     },
   ];
   
-  const visitsLogRows = [
-  ];
-
   /**
    ** The column of the personal cases data grid
    */

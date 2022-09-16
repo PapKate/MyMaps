@@ -9,6 +9,7 @@ const TimeSpent = require('../models/TimeSpent');
 const PopularTime = require('../models/PopularTime');
 const Point = require('../models/Point');
 const PointAndType = require('../models/PointAndType');
+const ControllerHelpers = require("../helpers/ControllerHelpers");
 /**
  * Uploads a file and passes its POI data to the data base
  * @param {*} req 
@@ -16,11 +17,9 @@ const PointAndType = require('../models/PointAndType');
  * @param {*} next 
  */
 
- exports.GetFile = async (req,res,next) =>{
+ exports.GetFile = async (req,res,next) => {
 
     try {
-       // var fs = require('fs');
-
         // The query to get all the types in the data base
         var getAllTypesQuery = Type.GetAll();
         // Calls the data base and gets all the types
@@ -52,30 +51,58 @@ const PointAndType = require('../models/PointAndType');
         var allPopularTimesNameList = allPopularTimes.map(x => x.name);
         var allPopularTimesPointIdList = allPopularTimes.map(x => x.pointId)
  
+        var pointsToUpdate = [];
+ 
+        var getAllPointsQuery = Point.GetAll();
+
+        var allPoints = await GetQueryResultAsync(getAllPointsQuery);
+
+        var allIdPointList = allPoints.map(x => x.id);
+
+        var pointsFromFile = [];
+
         // Reads the path from the request's body as a text
         var data = await fs.readFile(req.body.path, 'utf8');
         // Parses it to JSON
         var points = JSON.parse(data);
+
+        // For each point of interest...
+        points.forEach(async point => {
+            // If the point already exist in the data base...
+            if((allIdPointList.includes(point.id) === true))
+            {
+                pointsToUpdate.push(point);
+            }
+        });
+
+        pointsToUpdate.forEach(async point => 
+        {
+            let pointAndTypesDeleteQuery = PointAndType.DeleteById(point.id);
+            GetQueryResultAsync(pointAndTypesDeleteQuery);
+            
+            let popularTimesDeleteQuery = PopularTime.DeleteById(point.id);
+            await GetQueryResultAsync(popularTimesDeleteQuery);
+
+            let pointsDeleteQuery = Point.DeleteById(point.id);
+            await GetQueryResultAsync(pointsDeleteQuery);
+        });
+
+        var typesFromFile = [];
+        var timeSpentFromFile = [];
+        var coordinatesFromFile = [];
 
         points.forEach(async x => {
             var id = x.id;
 
             var types = x.types;
 
-            
             types.forEach(async type => {
                 // Check if type does NOT exist in the data base...
                 if(allTypesList.includes(type) === false)
                 {
-
                     // Adds the type name to the list
                     allTypesList.push(type);
-                    // Creates the type model
-                    let typeModel = new Type(type);
-                    // Gets the query to create an instance in the data base
-                    let typeQuery = typeModel.Create();
-                    // Execute the query
-                    await GetQueryResultAsync(typeQuery);
+                    typesFromFile.push(`"${type}"`);
                 }
             });
 
@@ -90,10 +117,8 @@ const PointAndType = require('../models/PointAndType');
                 allLngList.push(x.coordinates.lng);
                 // Creates the coordinate model
                 let coordinatesModel = new Coordinate(lat, lng);
-                // Gets the query to create an instance in the data base
-                let coordinatesQuery = coordinatesModel.Create();
-                // Execute the query
-                await GetQueryResultAsync(coordinatesQuery);
+                coordinatesFromFile.push(`${coordinatesModel.lat},
+                                         ${coordinatesModel.lng}`);
             }
 
             // If the time spent values exist...
@@ -109,13 +134,36 @@ const PointAndType = require('../models/PointAndType');
                     allMaxValueList.push(x.time_spent[1]);
                     // Creates the timespent model
                     let timeSpentModel = new TimeSpent(valueData[0],valueData[1]);
-                    // Gets the query to create an instance in the data base
-                    let timeSpentQuery = timeSpentModel.Create();
-                    // Execute the query
-                    var result = await GetQueryResultAsync(timeSpentQuery);
+                    timeSpentFromFile.push(`${timeSpentModel.minValue}, ${timeSpentModel.maxValue}`);
                 }
             }
         });
+
+        if(typesFromFile.length > 0)
+        {
+            let typeValuesQuery = ControllerHelpers.FormatValuesForBulkInsert(typesFromFile);
+            let typeQuery = Type.BulkCreate(typeValuesQuery);
+            // Execute the query
+            await GetQueryResultAsync(typeQuery);
+        }
+
+        if(coordinatesFromFile.length > 0)
+        {
+            // Gets the query to create an instance in the data base
+            let coordinateValuesQuery = ControllerHelpers.FormatValuesForBulkInsert(coordinatesFromFile);
+            let coordinateQuery = Coordinate.BulkCreate(coordinateValuesQuery);
+            // Execute the query
+            await GetQueryResultAsync(coordinateQuery);
+        }
+
+        if(timeSpentFromFile.length > 0)
+        {
+            // Gets the query to create an instance in the data base
+            let timeSpentValuesQuery = ControllerHelpers.FormatValuesForBulkInsert(timeSpentFromFile);
+            let timeSpentQuery = TimeSpent.BulkCreate(timeSpentValuesQuery);
+            // Execute the query
+            await GetQueryResultAsync(timeSpentQuery);
+        }
 
         // The query to get all the types in the data base
         var getAllTypesQuery = Type.GetAll();
@@ -146,11 +194,11 @@ const PointAndType = require('../models/PointAndType');
         var allLatList = allCoordinates.map(x => x.lat);
         var allLngList = allCoordinates.map(x => x.lng);
 
-        var getAllPointsQuery = Point.GetAll();
+        allPoints = await GetQueryResultAsync(getAllPointsQuery);
 
-        var allPoints = await GetQueryResultAsync(getAllPointsQuery);
+        allIdPointList = allPoints.map(x => x.id);
 
-        var allIdPointList = allPoints.map(x => x.id);
+        var pointsFromFile = [];
 
         // For each point of interest...
         points.forEach(async point => {
@@ -180,6 +228,10 @@ const PointAndType = require('../models/PointAndType');
             // If the point does not already exist in the data base...
             if((allIdPointList.includes(point.id) === false))
             {
+                let dateTimeNow = ControllerHelpers.GetCurrentDateTime();
+                let dateCreated = dateTimeNow;
+                let dateModified = dateTimeNow;
+
                 // Creates a point model
                 var pointModel = new Point( point.id, 
                                             point.name, 
@@ -189,19 +241,29 @@ const PointAndType = require('../models/PointAndType');
                                             point.rating_n ?? null,
                                             point.current_popularity ?? null,
                                             timeSpentId ?? null);
-                // Gets the create query
-                var createPointQuery = pointModel.Create();
-                // Gets the result and adds the point to the data base
-                var pointResult = await GetQueryResultAsync(createPointQuery);
-                var test = pointResult;
-            }
-            // Else...
-            else
-            {
-                /* TODO -> Update the point */
+                pointsFromFile.push(`"${pointModel.id}", 
+                                    "${pointModel.name}", 
+                                    "${pointModel.address}",
+                                    ${pointModel.coordinatesId}, 
+                                    ${pointModel.rating}, 
+                                    ${pointModel.ratingNumber}, 
+                                    ${pointModel.currentPopularity}, 
+                                    ${pointModel.timespentId},
+                                    "${dateCreated}",
+                                    "${dateModified}"`);
             }
         });
 
+        if(pointsFromFile.length > 0)
+        {
+            let pointValuesQuery = ControllerHelpers.FormatValuesForBulkInsert(pointsFromFile);
+            let pointQuery = Point.BulkCreate(pointValuesQuery);
+            // Execute the query
+            await GetQueryResultAsync(pointQuery);
+        }
+
+        let pointAndTypesFromFile = [];
+        let popularTimesFromFile = [];
         points.forEach(async x => {
             // For each type in the data base...
             allTypes.forEach(async type => {
@@ -212,12 +274,8 @@ const PointAndType = require('../models/PointAndType');
                     if((allPointIdList.includes(x.id) === false) && (allTypeIdList.includes(type.id) === false))
                     {
                         // Creates a new point and type
-                        var pointAndType = new PointAndType(x.id, type.id)
-                        // Gets the create SQL query for the current point and type
-                        var createPointAndTypeQuery = pointAndType.Create();
-                        // Executes the query
-                        var pointAndTypeResult = await GetQueryResultAsync(createPointAndTypeQuery);
-                        var test = pointAndTypeResult;
+                        var pointAndType = new PointAndType(x.id, type.id);
+                        pointAndTypesFromFile.push(`"${pointAndType.pointId}", ${pointAndType.typeId}`);
                     }
                 }
             });
@@ -239,32 +297,41 @@ const PointAndType = require('../models/PointAndType');
                         hourData[8], hourData[9], hourData[10], hourData[11], hourData[12], hourData[13],
                         hourData[14], hourData[15], hourData[16], hourData[17], hourData[18], hourData[19],
                         hourData[20], hourData[21], hourData[22], hourData[23], x.id);
-                    // Gets the query to create an instance in the data base
-                    let popularTimeQuery = popularTimeModel.Create();
-                    // Execute the query
-                    var result = await GetQueryResultAsync(popularTimeQuery);
+                        
+                    popularTimesFromFile.push(`"${popularTimeModel.name}", ${popularTimeModel.hour00}, ${popularTimeModel.hour01},
+                                                ${popularTimeModel.hour02}, ${popularTimeModel.hour03},${popularTimeModel.hour04},
+                                                ${popularTimeModel.hour05}, ${popularTimeModel.hour06},${popularTimeModel.hour07},
+                                                ${popularTimeModel.hour08}, ${popularTimeModel.hour09},${popularTimeModel.hour10},
+                                                ${popularTimeModel.hour11}, ${popularTimeModel.hour12},${popularTimeModel.hour13},
+                                                ${popularTimeModel.hour14}, ${popularTimeModel.hour15},${popularTimeModel.hour16},
+                                                ${popularTimeModel.hour17}, ${popularTimeModel.hour18},${popularTimeModel.hour19},
+                                                ${popularTimeModel.hour20}, ${popularTimeModel.hour21},${popularTimeModel.hour22},
+                                                ${popularTimeModel.hour23}, "${popularTimeModel.pointId}"`);
                 }
             });
         });
-
-        // types.forEach(async type => {
-            
-        //     // Searches tthrough the table types in the data base and returns the type with the given name
-        //     let findQuery = `SELECT id FROM types WHERE name = "${type}";`;
-            
-        //     // Execute the query
-        //     var results =  await GetQueryResultAsync(findQuery);  
-        //     console.log(results.toString())  
-        // });
+        if(pointAndTypesFromFile.length > 0)
+        {
+            let pointAndTypeValuesQuery = ControllerHelpers.FormatValuesForBulkInsert(pointAndTypesFromFile);
+            let pointAndTypeQuery = PointAndType.BulkCreate(pointAndTypeValuesQuery);
+            // Execute the query
+            await GetQueryResultAsync(pointAndTypeQuery);
+        }
+        
+        if(popularTimesFromFile.length > 0)
+        {
+            let popularTimeValuesQuery = ControllerHelpers.FormatValuesForBulkInsert(popularTimesFromFile);
+            let popularTimeQuery = PopularTime.BulkCreate(popularTimeValuesQuery);
+            // Execute the query
+            await GetQueryResultAsync(popularTimeQuery);
+        }
 
         // Set the body of the response
         res.status(200).json(points);
-
     } 
     catch(e) {
         console.log('Error:', e.stack);
     }
-
 };
 
 

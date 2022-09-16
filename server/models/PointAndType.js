@@ -18,6 +18,13 @@
         return sql;
     }
 
+    static BulkCreate(valuesString) {
+        let query = `INSERT INTO pointandtypes(pointId, typeId)
+                        VALUES ${valuesString};`;
+
+        return query;
+    }
+
     static GetAll() {
         let sql = `SELECT pointId, types.name FROM pointandtypes
         LEFT JOIN types on pointandtypes.typeId = types.id;`;
@@ -41,14 +48,14 @@
     static UpdateById(id, newPointId, newTypeId) {
 
         let sql = `UPDATE pointandtypes SET pointId = "${newPointId}", 
-                                    typeId = ${newTypeId}                            
+                    typeId = ${newTypeId}                            
                     WHERE id = ${id};`;
 
         return sql;
     }
 
-    static DeleteById() {
-        let sql = `DELETE FROM pointandtypes;`;
+    static DeleteById(pointId) {
+        let sql = `DELETE FROM pointandtypes WHERE pointId = "${pointId}";`;
 
         return sql;
     }

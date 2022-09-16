@@ -41,6 +41,13 @@ class PopularTime{
         return query;
     }
 
+    static BulkCreate(valuesString) {
+        let query = `INSERT INTO populartimes(name, hour00, hour01, hour02, hour03, hour04, hour05, hour06, hour07, hour08, hour09, hour10, hour11, hour12, hour13, hour14, hour15, hour16, hour17, hour18, hour19, hour20, hour21, hour22, hour23, pointId)
+                        VALUES ${valuesString};`;
+
+        return query;
+    }
+
     static GetAll() {
         let query = `SELECT points.id, points.name, points.address, points.currentPopularity, points.rating, points.ratingNumber, 
                         coordinates.lat, coordinates.lng,
@@ -63,7 +70,7 @@ class PopularTime{
     }
 
     static GetByPointId(pointId) {
-        let query = `SELECT * FROM populartimes WHERE id = ${pointId};`;
+        let query = `SELECT * FROM populartimes WHERE id = "${pointId}";`;
 
         return query;
     }
@@ -101,10 +108,11 @@ class PopularTime{
      * @param {int} newHour21
      * @param {int} newHour22
      * @param {int} newHour23
+     * @param {string} pointId
      * @returns 
      */
 
-    static Update(id, newHour00, newHour01, newHour02, newHour03, newHour04, newHour05, newHour06, newHour07, newHour08, newHour09, newHour10, newHour11, newHour12, newHour13, newHour14, newHour15, newHour16, newHour17, newHour18, newHour19, newHour20, newHour21, newHour22, newHour23) {
+    static Update(id, newHour00, newHour01, newHour02, newHour03, newHour04, newHour05, newHour06, newHour07, newHour08, newHour09, newHour10, newHour11, newHour12, newHour13, newHour14, newHour15, newHour16, newHour17, newHour18, newHour19, newHour20, newHour21, newHour22, newHour23, newPointId) {
 
         let query = `UPDATE users SET hour00 = ${newHour00},
                                     hour01 = ${newHour01}, 
@@ -129,20 +137,19 @@ class PopularTime{
                                     hour20 = ${newHour20},
                                     hour21 = ${newHour21},
                                     hour22 = ${newHour22},
-                                    hour23 = ${newHour23}
+                                    hour23 = ${newHour23},
+                                    pointId = ${newPointId}
                     WHERE id = ${id};`;
 
         return query;
     }
         /**
      * Deletes the popular times
-     * @param {int} id 
-     * @returns 
-     * 
+     * @param {int} pointId 
      */
-         static DeleteById(id) {
+         static DeleteById(pointId) {
 
-            let query = `DELETE FROM populartimes WHERE id = ${id};`;
+            let query = `DELETE FROM populartimes WHERE pointId = "${pointId}";`;
    
            return query;
        }

@@ -14,10 +14,6 @@ const ErrorResponse = require("../utils/errorResponse");
     // Execute the query
     var result = await GetQueryResultAsync(query);
 
-    if(result.length == 0) {
-        return next(new ErrorResponse(`ERROR 404: Not found.`, 404));
-    }
-
     // Set the body of the response
     res.status(200).json(result);
 };
@@ -53,10 +49,6 @@ exports.GetPointAndTypeById = (async (req, res, next) => {
 
     var result = await GetQueryResultAsync(query);
 
-    if(result.length == 0) {
-        return next(new ErrorResponse(`ERROR 404: Not found. The point and type with id ${req.params.id} was not found.`, 404));
-    }
-
     res.status(200).json(result[0]);
 });
 
@@ -73,27 +65,17 @@ exports.UpdatePointAndTypeById = (async (req, res, next) => {
 
     var result2 = await GetQueryResultAsync(query2);
 
-    if(result2.length == 0) {
-        return next(new ErrorResponse(`ERROR 404: Not found. The point and type with id ${req.params.id} was not found.`, 404));
-    }
-
     res.status(201).json(result2);
 });
 
 /**
- * TODO Delete 
+ * Delete 
  */
 exports.DeletePointAndType = (async (req, res, next) => {
     
-    let query = PointAndType.DeleteById(req.params.id);
+    let query = PointAndType.DeleteById(req.params.pointId);
     var result = await GetQueryResultAsync(query);
 
-    if(!result.length == 0) {
-        return next(new ErrorResponse(`ERROR 404: Not found. The point and type with id ${req.params.id} was not found.`, 404));
-    }
-
-
     res.status(200).json(PointAndType);
-
 });
 

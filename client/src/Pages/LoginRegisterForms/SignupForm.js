@@ -59,6 +59,9 @@ const SignupForm = () => {
     const [email, setEmail] = useState("");
     const [isSuccessfulSignUp, setIsSuccessfulSignUp] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
+    const [isDifferentPasswordsOpen, setIsDifferentPasswordsOpen] = useState(false);
+    const [isWrongPasswordOpen, setIsWrongPasswordOpen] = useState(false);
+    const [isUsernameInUseOpen, setIsUsernameInUseOpen] = useState(false);
     
     // On username changed event
     const OnUsernameChanged = event => {
@@ -84,55 +87,65 @@ const SignupForm = () => {
     };
 
     const IsOpenHandler = () => setIsOpen(!isOpen);
+
+    const IsDifferentPasswordsOpenHandler = () => setIsDifferentPasswordsOpen(!isDifferentPasswordsOpen);
     
+    const IsWrongPasswordOpenHandler = () => setIsWrongPasswordOpen(!isWrongPasswordOpen);
+
+    const IsUsernameInUseOpenHandler = () => setIsUsernameInUseOpen(!isUsernameInUseOpen);
+
     const SignUp = async () => {
 
-        if(passwordRegex.test(signUpPassword)) {
-        
-            if (signUpUsername === "" || signUpPassword === "" || email === "" || confirmPassword !== signUpPassword) {
-                IsOpenHandler();
-            
-            } else if(signUpUsername !== "" || signUpPassword !== "" || email !== "") {
-                    
-                        try{
-
-                            const responseCheck = await axios.get(`/api/myMaps/users`);
-
-                            let usersCheck = responseCheck.data;
-                        
-                            if(usersCheck.find(x => x.username === signUpUsername)) {
-                                IsOpenHandler();
-                            } 
-                            else {
-                                setIsSuccessfulSignUp(true);
-
-                                try {
-                    
-                                    const response = await axios.post(`/api/myMaps/users`, {
-                                    username: signUpUsername,
-                                    email: email,
-                                    password: signUpPassword
-                                    });
-                            
-                                    let user = response.data;
-                            
-                                    console.log(user);
-                                }
-                                catch (error) {
-                                    console.log(error)
-                                }
-                                
-                                navigate(`/`);
-                                console.log(isSuccessfulSignUp);
-                            }
-                        } catch(error) {
-                            setIsSuccessfulSignUp(false);
-                        }
-                }                  
-         } else {
+        if(!passwordRegex.test(signUpPassword)) 
+        {
+            IsWrongPasswordOpenHandler();
+            return;
+        }
+        if (confirmPassword !== signUpPassword) 
+        {
+            IsDifferentPasswordsOpenHandler();
+            return;
+        } 
+        if(signUpUsername === "" || signUpPassword === "" || email === "") 
+        {
             IsOpenHandler();
-         }
+            return;
+        }   
+        try 
+        {
+            const responseCheck = await axios.get(`/api/myMaps/users`);
 
+            let usersCheck = responseCheck.data;
+        
+            if(usersCheck.find(x => x.username === signUpUsername)) 
+            {
+                IsUsernameInUseOpenHandler();
+                return;
+            } 
+            else 
+            {
+                try 
+                {
+                    const response = await axios.post(`/api/myMaps/users`, {
+                    username: signUpUsername,
+                    email: email,
+                    password: signUpPassword
+                    });
+            
+                    setIsSuccessfulSignUp(true);
+                }
+                catch (error) 
+                {
+                    console.log(error);
+                }
+                
+                navigate(`/`);
+            }
+        } 
+        catch(error) 
+        {
+            setIsSuccessfulSignUp(false);
+        }               
     }
 
     return (
@@ -190,11 +203,27 @@ const SignupForm = () => {
                             style={signupButtonStyle}
                             onClick={SignUp}>Sign up</Button>
 
-                        <ErrorDialog Text={"Error! Please fill out every input and try again!"}
+                        <ErrorDialog Text={"Please fill out every input and try again!"}
                             IsOpen={isOpen}
                             IsOpenHandler={IsOpenHandler}
                             VectorSource={Constants.AccountCircle}
                         />
+                        <ErrorDialog Text={"Wrong password format! Your password must be at least 8 characters long and contain at least one number, one capital letter and a symbol."}
+                            IsOpen={isWrongPasswordOpen}
+                            IsOpenHandler={IsWrongPasswordOpenHandler}
+                            VectorSource={Constants.AccountCircle}
+                        />
+                        <ErrorDialog Text={"The passwords do not match. Please try again."}
+                            IsOpen={isDifferentPasswordsOpen}
+                            IsOpenHandler={IsDifferentPasswordsOpenHandler}
+                            VectorSource={Constants.AccountCircle}
+                        />
+                        <ErrorDialog Text={"The username already exists. Please try a different one."}
+                            IsOpen={isUsernameInUseOpen}
+                            IsOpenHandler={IsUsernameInUseOpenHandler}
+                            VectorSource={Constants.AccountCircle}
+                        />
+
                     </div>
                     <div className="loginTextChange">
                         <Link style={logInTextStyle} to="/">Already have and Account? Log in</Link> 

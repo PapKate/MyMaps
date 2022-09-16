@@ -37,7 +37,7 @@ exports.GetAllConfirmedCasesCaseWasHere = async (req, res, next) => {
     res.status(200).json(result);
 };
 
-exports.GetAllConfirmedCasesTypes = async (req, res, next) => {
+ exports.GetAllConfirmedCasesTypes = async (req, res, next) => {
     let query = ConfirmedCase.GetAllConfirmedCasesTypes();
 
     var result = await GetQueryResultAsync(query);
@@ -52,11 +52,11 @@ exports.GetAllConfirmedCasesTypes = async (req, res, next) => {
  * @param {*} res 
  * @param {*} next 
  */
-exports.CreateNewConfirmedCase =  async (req, res, next) => {
-    let confirmedcase = new ConfirmedCase(req.body.userId, req.body.date);
+ exports.CreateNewConfirmedCase =  async (req, res, next) => {
+    let confirmedCase = new ConfirmedCase(req.body.userId, req.body.date);
     
     // Gets the sql query for creating the confirmed case
-    let query = confirmedcase.Create();
+    let query = confirmedCase.Create();
     
     // Execute the query
     var result = await GetQueryResultAsync(query);
@@ -71,7 +71,7 @@ exports.CreateNewConfirmedCase =  async (req, res, next) => {
  * @param {*} next 
  * @returns 
  */
-exports.GetConfirmedCaseById = (async (req, res, next) => {
+ exports.GetConfirmedCaseById = (async (req, res, next) => {
 
     let query = ConfirmedCase.GetById(req.params.id);
 
@@ -99,7 +99,7 @@ exports.GetConfirmedCaseByUserId = (async (req, res, next) => {
 });
 */
 
-exports.UpdateConfirmedCaseById = (async (req, res, next) => {
+ exports.UpdateConfirmedCaseById = (async (req, res, next) => {
     
     let query = ConfirmedCase.UpdateById(req.params.id, req.body.date);
     

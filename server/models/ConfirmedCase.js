@@ -10,16 +10,14 @@
 
     Create() {
 
-        let query = `
-            INSERT INTO confirmedcases(userId, date)
-            VALUES('${this.userId}', '${this.date}');
-        `;
+        let query = `INSERT INTO confirmedcases(userId, date)
+                        VALUES('${this.userId}', '${this.date}');`;
 
          return query;
     }
 
     static GetAll() {
-        let query = `SELECT * FROM confirmedcases`;
+        let query = `SELECT * FROM confirmedcases ORDER BY date DESC`;
 
         return query;
     }
@@ -38,8 +36,8 @@
                         WHERE confirmedcases.date >= DATE_SUB(${queryParams.date}, INTERVAL 7 DAY)) AS confirmedcasesdata
                     WHERE pointcheckin.userId = ${queryParams.userId} 
                     AND pointcheckin.pointId = confirmedcasesdata.pointId
-                    AND (DATE_SUB(confirmedcasesdata.confirmedCaseDate, INTERVAL 2 HOUR) <= pointcheckin.checkInDate 
-                    OR pointcheckin.checkInDate  <= DATE_ADD(confirmedcasesdata.confirmedCaseDate, INTERVAL 2 HOUR));`;
+                    AND (DATE_SUB(confirmedcasesdata.caseWasThere, INTERVAL 2 HOUR) <= pointcheckin.checkInDate 
+                    AND pointcheckin.checkInDate  <= DATE_ADD(confirmedcasesdata.caseWasThere, INTERVAL 2 HOUR));`;
 
         return query;
     }
