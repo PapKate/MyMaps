@@ -139,6 +139,12 @@ class Routes {
   static FileRoute = Routes.HomeRoute + "/file";
 
   /**
+   ** The route to the database
+   ** /myMaps/database
+   */
+   static DatabaseRoute = Routes.HomeRoute + "/database";
+
+  /**
    ** The popularTimes' route
    ** /myMaps/popularTimes
    */

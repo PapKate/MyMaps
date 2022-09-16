@@ -6,7 +6,7 @@ const ErrorResponse = require("../utils/errorResponse");
 /**
  * Gets all the point check ins from the data base
  */
-exports.GetAllPointCheckIns = async (req, res, next) => {
+ exports.GetAllPointCheckIns = async (req, res, next) => {
 
     let query = PointCheckIn.GetAll(req.query, "checkInDate");
     // Execute the query
@@ -23,7 +23,7 @@ exports.GetAllPointCheckIns = async (req, res, next) => {
 /**
  * Gets all the point check ins joined with their points from the data base
  */
-exports.GetAllPointCheckInAndPoints = async(req, res, next) => {
+ exports.GetAllPointCheckInAndPoints = async(req, res, next) => {
     let query = PointCheckIn.GetAllWithPoints(req.query);
     // Execute the query
     var result = await GetQueryResultAsync(query);
@@ -36,7 +36,7 @@ exports.GetAllPointCheckInAndPoints = async(req, res, next) => {
     res.status(200).json(result);
 }
 
-exports.GetAllPointCheckInAndCases = async(req, res, next) => {
+ exports.GetAllPointCheckInAndCases = async(req, res, next) => {
     let query = PointCheckIn.GetAllPointCheckInCases(req.query, "checkInDate");
     // Execute the query
     var result = await GetQueryResultAsync(query);
@@ -45,7 +45,7 @@ exports.GetAllPointCheckInAndCases = async(req, res, next) => {
     res.status(200).json(result);
 }
 
-exports.GetAllPointCheckInsTypes = async(req, res, next) => {
+ exports.GetAllPointCheckInsTypes = async(req, res, next) => {
     let query = PointCheckIn.GetAllPointCheckInsTypes();
     // Execute the query
     var result = await GetQueryResultAsync(query);
@@ -74,7 +74,7 @@ exports.DeleteAllPointCheckIns = async (req, res, next) => {
 /**
  * Creates a new point check in in the data base
  */
-exports.CreateNewPointCheckIn =  async (req, res, next) => {
+ exports.CreateNewPointCheckIn =  async (req, res, next) => {
     let pointCheckIn = new PointCheckIn(req.body.id, req.body.userId, req.body.pointId, req.body.customers, req.body.checkInDate);
     
     // Gets the sql query for creating the user

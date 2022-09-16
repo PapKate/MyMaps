@@ -167,7 +167,8 @@ const HomePage = () => {
    * @param {double} lon2 Longitude for second
    */
   const GetDistanceInKm = (lat1, lon1, lat2, lon2) => {
-    var R = 6371; // Radius of the earth in km
+    // Radius of the earth in km
+    var R = 6371; 
     var dLat = DegreesToRadius(lat2-lat1);  
     var dLon = DegreesToRadius(lon2-lon1); 
     var a = 
@@ -176,7 +177,8 @@ const HomePage = () => {
       Math.sin(dLon/2) * Math.sin(dLon/2)
       ; 
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-    var d = R * c; // Distance in km
+    // Distance in km
+    var d = R * c; 
     return d;
   }
 

@@ -36,6 +36,11 @@ const useStyles = makeStyles({
     alignItems: 'stretch',
     gap: '1em'
   },
+  databaseButtonContainer: {
+    position: "absolute",
+    bottom: '1rem',
+    left: '1rem'
+  },
   deleteButtonContainer: {
     position: "fixed",
     bottom: '1rem',
@@ -94,18 +99,35 @@ const PointsOfInterestPage = () => {
   const DeleteDialog_IsOpenHandler = () => deleteDialog_SetIsOpen(!deleteDialog_IsOpen);
 
   const DeletePointsOfInterest = async() => {
-    try {
+    try 
+    {
       await axios.delete(`/api/myMaps/pointAndTypes`);
       await axios.delete(`/api/myMaps/popularTimes`);
       await axios.delete(`/api/myMaps/points`);
     
-    } catch (error) {
-        console.log(error)
+    } catch (error) 
+    {
+      console.log(error)
     }
   }
  
+  const AddDataToDatabase = async () => {
+    try 
+    {
+      await axios.post(`/api/myMaps/database`, {
+        indexStart: 5,
+        indexEnd : 10
+      });
+    }
+    catch (error)
+    {
+      console.log(error);
+    }
+  }
+
   const AddPointsOfInterestFromJSONFile = async() => {
-    try {
+    try 
+    {
       await axios.post(`/api/myMaps/file`, {
         path : filePath
       });
@@ -122,7 +144,8 @@ const PointsOfInterestPage = () => {
       setPointsName(pointNames);
 
     } 
-    catch (error) {
+    catch (error)
+    {
       console.log(error)
     }
 
@@ -133,7 +156,8 @@ const PointsOfInterestPage = () => {
  const [pointsName, setPointsName] = useState([]);
 
  useEffect(async () => {
-  try {
+  try 
+  {
     var response = await axios.get(`/api/myMaps/points/types`);
 
     const pointsTypes = response.data;
@@ -145,7 +169,9 @@ const PointsOfInterestPage = () => {
     })
     setPointsName(pointNames);
   
-  } catch(error) {
+  } 
+  catch(error) 
+  {
     console.log(error);
   }   
 },[]);
@@ -213,21 +239,27 @@ const PointsOfInterestPage = () => {
               </div>
             </div>
           </div>
+          <div className={classes.databaseButtonContainer}>
+            <VectorButton Size="3.5rem" 
+                        BackColor={Constants.LightBlue}
+                        VectorSource={Constants.Database}
+                        OnClick = {AddDataToDatabase}/>
+          </div>
           <div className={classes.deleteButtonContainer}>
-              <VectorButton Size="3.5rem" 
-                          BackColor={Constants.Red}
-                          VectorSource={Constants.Delete}
-                          OnClick = {DeleteDialog_IsOpenHandler}/>
+            <VectorButton Size="3.5rem" 
+                        BackColor={Constants.Red}
+                        VectorSource={Constants.Delete}
+                        OnClick = {DeleteDialog_IsOpenHandler}/>
         
-          <MessageDialog  Title={"Delete"}
-                            Text={"Are you sure you want to delete all points of interest?"}
-                            IsOpen={deleteDialog_IsOpen} 
-                            IsOpenHandler={DeleteDialog_IsOpenHandler}
-                            VectorSource={Constants.Delete}
-                            Color={Constants.Red}
-                            BackColor={Constants.VeryLightRed}
-                            YesOnClick={()=> { DeleteDialog_IsOpenHandler(); DeletePointsOfInterest();}}
-                            NoOnClick={()=> { DeleteDialog_IsOpenHandler(); }}/>
+            <MessageDialog  Title={"Delete"}
+                              Text={"Are you sure you want to delete all points of interest?"}
+                              IsOpen={deleteDialog_IsOpen} 
+                              IsOpenHandler={DeleteDialog_IsOpenHandler}
+                              VectorSource={Constants.Delete}
+                              Color={Constants.Red}
+                              BackColor={Constants.VeryLightRed}
+                              YesOnClick={()=> { DeleteDialog_IsOpenHandler(); DeletePointsOfInterest();}}
+                              NoOnClick={()=> { DeleteDialog_IsOpenHandler(); }}/>
           </div>
         </ThemeProvider>
      </div>

@@ -11,6 +11,7 @@ const popularTimeControllers = require('../controllers/PopularTimeControllers');
 const typeControllers = require('../controllers/TypeControllers');
 const timeSpentControllers = require('../controllers/TimeSpentControllers');
 const fileController = require('../controllers/FileController');
+const databaseController = require('../controllers/DatabaseControllers');
 
 const router = express.Router();
 
@@ -34,15 +35,18 @@ router
     .delete(userControllers.DeleteUserById);
 
 /**
- * @route GET and POST route -> /login
+ * @route GET and POST route -> /file
  */
-router
-    .route(Routes.LoginRoute)
-    .post(userControllers.GetLoginUser);
-
 router 
     .route(Routes.FileRoute)
     .post(fileController.GetFile);
+
+/**
+ * @route GET and POST route -> /database
+ */
+ router 
+    .route(Routes.DatabaseRoute)
+    .post(databaseController.AddData);    
 
 /**
  * @route GET and POST route -> /points/
