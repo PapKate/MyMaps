@@ -73,6 +73,19 @@ class ControllerHelpers{
         return query;
     }
 
+    static FormatValuesForBulkInsert(values) 
+    {
+        var finalString = "";
+        values.forEach(value => {
+            finalString += ` (${value})`;
+
+            if(values.length - 1 != values.indexOf(value))
+                finalString += ","
+        });
+
+        return finalString;
+    }
+
     /**
      * Gets the current date as a string
      * @returns Returns the current date as a string

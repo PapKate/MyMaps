@@ -86,6 +86,9 @@ const EditUserDataDialog = ({
     const titleStyle = {
         color: `#${Constants.Gray}`
     }   
+
+    // Password Regex
+    const passwordRegex = new RegExp("^(?=.*[0-9])(?=.*[A-Z])(?=.*[@$!%*?&])([a-zA-Z0-9@$!%*?&]{8,})$");
     
     //#region Error Message
 
@@ -178,6 +181,13 @@ const EditUserDataDialog = ({
     const SaveButton_OnClick = async() => {
         // Try...
         try {
+            if(!passwordRegex.test(signUpPassword)) 
+            {
+                // Sets the error message
+                setErrorMessage("Wrong password format! Your password must be at least 8 characters long and contain at least one number, one capital letter and a symbol.");
+                // Returns
+                return;
+            }
             // Of the new password does not match the confirm input...
             if(newPassword !== confirmPassword)
             {

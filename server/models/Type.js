@@ -13,6 +13,12 @@ class Type{
         return query;
     }
 
+    static BulkCreate(valuesString) {
+        let query = `INSERT INTO types(name) VALUES ${valuesString};`;
+
+        return query;
+    }
+
     static GetAll() {
         let query = "SELECT * FROM types;";
 
@@ -20,7 +26,7 @@ class Type{
     }
 
     static GetById(id) {
-        let query = `SELECT * FROM types WHERE id = ${id};`;
+        let query = `SELECT * FROM types WHERE id = "${id}";`;
 
         return query;
     }

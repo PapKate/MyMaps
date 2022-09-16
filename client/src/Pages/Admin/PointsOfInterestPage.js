@@ -97,7 +97,6 @@ const PointsOfInterestPage = () => {
     try {
       await axios.delete(`/api/myMaps/pointAndTypes`);
       await axios.delete(`/api/myMaps/popularTimes`);
-      await axios.delete(`/api/myMaps/pointCheckIns`);
       await axios.delete(`/api/myMaps/points`);
     
     } catch (error) {
@@ -107,14 +106,21 @@ const PointsOfInterestPage = () => {
  
   const AddPointsOfInterestFromJSONFile = async() => {
     try {
-      const response = await axios.post(`/api/myMaps/file`, {
+      await axios.post(`/api/myMaps/file`, {
         path : filePath
       });
 
-      // The json data from the response
-      let jsonData = response.data;
+      var response = await axios.get(`/api/myMaps/points/types`);
 
-      console.log(jsonData);
+      const pointsTypes = response.data;
+
+      let pointNames = [];
+      pointsTypes.forEach(pointType => {
+        
+        pointNames.push({"id": pointType.id, "name": pointType.name, "address": pointType.address, "categories": pointType.categories});
+      })
+      setPointsName(pointNames);
+
     } 
     catch (error) {
       console.log(error)
@@ -124,7 +130,7 @@ const PointsOfInterestPage = () => {
  }
 
 
-const [pointsName, setPointsName] = useState([]);
+ const [pointsName, setPointsName] = useState([]);
 
  useEffect(async () => {
   try {
@@ -190,7 +196,7 @@ const [pointsName, setPointsName] = useState([]);
             <div className={classes.pointsOfInterestDataGridsArea}>
               <div className="DataGridArea" style={dataGridAreaStyle}>           
                 <span className={classes.PointsOfInterestLogTitle}>Points Of Interest Log</span>
-              <Box
+                <Box
                   sx={{
                     height: 640,
                     "& .pointsOfInterestLogHeader": {

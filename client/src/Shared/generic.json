@@ -2,7 +2,7 @@
   {
     "id": "ChIJYW7ZL-hJXhMR9ve2dpMf5Io",
     "name": "Ελληνικά Ταχυδρομεία (ΕΛΤΑ)",
-    "address": "Maizonos 32, Patra",
+    "address": "Pantanasis 32, Patra",
     "types": ["post_office", "finance", "point_of_interest", "establishment"],
     "coordinates": {
       "lat": 38.2498044,

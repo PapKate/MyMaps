@@ -9,10 +9,6 @@ exports.GetAllPoints = async (req, res, next) => {
     // Execute the query
     var result = await GetQueryResultAsync(query);
 
-    if(result.length == 0) {
-        return next(new ErrorResponse(`ERROR 404: Not found.`, 404));
-    }
-
     // Set the body of the response
     res.status(200).json(result);
 };
@@ -22,10 +18,6 @@ exports.GetPointTypes = async(req, res, next) => {
 
     // Execute the query
     var result = await GetQueryResultAsync(query);
-
-    if(result.length == 0) {
-        return next(new ErrorResponse(`ERROR 404: Not found.`, 404));
-    }
 
     // Set the body of the response
     res.status(200).json(result);

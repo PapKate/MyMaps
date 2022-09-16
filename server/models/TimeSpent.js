@@ -16,6 +16,12 @@ class TimeSpent{
         return query;
     }
 
+    static BulkCreate(valuesString) {
+        let query = `INSERT INTO timespent(minValue, timespent.maxValue) VALUES ${valuesString};`;
+
+        return query;
+    }
+
     static GetAll() {
         let query = "SELECT * FROM timespent";
 

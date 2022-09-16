@@ -7,7 +7,8 @@ class Point{
 
     constructor(id, name, address, coordinatesId, rating, ratingNumber, currentPopularity = null, timespentId) {
         this.id = id;
-        name = name.replace("\'","\\'")
+        name = name.replaceAll("\'","\\'");
+        name = name.replaceAll('\"',"\\'");
         this.name = name;
         this.address = address;
         this.coordinatesId = coordinatesId;
@@ -18,7 +19,6 @@ class Point{
     }
 
     Create() {
-
         let dateTimeNow = ControllerHelpers.GetCurrentDateTime();
 
         let dateCreated = dateTimeNow;
@@ -27,6 +27,13 @@ class Point{
             INSERT INTO points(id, name, address, coordinatesId, rating, ratingNumber, currentPopularity, timespentId, dateCreated, dateModified)
             VALUES("${this.id}",  '${this.name}', "${this.address}", ${this.coordinatesId}, ${this.rating}, ${this.ratingNumber}, ${this.currentPopularity}, ${this.timespentId}, "${dateCreated}", "${dateModified}");
         `;
+
+        return query;
+    }
+
+    static BulkCreate(valuesString) {
+        let query = `INSERT INTO points(id, name, address, coordinatesId, rating, ratingNumber, currentPopularity, timespentId, dateCreated, dateModified)
+                        VALUES ${valuesString};`;
 
         return query;
     }
@@ -84,7 +91,7 @@ class Point{
     }
 
     static DeleteById(id) {
-        let query = `DELETE FROM points WHERE id = ${id};`;
+        let query = `DELETE FROM points WHERE id = "${id}";`;
 
         return query;
     }

@@ -18,10 +18,9 @@ const useStyles = makeStyles({
   covidExposureDataGridArea: {
     position: "relative",
     width: "100%",
-    height: "max-content",
+    height: "100%",
     display: "flex",
     flexDirection: "row",
-    paddingBottom: "2em",
     gap: "2em",
     justifyContent: "space-evenly",
     alignItems: "center",
@@ -34,17 +33,17 @@ const useStyles = makeStyles({
 const dataGridAreaStyle = {
   position: "relative",
   width: "100%",
-  height: "max-content",
+  height: "100%",
   display: "flex",
   flexDirection: "row",
-  paddingBottom: "2em",
+  justifyContent: 'center',
+  alignItems: 'center',
   gap: "2em",
   justifyContent: "space-evenly",
   alignItems: "center",
-  margin: '4em'
 };
 
-const CovidExposurePage = ({ UserId }) => {
+const CovidExposurePage = () => {
   // Material UI Styles
   const classes = useStyles();
 
@@ -69,27 +68,18 @@ const CovidExposurePage = ({ UserId }) => {
       let id = 0;
       caseWasHereCases.forEach(caseWasHereCase => {
 
-        exposureList.push({"id": id, "name": caseWasHereCase.name, "date": caseWasHereCase.checkInDate, "time": caseWasHereCase.checkInDate, "caseWasThere": caseWasHereCase.caseWasThere})
+        exposureList.push({"id": id, "name": caseWasHereCase.name, "checkInDate": caseWasHereCase.checkInDate, "caseWasThere": caseWasHereCase.caseWasThere})
         id++;
       })
       setExposure(exposureList);
-       } catch(error) {
-       console.log(error);
-       }   
+    } 
+    catch(error) 
+    {
+      console.log(error);
+    }   
   },[]);
 
   const covidExposureDatagridColumns = [
-    {
-      field: "date",
-      headerName: "Date",
-      width: 70,
-      flex: 1,
-      editable: false,
-      headerClassName: "covidExposureDatagridHeader",
-      headerAlign: "center",
-      type: 'datetime',
-      valueGetter: params => moment(params?.value).format("DD/MM/YYYY")
-    },
     {
       field: "name",
       headerName: "Place",
@@ -100,15 +90,15 @@ const CovidExposurePage = ({ UserId }) => {
       headerAlign: "center",
     },
     {
-      field: "time",
-      headerName: "Time",
+      field: "checkInDate",
+      headerName: "I Was There",
       width: 70,
       flex: 1,
       editable: false,
       headerClassName: "covidExposureDatagridHeader",
       headerAlign: "center",
       type: 'datetime',
-      valueGetter: params => moment(params?.value).format("hh:mm A")
+      valueGetter: params => moment(params?.value).format("DD/MM/YYYY hh:mm A")
     },
     {
       field: "caseWasThere",
@@ -123,29 +113,14 @@ const CovidExposurePage = ({ UserId }) => {
     }
   ];
 
-  const casesDatagridColumns = [
-    {
-      field: "date",
-      headerName: "Date",
-      width: 70,
-      flex: 1,
-      editable: false,
-      headerClassName: "covidExposureDatagridHeader",
-      headerAlign: "center",
-    },
-  ];
-
-
-
   return (
     <div className={classes.covidExposurePageContainer}>
       <div className={classes.covidExposureDataGridArea}>
        <div className="DataGridArea" style={dataGridAreaStyle}>
           <Box
             sx={{
-              width: 800,
-              position: "center",
-              height: 640,
+              height: 'calc(100vh - 8rem)',
+              width: 'inherit',
               "& .covidExposureDatagridHeader": {
                 backgroundColor: `#${Constants.Yellow}`,
                 color: `#${Constants.White}`,
@@ -156,7 +131,6 @@ const CovidExposurePage = ({ UserId }) => {
             }}
           >
             <DataGrid rows={exposure} columns={covidExposureDatagridColumns} />
-
           </Box>
       </div>
     </div>

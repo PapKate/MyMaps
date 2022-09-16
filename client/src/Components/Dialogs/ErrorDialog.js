@@ -26,7 +26,8 @@ const useStyles = makeStyles({
         fontFamily: Constants.FontFamily,
         fontSize: '24px',
         color: `#${Constants.Gray}`,
-        fontWeight: 400
+        fontWeight: 400,
+        textAlign: "center"
     },
     dialogTitle: {
         fontFamily: Constants.FontFamily,

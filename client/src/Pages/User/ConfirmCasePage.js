@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from "react-router-dom";
 import { makeStyles } from "@material-ui/core";
 
-import DatePicker from 'react-datepicker';
-import "react-datepicker/dist/react-datepicker.css";
-//import { DatePicker } from "@mui/x-date-pickers";
+import SingleDatePicker from "../../Components/DatePickers/SingleDatePicker";
 
 import TextButton from "../../Components/Buttons/TextButton";
 import Constants from "../../Shared/Constants";
+import Helpers from "../../Shared/Helpers";
+import axios from 'axios';
 
 const marginStyle = {
   margin: '3em'
@@ -72,15 +72,42 @@ const ConfirmCasePage = ({ UserId }) => {
   const location = useLocation();
 
   const { userData } = location.state;
+  const [date, setDate] = useState(new Date());
+  const [lastCase, setLastCase] = useState(null);
 
-    const [startDate, setStartDate] = useState(new Date());
-    const ExampleCustomTimeInput = ({ date, value, onChange }) => (
-      <input
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        style={{ border: "solid 1px pink" }}
-      />
-    );
+  const Report = async () => {
+
+    try{
+      var maxCaseDate = lastCase;
+      maxCaseDate.setDate(maxCaseDate?.getDate() + 14);
+      if(date < maxCaseDate)
+        return;
+
+      var reportResponse = await axios.post(`/api/myMaps/confirmedCases`, {
+         userId: userData.id,
+         date: Helpers.FormatDateTime(date)
+      });
+    }
+    catch (error) {
+        console.log(error);
+    }
+  }
+
+  /**
+   ** On initialized
+   */
+   useEffect(async () => { 
+    var userCasesResponse = await axios.get(`/api/myMaps/confirmedCases`);
+    let userCases = userCasesResponse.data.find(x => x.userId === userData.id)
+
+    if(userCases.length > 1)
+    {
+      setLastCase(new Date(userCases[0].date));
+    }
+    else if(userCases != null)
+      setLastCase(new Date(userCases.date));
+
+  }, []);
 
   return (
     <>
@@ -89,13 +116,11 @@ const ConfirmCasePage = ({ UserId }) => {
         <div className={classes.confirmCasePageContainer}>
           <div className={classes.confirmCaseDisplay}>
               <span className={classes.confirmCaseText}>Confirm Case</span>
-            <DatePicker
-                selected={startDate}
-                onChange={(date) => setStartDate(date)}
-                showTimeInput
-                customTimeInput={<ExampleCustomTimeInput />}
-              />
-            <TextButton Text={"Report"} BackColor={Constants.Red} />
+              <span>Last confirmed case: {lastCase == null ? "-" : `${Helpers.GetFullDateToString(lastCase)}`}</span>
+            <SingleDatePicker OnDateChanged={(date) => setDate(date)}/>
+            <TextButton Text={"Report"} BackColor={Constants.Red} 
+              OnClick={Report}
+            />
           </div>
           </div>
         </div>
