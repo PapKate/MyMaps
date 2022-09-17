@@ -22,7 +22,7 @@ class Helpers {
     /**
      * Gets the @date and returns the full date 
      * @param {Date} date The date
-     * @returns The date time with 00:00:00
+     * @returns The date time with 00:00:00 
      */
     static GetFullDate(date)
     {
@@ -32,6 +32,11 @@ class Helpers {
         return new Date(year, month, day);
     }
 
+    /**
+     * Gets the @data and formats it to a string
+     * @param {Date} date 
+     * @returns The date
+     */
     static GetFullDateToString(date)
     {
         let year = date.getFullYear();
@@ -41,6 +46,11 @@ class Helpers {
         return `${year}-${month}-${day}`;
     }
 
+    /**
+     * Splits the date and time and returns them separately
+     * @param {Date} date 
+     * @returns A JSON oject with the date and hour
+     */
     static GetDateHour(date)
     {
         let fullDate = this.GetFullDate(date);

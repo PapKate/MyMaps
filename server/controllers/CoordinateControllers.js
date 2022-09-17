@@ -6,6 +6,9 @@ const Coordinate = require('../models/Coordinate');
 // Imports the custom error response 
 const ErrorResponse = require("../utils/errorResponse");
 
+/**
+ ** Gets all the coordinates 
+ */
  exports.GetAllCoordinates = async (req, res, next) => {
 
     let query =  Coordinate.GetAll();
@@ -13,19 +16,12 @@ const ErrorResponse = require("../utils/errorResponse");
     // Execute the query
     var result = await GetQueryResultAsync(query);
 
-    if(result.length == 0) {
-        return next(new ErrorResponse(`ERROR 404: Not found.`, 404));
-    }
-
     // Set the body of the response
     res.status(200).json(result);
 };
 
 /**
- * 
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
+ ** Creates a new coordinate and adds it to the database
  */
  exports.CreateNewCoordinate =  async (req, res, next) => {
 
@@ -41,11 +37,7 @@ const ErrorResponse = require("../utils/errorResponse");
 };
 
 /**
- * 
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
- * @returns 
+ ** Gets the coordinates with the given id 
  */
  exports.GetCoordinateById = (async (req, res, next) => {
 
@@ -53,13 +45,12 @@ const ErrorResponse = require("../utils/errorResponse");
 
     var result = await GetQueryResultAsync(query);
 
-    if(result.length == 0) {
-        return next(new ErrorResponse(`ERROR 404: Not found. The coordinate with id ${req.params.id} was not found.`, 404));
-    }
-
     res.status(200).json(result[0]);
 });
 
+/**
+ ** Updates the coordinate with the id 
+ */
  exports.UpdateCoordinateById = async (req, res, next) => {
     
     let query = Coordinate.UpdateById(req.params.id, req.body.lat, req.body.lng);
@@ -78,7 +69,7 @@ const ErrorResponse = require("../utils/errorResponse");
 };
 
 /**
- * Delete
+ ** Deletes the coordinate with the given id
  */
  exports.DeleteCoordinateById = (async (req, res, next) => {
     

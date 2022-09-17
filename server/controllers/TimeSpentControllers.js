@@ -1,14 +1,12 @@
 const GetQueryResultAsync = require('../config/db');
 
-const ControllerHelpers = require('../helpers/ControllerHelpers');
-
 const TimeSpent = require('../models/TimeSpent');
 
 // Imports the custom error response 
 const ErrorResponse = require("../utils/errorResponse");
 
 /**
- * Get all
+ * Gets all the time spent pairs
  */
  exports.GetAllTimeSpents = async (req, res, next) => {
 
@@ -22,12 +20,9 @@ const ErrorResponse = require("../utils/errorResponse");
 };
 
 /**
- * 
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
+ ** Creates a new time spent pair
  */
-exports.CreateNewTimeSpent =  async (req, res, next) => {
+ exports.CreateNewTimeSpent =  async (req, res, next) => {
     let timeSpent = new TimeSpent(req.body.minValue, req.body.maxValue);
     
     // Gets the sql query for creating the timeSpent
@@ -40,13 +35,9 @@ exports.CreateNewTimeSpent =  async (req, res, next) => {
 };
 
 /**
- * 
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
- * @returns 
+ ** Gets the time spent pair by the given id
  */
-exports.GetTimeSpentById = (async (req, res, next) => {
+ exports.GetTimeSpentById = (async (req, res, next) => {
 
     let query = TimeSpent.GetById(req.params.id);
 
@@ -60,7 +51,7 @@ exports.GetTimeSpentById = (async (req, res, next) => {
 });
 
 /**
- * Update  
+ ** Updates the time spent with the given id
  */
 exports.UpdateTimeSpentById = (async (req, res, next) => {
     
@@ -76,7 +67,7 @@ exports.UpdateTimeSpentById = (async (req, res, next) => {
 });
 
 /**
- * Delete 
+ ** Deletes the time spent with the given id 
  */
  exports.DeleteTimeSpentById = (async (req, res, next) => {
     
@@ -89,6 +80,4 @@ exports.UpdateTimeSpentById = (async (req, res, next) => {
 
 
     res.status(200).json(TimeSpent);
-
 });
-

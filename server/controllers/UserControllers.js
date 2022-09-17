@@ -7,6 +7,9 @@ const User = require('../models/User');
 // Imports the custom error response 
 const ErrorResponse = require("../utils/errorResponse");
 
+/**
+ ** Gets all the users
+ */
  exports.GetAllUsers = async (req, res, next) => {
 
     let query = User.GetAll();
@@ -19,10 +22,7 @@ const ErrorResponse = require("../utils/errorResponse");
 };
 
 /**
- * 
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
+ ** Creates a new user
  */
  exports.CreateNewUser =  async (req, res, next) => {
     let user = new User(req.body.username, req.body.email, req.body.password);
@@ -37,7 +37,7 @@ const ErrorResponse = require("../utils/errorResponse");
 };
 
 /**
- * Gets a user with id the specified id
+ ** Gets a user with id the specified id
  */
  exports.GetUserById = async (req, res, next) => {
 
@@ -52,23 +52,8 @@ const ErrorResponse = require("../utils/errorResponse");
     res.status(200).json(result[0]);
 };
 
- exports.GetLoginUser = async (req, res, next) => {
-
-    let query = User.LoginUser(req.body.username, req.body.password);
-
-    var result = await GetQueryResultAsync(query);
-
-    if(result.length == 0) {
-        return next(new ErrorResponse(`ERROR 404: Not found. The user with username ${req.body.username} was not found.`, 404));
-    }
-
-    res.status(201).json(result);
-};
- 
-
 /**
- * 
- * TODO Update  
+ ** Updates the user with the given id
  */
  exports.UpdateUserById = async (req, res, next) => {
     
@@ -88,7 +73,7 @@ const ErrorResponse = require("../utils/errorResponse");
 };
 
 /**
- * 
+ ** Deletes the user with the given id 
  */
  exports.DeleteUserById = async (req, res, next) => {
     

@@ -5,12 +5,21 @@ const ControllerHelpers = require('../helpers/ControllerHelpers');
  */
 class User{
 
+    /**
+     ** Default constructor 
+     * @param {string} username The username
+     * @param {string} email The email
+     * @param {string} password The password
+     */
     constructor(username, email, password) {
         this.username = username;
         this.email = email;
         this.password = password;
     }
 
+    /**
+     ** Creates a user 
+     */
     Create() {
 
         let dateTimeNow = ControllerHelpers.GetCurrentDateTime();
@@ -26,32 +35,37 @@ class User{
         return query;
     }
 
+    /**
+     ** Creates multiple users 
+     * @param {string} valuesString The values
+     */
     static BulkCreate(valuesString) {
         let query = `INSERT INTO users(username, email, password, dateCreated, dateModified) VALUES ${valuesString};`;
 
         return query;
     }
 
+    /**
+     ** Gets all the users 
+     */
     static GetAll() {
         let query = `SELECT * FROM users`;
 
         return query;
     }
 
+    /**
+     ** Gets the user with the specified id 
+     * @param {int} id The id
+     */
     static GetById(id) {
         let query = `SELECT * FROM users WHERE id = ${id};`;
 
         return query;
     }
 
-    static LoginUser(username, password) {
-        let query = `SELECT * FROM users WHERE username = "${username}" AND users.password = "${password}";`;
-
-        return query;
-    }
-
     /**
-     * Updates the username and the password
+     ** Updates the username and the password
      * @param {int} id 
      * @param {string} newUsername 
      * @param {string} newPassword 
@@ -92,7 +106,7 @@ class User{
     }
 
     /**
-     * Updates the username and the password
+     ** Deletes the username and the password
      * @param {int} id 
      * @returns 
      * 

@@ -1,10 +1,17 @@
 const ControllerHelpers = require('../helpers/ControllerHelpers');
 
 /**
- * Represents a point check in from a request
+ ** Represents a point check in from a request
  */
 class PointCheckIn{
 
+    /**
+     ** Default constructor
+     * @param {int} userId 
+     * @param {string} pointId 
+     * @param {int} customers 
+     * @param {Date} checkInDate 
+     */
     constructor(userId, pointId, customers, checkInDate) {
         this.userId = userId;
         this.pointId = pointId;
@@ -12,6 +19,9 @@ class PointCheckIn{
         this.checkInDate = checkInDate;
     }
 
+    /**
+     ** Creates a point check in 
+     */
     Create() {
         let dateTimeNow = ControllerHelpers.GetCurrentDateTime();
 
@@ -23,6 +33,10 @@ class PointCheckIn{
         return query;
     }
 
+    /**
+     **  Creates multiple values
+     * @param {string} valuesString The values
+     */
     static BulkCreate(valuesString) {
         let query = `INSERT INTO pointcheckin(userId, pointId, customers, checkInDate)
         VALUES ${valuesString};`;
@@ -30,7 +44,7 @@ class PointCheckIn{
         return query;
     }
     /**
-     * Gets all the point check ins from the data base
+     ** Gets all the point check ins from the data base
      */
     static GetAll(queryParams = null, orderBy = null) {
         let query = `SELECT id, userId, pointId, customers, checkInDate FROM pointcheckin`;
@@ -39,6 +53,9 @@ class PointCheckIn{
         return query;
     }
 
+    /**
+     ** Get all point check ins and their types 
+     */
     static GetAllPointCheckInsTypes() {
         let query = `SELECT types.name, points.id FROM pointcheckin 
                         LEFT JOIN (points 
@@ -50,6 +67,10 @@ class PointCheckIn{
         return query;
     }
 
+    /**
+     ** Get all the point check ins and the confirmed cases 
+     * @returns 
+     */
     static GetAllPointCheckInCases(queryParams = null, orderBy = null) {
         let query = `SELECT * FROM pointcheckin 
 		INNER JOIN confirmedcases ON pointcheckin.userId = confirmedcases.userId
@@ -61,6 +82,9 @@ class PointCheckIn{
         return query;
     }
 
+    /**
+     ** Gets all the point check in and points
+     */
     static GetAllWithPoints(queryParams = null)
     {
         let query = `SELECT pointcheckin.id, userId,pointId, customers, checkInDate, points.name FROM pointcheckin 
@@ -70,7 +94,7 @@ class PointCheckIn{
         return query;
     }
     /**
-     * Gets all the point check ins and points from the data base
+     ** Gets all the point check ins and points from the data base
      */
      static GetAllPointsCheckInsPoints() {
         let query = `SELECT pointcheckin.id, userId, pointId, checkInDate, name FROM pointcheckin LEFT JOIN points ON pointcheckin.pointId = points.id;`;
@@ -79,7 +103,7 @@ class PointCheckIn{
     
 
     /**
-     * Deletes all the point check ins from the data base
+     ** Deletes all the point check ins from the data base
      */
     static DeleteAll() {
         let query = `DELETE FROM pointcheckin`;
@@ -88,15 +112,13 @@ class PointCheckIn{
     }
 
     /**
-     * Gets the point check ins for the point with id the specified @pointId from the data base
+     ** Gets the point check ins for the point with id the specified @pointId from the data base
      * @param {string} pointId The point's id
      */
     static GetByPointId(pointId) {
         let query = `SELECT * FROM pointcheckin WHERE pointId = ${pointId};`;
         return query;
     }
-
-
 }
 
 module.exports = PointCheckIn;

@@ -3,11 +3,12 @@ const ControllerHelpers = require('../helpers/ControllerHelpers');
 
 const ConfirmedCase = require('../models/ConfirmedCase');
 
-
-
 // Imports the custom error response 
 const ErrorResponse = require("../utils/errorResponse");
 
+/**
+ ** Gets all the confirmed cases
+ */
  exports.GetAllConfirmedCases = async (req, res, next) => {
 
     let query = ConfirmedCase.GetAll();
@@ -15,28 +16,27 @@ const ErrorResponse = require("../utils/errorResponse");
     // Execute the query
     var result = await GetQueryResultAsync(query);
 
-    // if(result.length == 0) {
-    //     return next(new ErrorResponse(`ERROR 404: Not found.`, 404));
-    // }
-
     // Set the body of the response
     res.status(200).json(result);
 };
 
-exports.GetAllConfirmedCasesCaseWasHere = async (req, res, next) => {
+/**
+ ** Gets all the check in of a user with id the given id that are +-2 hours from a confirmed case's check in 
+ ** That are up to 7 days before the given date
+ */
+ exports.GetAllConfirmedCasesCaseWasHere = async (req, res, next) => {
 
     let query = ConfirmedCase.GetAllConfirmedCasesCaseWasHere(req.query);
 
     var result = await GetQueryResultAsync(query);
 
-    // if(result.length == 0) {
-    //     return next(new ErrorResponse(`ERROR 404: Not found.`, 404));
-    // }
-
     // Set the body of the response
     res.status(200).json(result);
 };
 
+/**
+ ** Gets all the types of the confirmed cases check ins'
+ */
  exports.GetAllConfirmedCasesTypes = async (req, res, next) => {
     let query = ConfirmedCase.GetAllConfirmedCasesTypes();
 
@@ -47,10 +47,7 @@ exports.GetAllConfirmedCasesCaseWasHere = async (req, res, next) => {
 };
 
 /**
- * 
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
+ ** Creates a new confirmed case
  */
  exports.CreateNewConfirmedCase =  async (req, res, next) => {
     let confirmedCase = new ConfirmedCase(req.body.userId, req.body.date);
@@ -65,11 +62,7 @@ exports.GetAllConfirmedCasesCaseWasHere = async (req, res, next) => {
 };
 
 /**
- * 
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
- * @returns 
+ ** Gets a confirmed case by id 
  */
  exports.GetConfirmedCaseById = (async (req, res, next) => {
 
@@ -84,53 +77,24 @@ exports.GetAllConfirmedCasesCaseWasHere = async (req, res, next) => {
     res.status(200).json(result[0]);
 });
 
-/*
-exports.GetConfirmedCaseByUserId = (async (req, res, next) => {
-
-    let query = ConfirmedCase.GetByUserId(req.params.id);
-
-    var result = await GetQueryResultAsync(query);
-
-    if(result.length == 0) {
-        return next(new ErrorResponse(`ERROR 404: Not found. The confirmed case with id ${req.params.id} was not found.`, 404));
-    }
-
-    res.status(200).json(result[0]);
-});
-*/
-
+/**
+ ** Updates the confirmed case with the given id 
+ */
  exports.UpdateConfirmedCaseById = (async (req, res, next) => {
     
     let query = ConfirmedCase.UpdateById(req.params.id, req.body.date);
-    
     var result = await GetQueryResultAsync(query);
 
-    let query2 = ConfirmedCase.GetById(req.params.id);
-
-    var result2 = await GetQueryResultAsync(query2);
-
-    if(result2.length == 0) {
-        return next(new ErrorResponse(`ERROR 404: Not found. The confirmed case with id ${req.params.id} was not found.`, 404));
-    }
-
     res.status(201).json(result2);
-
 });
 
 /**
- * TODO Delete 
+ ** Deletes a confirmed case with the given id
  */
-exports.DeleteConfirmedCaseById = (async (req, res, next) => {
+ exports.DeleteConfirmedCaseById = (async (req, res, next) => {
     
     let query = ConfirmedCase.DeleteById(req.params.id);
     var result = await GetQueryResultAsync(query);
-
-    if(!result.length == 0) {
-        return next(new ErrorResponse(`ERROR 404: Not found. The confirmed case with id ${req.params.id} was not found.`, 404));
-    }
-
-
+    
     res.status(200).json(ConfirmedCase);
-
 });
-

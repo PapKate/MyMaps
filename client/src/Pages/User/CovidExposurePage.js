@@ -51,30 +51,39 @@ const CovidExposurePage = () => {
   
   const { userData } = location.state;
 
+  /**
+   ** The exposure 
+   */
   const [exposure, setExposure] = useState([]);
  
   useEffect(async () => {
-    try {
-      var responseConfirmedCasesCaseWasHere = await axios.get(`/api/myMaps/confirmedCases/caseWasHere`,{
+    try 
+    {
+      // Gets the data for the common check ins between the user and the users with confirmed cases
+      var responseConfirmedCasesCaseWasHere = await axios.get(`/api/myMaps/confirmedCases/caseWasHere`, {
         params: {
           userId : userData.id,
           date : `"${Helpers.FormatDateTime(new Date())}"`
         }
-      })
-
+      });
       const caseWasHereCases = responseConfirmedCasesCaseWasHere.data;
 
       let exposureList = [];
       let id = 0;
+      // For each item in the list...
       caseWasHereCases.forEach(caseWasHereCase => {
-
+        // Formats the data for the datagrid
         exposureList.push({"id": id, "name": caseWasHereCase.name, "checkInDate": caseWasHereCase.checkInDate, "caseWasThere": caseWasHereCase.caseWasThere})
+        // Increments the id by one
         id++;
-      })
+      });
+      // Sets the list
       setExposure(exposureList);
     } 
+    // Catch if there is an error...
     catch(error) 
     {
+      // Prints the error to the console
       console.log(error);
     }   
   },[]);

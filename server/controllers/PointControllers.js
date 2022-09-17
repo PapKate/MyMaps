@@ -3,7 +3,10 @@ const Point = require('../models/Point');
 // Imports the custom error response 
 const ErrorResponse = require("../utils/errorResponse");
 
-exports.GetAllPoints = async (req, res, next) => {
+/**
+ ** Gets all the points
+ */
+ exports.GetAllPoints = async (req, res, next) => {
     let query = Point.GetAll();
     
     // Execute the query
@@ -13,7 +16,10 @@ exports.GetAllPoints = async (req, res, next) => {
     res.status(200).json(result);
 };
 
-exports.GetPointTypes = async(req, res, next) => {
+/**
+ ** Gets the point and types
+ */
+ exports.GetPointTypes = async(req, res, next) => {
     let query = Point.GetPointTypes();
 
     // Execute the query
@@ -23,7 +29,10 @@ exports.GetPointTypes = async(req, res, next) => {
     res.status(200).json(result);
 };
 
-exports.DeleteAllPoints = async (req, res, next) => {
+/**
+ ** Deletes all the points
+ */
+ exports.DeleteAllPoints = async (req, res, next) => {
 
     let query = Point.DeleteAll();
 
@@ -39,12 +48,9 @@ exports.DeleteAllPoints = async (req, res, next) => {
 };
 
 /**
- * 
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
+ ** Creates a new point
  */
-exports.CreateNewPoint =  async (req, res, next) => {
+ exports.CreateNewPoint =  async (req, res, next) => {
     let point = new Point(req.body.id, req.body.name, req.body.address, req.body.coordinatesId, req.body.rating, req.body.ratingNumber, req.body.currentPopularity, req.body.timespentId);
     
     // Gets the sql query for creating the user
@@ -57,13 +63,9 @@ exports.CreateNewPoint =  async (req, res, next) => {
 };
 
 /**
- * 
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
- * @returns 
+ ** Gets the point with the given id from the database
  */
-exports.GetPointById = async (req, res, next) => {
+ exports.GetPointById = async (req, res, next) => {
 
     let query = Point.GetById(req.params.id);
 
@@ -77,9 +79,9 @@ exports.GetPointById = async (req, res, next) => {
 };
 
 /**
- * 
+ ** Updates the point with the given id
  */
-exports.UpdatePointById = async (req, res, next) => {
+ exports.UpdatePointById = async (req, res, next) => {
     
     let query = Point.UpdateById(req.params.id, req.body.name, req.body.address, req.body.coordinatesId, req.body.rating, req.body.ratingNumber, req.body.currentPopularity, req.body.timespentId);
     
@@ -94,13 +96,12 @@ exports.UpdatePointById = async (req, res, next) => {
     }
 
     res.status(201).json(result2);
-
 };
 
 /**
- * TODO Delete 
+ ** Deletes the point with the given id
  */
-exports.DeletePointById = async (req, res, next) => {
+ exports.DeletePointById = async (req, res, next) => {
     
     let query = Point.DeleteById(req.params.id);
     var result = await GetQueryResultAsync(query);
@@ -110,5 +111,4 @@ exports.DeletePointById = async (req, res, next) => {
     }
 
     res.status(200).json(Point);
-
 };

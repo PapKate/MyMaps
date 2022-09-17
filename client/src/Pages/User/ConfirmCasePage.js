@@ -63,33 +63,52 @@ const useStyles = makeStyles({
   },
 });
 
-
-
 const ConfirmCasePage = ({ UserId }) => {
   // Material UI Styles
   const classes = useStyles();
 
   const location = useLocation();
 
+  /**
+   ** The user's data stored in the location
+   */
   const { userData } = location.state;
+  /**
+   ** The date 
+   */
   const [date, setDate] = useState(new Date());
+  /**
+   ** The last date the user was a confirmed case 
+   */
   const [lastCase, setLastCase] = useState(null);
 
+  /**
+   ** Reports a confirmed case 
+   */
   const Report = async () => {
-
-    try{
+    // Try...
+    try
+    {
+      // The date of the last confirmed case
       var maxCaseDate = lastCase;
+      // Sets as max case date the date plus 14 days
       maxCaseDate.setDate(maxCaseDate?.getDate() + 14);
+      // If the date set is smaller than the max...
       if(date < maxCaseDate)
+        // Returns
         return;
 
-      var reportResponse = await axios.post(`/api/myMaps/confirmedCases`, {
+      // Creates a confirmed case
+      await axios.post(`/api/myMaps/confirmedCases`, {
          userId: userData.id,
          date: Helpers.FormatDateTime(date)
       });
     }
-    catch (error) {
-        console.log(error);
+    // Catch if there is an error...
+    catch (error) 
+    {
+      // Prints the error to the console
+      console.log(error);
     }
   }
 
@@ -97,19 +116,24 @@ const ConfirmCasePage = ({ UserId }) => {
    ** On initialized
    */
    useEffect(async () => { 
+    // Gets the confirmed cases
     var userCasesResponse = await axios.get(`/api/myMaps/confirmedCases`);
+    // Gets the user's confirmed cases
     let userCases = userCasesResponse.data.find(x => x.userId === userData.id)
-
+    // If there are no cases...
     if(userCases == null)
+      // Return
       return;
-
+    // If there are multiple cases...
     if(userCases.length > 1)
     {
+      // Sets as last case the first in the array
       setLastCase(new Date(userCases[0].date));
     }
+    // Else if there is a user case...
     else if(userCases != null)
+      // Sets it as a last case
       setLastCase(new Date(userCases.date));
-
   }, []);
 
   return (

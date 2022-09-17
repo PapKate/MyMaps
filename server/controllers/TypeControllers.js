@@ -1,14 +1,12 @@
 const GetQueryResultAsync = require('../config/db');
 
-const ControllerHelpers = require('../helpers/ControllerHelpers');
-
 const Type = require('../models/Type');
 
 // Imports the custom error response 
 const ErrorResponse = require("../utils/errorResponse");
 
 /**
- * Get all
+ ** Gets all the types
  */
  exports.GetAllTypes = async (req, res, next) => {
 
@@ -21,10 +19,7 @@ const ErrorResponse = require("../utils/errorResponse");
 };
 
 /**
- * 
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
+ ** Creates a new type 
  */
  exports.CreateNewType =  async (req, res, next) => {
     let type = new Type(req.body.name);
@@ -39,11 +34,7 @@ const ErrorResponse = require("../utils/errorResponse");
 };
 
 /**
- * 
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
- * @returns 
+ ** Gets the type with the given id 
  */
  exports.GetTypeById = (async (req, res, next) => {
 
@@ -59,7 +50,7 @@ const ErrorResponse = require("../utils/errorResponse");
 });
 
 /**
- * Update  
+ ** Updates the type with the given id  
  */
  exports.UpdateTypeById = (async (req, res, next) => {
     
@@ -76,7 +67,7 @@ const ErrorResponse = require("../utils/errorResponse");
 });
 
 /**
- * Delete 
+ ** Deletes the type with the given id 
  */
  exports.DeleteTypeById = (async (req, res, next) => {
     

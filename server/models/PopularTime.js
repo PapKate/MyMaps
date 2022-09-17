@@ -1,8 +1,7 @@
 /**
- * Represents the populartimes in the database
+ ** Represents the populartimes in the database
  */
-
-class PopularTime{
+class PopularTime {
 
     constructor(name, hour00, hour01, hour02, hour03, hour04, hour05, hour06, hour07, hour08, hour09, hour10, hour11, hour12, hour13, hour14, hour15, hour16, hour17, hour18, hour19, hour20, hour21, hour22, hour23, pointId) {
         this.name = name;
@@ -33,6 +32,9 @@ class PopularTime{
         this.pointId = pointId;
     }
 
+    /**
+     ** Creates a popular time 
+     */
     Create() {
         let query = `
             INSERT INTO populartimes(name, hour00, hour01, hour02, hour03, hour04, hour05, hour06, hour07, hour08, hour09, hour10, hour11, hour12, hour13, hour14, hour15, hour16, hour17, hour18, hour19, hour20, hour21, hour22, hour23, pointId)
@@ -41,6 +43,10 @@ class PopularTime{
         return query;
     }
 
+    /**
+     ** Creates multiple values 
+     * @param {string} valuesString The values
+     */
     static BulkCreate(valuesString) {
         let query = `INSERT INTO populartimes(name, hour00, hour01, hour02, hour03, hour04, hour05, hour06, hour07, hour08, hour09, hour10, hour11, hour12, hour13, hour14, hour15, hour16, hour17, hour18, hour19, hour20, hour21, hour22, hour23, pointId)
                         VALUES ${valuesString};`;
@@ -48,6 +54,9 @@ class PopularTime{
         return query;
     }
 
+    /**
+     ** Gets all the popular times and points
+     */
     static GetAll() {
         let query = `SELECT points.id, points.name, points.address, points.currentPopularity, points.rating, points.ratingNumber, 
                         coordinates.lat, coordinates.lng,
@@ -63,18 +72,29 @@ class PopularTime{
         return query;
     }
 
+    /**
+     ** Gets a popular time from the data base with the given id 
+     * @param {int} id The id
+     */
     static GetById(id) {
         let query = `SELECT * FROM populartimes WHERE id = ${id};`;
 
         return query;
     }
 
+    /**
+     ** Gets  the popular times with point id the given id
+     * @param {string} pointId The point's id
+     */
     static GetByPointId(pointId) {
         let query = `SELECT * FROM populartimes WHERE id = "${pointId}";`;
 
         return query;
     }
 
+    /**
+     ** Deletes all the popular times 
+     */
     static DeleteAll() {
         let query = `DELETE FROM populartimes;`
 
@@ -82,36 +102,8 @@ class PopularTime{
     }
 
     /**
-     * Updates the hours
-     * @param {int} id 
-     * @param {int} newHour00
-     * @param {int} newHour01     
-     * @param {int} newHour02      
-     * @param {int} newHour03      
-     * @param {int} newHour04     
-     * @param {int} newHour05     
-     * @param {int} newHour06       
-     * @param {int} newHour07      
-     * @param {int} newHour08      
-     * @param {int} newHour09 
-     * @param {int} newHour10
-     * @param {int} newHour11
-     * @param {int} newHour12
-     * @param {int} newHour13
-     * @param {int} newHour14
-     * @param {int} newHour15
-     * @param {int} newHour16
-     * @param {int} newHour17
-     * @param {int} newHour18
-     * @param {int} newHour19
-     * @param {int} newHour20
-     * @param {int} newHour21
-     * @param {int} newHour22
-     * @param {int} newHour23
-     * @param {string} pointId
-     * @returns 
+     ** Updates the hours
      */
-
     static Update(id, newHour00, newHour01, newHour02, newHour03, newHour04, newHour05, newHour06, newHour07, newHour08, newHour09, newHour10, newHour11, newHour12, newHour13, newHour14, newHour15, newHour16, newHour17, newHour18, newHour19, newHour20, newHour21, newHour22, newHour23, newPointId) {
 
         let query = `UPDATE users SET hour00 = ${newHour00},
@@ -143,8 +135,9 @@ class PopularTime{
 
         return query;
     }
-        /**
-     * Deletes the popular times
+
+    /**
+     ** Deletes the popular times
      * @param {int} pointId 
      */
          static DeleteById(pointId) {

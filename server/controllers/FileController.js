@@ -1,4 +1,3 @@
-
 const fs = require("fs").promises;
 
 const GetQueryResultAsync = require('../config/db');
@@ -11,15 +10,12 @@ const Point = require('../models/Point');
 const PointAndType = require('../models/PointAndType');
 const ControllerHelpers = require("../helpers/ControllerHelpers");
 /**
- * Uploads a file and passes its POI data to the data base
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
+ ** Uploads a file and passes its POI data to the data base
  */
-
- exports.GetFile = async (req,res,next) => {
-
-    try {
+ exports.GetFile = async (req, res, next) => {
+    // Try...
+    try 
+    {
         // The query to get all the types in the data base
         var getAllTypesQuery = Type.GetAll();
         // Calls the data base and gets all the types
@@ -138,7 +134,7 @@ const ControllerHelpers = require("../helpers/ControllerHelpers");
                 }
             }
         });
-
+        
         if(typesFromFile.length > 0)
         {
             let typeValuesQuery = ControllerHelpers.FormatValuesForBulkInsert(typesFromFile);
