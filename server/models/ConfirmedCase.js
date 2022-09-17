@@ -44,7 +44,9 @@
                     WHERE pointcheckin.userId = ${queryParams.userId} 
                     AND pointcheckin.pointId = confirmedcasesdata.pointId
                     AND (DATE_SUB(confirmedcasesdata.caseWasThere, INTERVAL 2 HOUR) <= pointcheckin.checkInDate 
-                    AND pointcheckin.checkInDate  <= DATE_ADD(confirmedcasesdata.caseWasThere, INTERVAL 2 HOUR));`;
+                    AND pointcheckin.checkInDate  <= DATE_ADD(confirmedcasesdata.caseWasThere, INTERVAL 2 HOUR))
+                    AND (DATE_SUB(${queryParams.date}, INTERVAL 7 DAY) <= pointcheckin.checkInDate 
+                    AND pointcheckin.checkInDate  <= DATE_ADD(${queryParams.date}, INTERVAL 7 DAY));`;
 
         return query;
     }

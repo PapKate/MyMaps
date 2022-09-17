@@ -97,7 +97,6 @@ const CovidExposurePage = () => {
       editable: false,
       headerClassName: "covidExposureDatagridHeader",
       headerAlign: "center",
-      type: 'datetime',
       valueGetter: params => moment(params?.value).format("DD/MM/YYYY hh:mm A")
     },
     {
@@ -108,7 +107,6 @@ const CovidExposurePage = () => {
       headerClassName: "covidExposureDatagridHeader",
       headerAlign: "center",
       editable: false,
-      type: 'datetime',
       valueGetter: params => moment(params?.value).format("DD/MM/YYYY hh:mm A")
     }
   ];

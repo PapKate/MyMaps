@@ -100,6 +100,9 @@ const ConfirmCasePage = ({ UserId }) => {
     var userCasesResponse = await axios.get(`/api/myMaps/confirmedCases`);
     let userCases = userCasesResponse.data.find(x => x.userId === userData.id)
 
+    if(userCases == null)
+      return;
+
     if(userCases.length > 1)
     {
       setLastCase(new Date(userCases[0].date));

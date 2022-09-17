@@ -199,7 +199,6 @@ const ProfilePage = () => {
       editable: false,
       headerClassName: "visitsLogHeader",
       headerAlign: "center",
-      type: 'datetime',
       valueGetter: params => moment(params?.value).format("DD/MM/YYYY hh:mm A")
     },
     {
@@ -239,7 +238,6 @@ const ProfilePage = () => {
       editable: false,
       headerClassName: "personalCasesLogHeader",
       headerAlign: "center",
-      type: 'datetime',
       valueGetter: params => moment(params?.value).format("DD/MM/YYYY hh:mm A")
     }
   ];
