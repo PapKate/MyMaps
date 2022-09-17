@@ -7,7 +7,9 @@ const PointCheckIn = require('../models/PointCheckIn');
 const ConfirmedCase = require('../models/ConfirmedCase');
 const ControllerHelpers = require("../helpers/ControllerHelpers");
 
-
+/**
+ ** Adds dummy data to the database
+ */
  exports.AddData = async (req, res, next) => {
     // Try...
     try 
@@ -54,7 +56,7 @@ const ControllerHelpers = require("../helpers/ControllerHelpers");
         var allIdUserList = allUsers.map(x => x.id);
 
         var newConfirmedCases = [];
-    
+        // Calculates the 20%
         var divisionInteger = Math.ceil(N * 0.2);
         // For random users create confirm case N DIV 2
         for (let i = 0; i < divisionInteger ; i++) 

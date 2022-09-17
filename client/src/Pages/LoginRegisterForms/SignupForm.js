@@ -53,98 +53,135 @@ const SignupForm = () => {
         color: `#${Constants.Green}`
     };
 
+    /**
+     ** The username 
+     */
     const [signUpUsername, setUsername] = useState("");
-    const [signUpPassword, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [email, setEmail] = useState("");
-    const [isSuccessfulSignUp, setIsSuccessfulSignUp] = useState(false);
-    const [isOpen, setIsOpen] = useState(false);
-    const [isDifferentPasswordsOpen, setIsDifferentPasswordsOpen] = useState(false);
-    const [isWrongPasswordOpen, setIsWrongPasswordOpen] = useState(false);
-    const [isUsernameInUseOpen, setIsUsernameInUseOpen] = useState(false);
-    
-    // On username changed event
+    /**
+     ** On username changed event
+     */
     const OnUsernameChanged = event => {
         setUsername(event.target.value);
     };
 
-    // On password changed event
-    const OnPasswordChanged = event => {
+    /**
+     ** The password 
+     */
+    const [signUpPassword, setPassword] = useState("");
+    /**
+     ** On password changed event 
+     */
+     const OnPasswordChanged = event => {
         setPassword(event.target.value);
     };
 
-    // On confirm password changed event
+    /**
+     ** The confirm password 
+     */
+    const [confirmPassword, setConfirmPassword] = useState("");
+    /**
+     ** On confirm password changed event
+     */
     const onConfirmPasswordChanged = event => {
         setConfirmPassword(event.target.value);
     };
 
-    // Password Regex
-    const passwordRegex = new RegExp("^(?=.*[0-9])(?=.*[A-Z])(?=.*[@$!%*?&])([a-zA-Z0-9@$!%*?&]{8,})$");
-
-    // On email changed event
+    /**
+     ** The email 
+     */
+    const [email, setEmail] = useState("");
+    /**
+     ** On email changed event
+     */
     const OnEmailChanged = event => {
         setEmail(event.target.value);
     };
 
+    /**
+     ** A flag indicating whether the dialog is open
+     */
+    const [isOpen, setIsOpen] = useState(false);
     const IsOpenHandler = () => setIsOpen(!isOpen);
-
+    
+    /**
+     ** A flag indicating whether the dialog is open
+     */
+    const [isDifferentPasswordsOpen, setIsDifferentPasswordsOpen] = useState(false);
     const IsDifferentPasswordsOpenHandler = () => setIsDifferentPasswordsOpen(!isDifferentPasswordsOpen);
     
+    /**
+     ** A flag indicating whether the dialog is open
+     */
+    const [isWrongPasswordOpen, setIsWrongPasswordOpen] = useState(false);
     const IsWrongPasswordOpenHandler = () => setIsWrongPasswordOpen(!isWrongPasswordOpen);
-
+    
+    /**
+     ** A flag indicating whether the dialog is open
+     */
+    const [isUsernameInUseOpen, setIsUsernameInUseOpen] = useState(false);
     const IsUsernameInUseOpenHandler = () => setIsUsernameInUseOpen(!isUsernameInUseOpen);
+    
+    // Password Regex
+    const passwordRegex = new RegExp("^(?=.*[0-9])(?=.*[A-Z])(?=.*[@$!%*?&])([a-zA-Z0-9@$!%*?&]{8,})$");
 
     const SignUp = async () => {
 
+        // If the password is not in the correct form
         if(!passwordRegex.test(signUpPassword)) 
         {
+            // Open the dialog
             IsWrongPasswordOpenHandler();
+            // Returns
             return;
         }
+        // If the two passwords do not match...
         if (confirmPassword !== signUpPassword) 
         {
+            // Open the dialog
             IsDifferentPasswordsOpenHandler();
+            // Returns
             return;
         } 
+        // If any input is empty...
         if(signUpUsername === "" || signUpPassword === "" || email === "") 
         {
+            // Open the dialog
             IsOpenHandler();
+            // Returns
             return;
         }   
+        // Try...
         try 
         {
+            // Gets the users from the data base
             const responseCheck = await axios.get(`/api/myMaps/users`);
 
             let usersCheck = responseCheck.data;
         
+            // If there is already a user in the database with the given username
             if(usersCheck.find(x => x.username === signUpUsername)) 
             {
+                // Open the dialog
                 IsUsernameInUseOpenHandler();
+                // Returns
                 return;
             } 
-            else 
-            {
-                try 
-                {
-                    const response = await axios.post(`/api/myMaps/users`, {
-                    username: signUpUsername,
-                    email: email,
-                    password: signUpPassword
-                    });
             
-                    setIsSuccessfulSignUp(true);
-                }
-                catch (error) 
-                {
-                    console.log(error);
-                }
-                
-                navigate(`/`);
-            }
+            // Creates the user
+            await axios.post(`/api/myMaps/users`, {
+                username: signUpUsername,
+                email: email,
+                password: signUpPassword
+            });
+    
+            // Navigates to the login page
+            navigate(`/`);
         } 
+        // Catch if there is an error...
         catch(error) 
         {
-            setIsSuccessfulSignUp(false);
+            // Prints the error to the console
+            console.log(error);
         }               
     }
 

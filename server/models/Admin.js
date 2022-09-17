@@ -4,11 +4,19 @@
 
 class Admin{
 
+    /**
+     ** Default constructor
+     * @param {string} username The username
+     * @param {string} password The password
+     */
     constructor(username, password) {
         this.username = username;
         this.password = password;
     }
 
+    /**
+     ** Creates an insert user query from the model
+     */
     Create() {
 
         let query = `INSERT INTO admins(username, password) VALUES("${this.username}", "${this.password}");`;
@@ -16,12 +24,19 @@ class Admin{
         return query;
     }
 
+    /**
+     ** Gets all the admins query
+     */
     static GetAll() {
         let query = 'SELECT * FROM admins';
 
         return query;
     }
 
+    /**
+     ** Gets the admin with the given id
+     * @param {int} id 
+     */
     static GetById(id) {
         let query = `SELECT * FROM admins WHERE id = ${id};`;
 
@@ -29,7 +44,7 @@ class Admin{
     }
 
     /**
-     * Updates the username and the password
+     ** Updates the username and the password
      * @param {int} id 
      * @param {string} newUsername 
      * @param {string} newPassword 
@@ -44,7 +59,7 @@ class Admin{
     }
 
     /**
-     * Deletes the admin
+     ** Deletes the admin
      * @param {int} id 
      * @returns 
      * 

@@ -19,12 +19,9 @@ const ErrorResponse = require("../utils/errorResponse");
 };
 
 /**
- * 
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
+ ** Creates a new point and type pair
  */
-exports.CreateNewPointAndType =  async (req, res, next) => {
+ exports.CreateNewPointAndType =  async (req, res, next) => {
     let pointandtype = new PointAndType(req.body.pointId, req.body.typeId);
     
     // Gets the sql query for creating the user
@@ -37,13 +34,9 @@ exports.CreateNewPointAndType =  async (req, res, next) => {
 };
 
 /**
- * 
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
- * @returns 
+ ** Gets the point and type pair by the given id
  */
-exports.GetPointAndTypeById = (async (req, res, next) => {
+ exports.GetPointAndTypeById = (async (req, res, next) => {
 
     let query = PointAndType.GetById(req.params.id);
 
@@ -53,9 +46,9 @@ exports.GetPointAndTypeById = (async (req, res, next) => {
 });
 
 /**
- * 
+ ** Updates the point and type pair by the given id
  */
-exports.UpdatePointAndTypeById = (async (req, res, next) => {
+ exports.UpdatePointAndTypeById = (async (req, res, next) => {
     
     let query = PointAndType.UpdateById(req.params.id, req.body.pointId, req.body.typeId);
     
@@ -69,7 +62,7 @@ exports.UpdatePointAndTypeById = (async (req, res, next) => {
 });
 
 /**
- * Delete 
+ ** Deletes the pair
  */
 exports.DeletePointAndType = (async (req, res, next) => {
     

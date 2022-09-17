@@ -4,7 +4,7 @@ import { Box, Button, ThemeProvider, makeStyles } from '@material-ui/core';
 
 import { DataGrid } from "@mui/x-data-grid";
 import { createTheme } from '@material-ui/core/styles';
-import axios, { Axios } from 'axios'
+import axios from 'axios'
 
 import Constants from "../../Shared/Constants";
 import IconTextInput from "../../Components/Inputs/IconTextInput";
@@ -89,118 +89,152 @@ const PointsOfInterestPage = () => {
   // Material UI Styles
   const classes = useStyles();
 
+  // The file path
   const [filePath, setFilePath] = useState("");
   // On text changed event
   const OnFilePathChanged = event => {
       setFilePath(event.target.value);
   };
 
+  // A flag indicating whether the delete data dialog is open
   const [deleteDialog_IsOpen, deleteDialog_SetIsOpen] = useState(false);
   const DeleteDialog_IsOpenHandler = () => deleteDialog_SetIsOpen(!deleteDialog_IsOpen);
 
+  const [pointsName, setPointsName] = useState([]);
+
+  /**
+   ** Deletes all the points of interest from the database
+   */ 
   const DeletePointsOfInterest = async() => {
+    // Try ...
     try 
     {
+      // Deletes all the point and type pairs from the database
       await axios.delete(`/api/myMaps/pointAndTypes`);
+      // Deletes all the popular times from the database
       await axios.delete(`/api/myMaps/popularTimes`);
+      // Deletes all the points from the database
       await axios.delete(`/api/myMaps/points`);
-    
-    } catch (error) 
+    }
+    // Catch if there is an error...
+    catch (error) 
     {
-      console.log(error)
+      // Prints the error to the console
+      console.log(error);
     }
   }
  
+  /**
+   ** Adds the dummy data to the database 
+   */
   const AddDataToDatabase = async () => {
+    // Try ...
     try 
     {
       await axios.post(`/api/myMaps/database`, {
         N: 10
       });
     }
+    // Catch if there is an error...
     catch (error)
     {
+      // Prints the error to the console
       console.log(error);
     }
   }
 
+  /**
+   ** Gets and formats the point and types for the rows of the datagrid
+   */
+  const PointAndTypesFormattedForTheDatagrid = async() => {
+    // Gets the response of all the point and type pairs from the data base
+    var response = await axios.get(`/api/myMaps/points/types`);
+
+    // Gets the point and type pairs from the response
+    const pointsTypes = response.data;
+    // Creates an array for the names of all the point of interest
+    let pointNames = [];
+    // For each point and type pair...
+    pointsTypes.forEach(pointType => {
+      // Add to the list the formatted string for the rows of the datagrid
+      pointNames.push({"id": pointType.id, "name": pointType.name, "address": pointType.address, "categories": pointType.categories});
+    })
+    // Sets as point the list
+    setPointsName(pointNames);
+  }
+
+  /**
+   ** Adds the points from the given JSON file path 
+   */
   const AddPointsOfInterestFromJSONFile = async() => {
+    // Try...
     try 
     {
+      // Calls the end point for the file with the filepath in the request's body 
       await axios.post(`/api/myMaps/file`, {
         path : filePath
       });
 
-      var response = await axios.get(`/api/myMaps/points/types`);
-
-      const pointsTypes = response.data;
-
-      let pointNames = [];
-      pointsTypes.forEach(pointType => {
-        
-        pointNames.push({"id": pointType.id, "name": pointType.name, "address": pointType.address, "categories": pointType.categories});
-      })
-      setPointsName(pointNames);
-
+      await PointAndTypesFormattedForTheDatagrid();
     } 
+    // Catch if there is an error...
     catch (error)
     {
+      // Prints the error to the console
       console.log(error)
     }
-
+    // Empties the text from the input
     setFilePath("");
  }
 
 
- const [pointsName, setPointsName] = useState([]);
+  /**
+   ** On initialized 
+  */
+  useEffect(async () => {
+    // Try...
+    try 
+    {
+      // Gets and formats the point and types for the rows of the datagrid
+      await PointAndTypesFormattedForTheDatagrid();
+    } 
+    // Catch if there is an error...
+    catch(error) 
+    {
+      // Prints the error to the console
+      console.log(error);
+    }   
+  },[]);
 
- useEffect(async () => {
-  try 
-  {
-    var response = await axios.get(`/api/myMaps/points/types`);
-
-    const pointsTypes = response.data;
-
-    let pointNames = [];
-    pointsTypes.forEach(pointType => {
-      
-      pointNames.push({"id": pointType.id, "name": pointType.name, "address": pointType.address, "categories": pointType.categories});
-    })
-    setPointsName(pointNames);
-  
-  } 
-  catch(error) 
-  {
-    console.log(error);
-  }   
-},[]);
-
- const pointsOfInterestLogColumns = [
-  {
-    field: "name",
-    headerName: "Name",
-    flex: 1,
-    editable: false,
-    headerClassName: "pointsOfInterestLogHeader",
-    headerAlign: "center",
-  },
-  {
-    field: "address",
-    headerName: "Address",
-    flex: 1,
-    editable: false,
-    headerClassName: "pointsOfInterestLogHeader",
-    headerAlign: "center",
-  },
-  {
-    field: "categories",
-    headerName: "Categories",
-    flex: 1,
-    editable: false,
-    headerClassName: "pointsOfInterestLogHeader",
-    headerAlign: "center",
-  }
-];
+  /**
+   ** The columns of the points of interest datagrid 
+   */
+  const pointsOfInterestLogColumns = [
+    {
+      field: "name",
+      headerName: "Name",
+      flex: 1,
+      editable: false,
+      headerClassName: "pointsOfInterestLogHeader",
+      headerAlign: "center",
+    },
+    {
+      field: "address",
+      headerName: "Address",
+      flex: 1,
+      editable: false,
+      headerClassName: "pointsOfInterestLogHeader",
+      headerAlign: "center",
+    },
+    {
+      field: "categories",
+      headerName: "Categories",
+      flex: 1,
+      editable: false,
+      headerClassName: "pointsOfInterestLogHeader",
+      headerAlign: "center",
+    }
+  ];
 
   return(
      <div className="pointsOfInterestPage">

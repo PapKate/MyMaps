@@ -52,73 +52,114 @@ const LoginForm = () => {
     // Material UI Styles
     const classes = useStyles();
     const navigate = useNavigate();
-
-    const [loginUsername, setUsername] = useState("");
-    const [loginPassword, setPassword] = useState("");
-    const [isCorrectLogin, setIsCorrectLogin] = useState(true);
-    const [isOpen, setIsOpen] = useState(false);
-    const [isEmptyInputsOpen, setIsEmptyInputsOpen] = useState(false);
     const [userLocation, setUserLocation] = useState(null);
-
-    // On username changed event
-    const OnUsernameChanged = (event) => {
+    
+    /**
+     ** The username 
+     */
+    const [loginUsername, setUsername] = useState("");
+    /**
+     ** On username changed event  
+     */ 
+     const OnUsernameChanged = (event) => {
         setUsername(event.target.value);
     };
 
-    // On password changed event
+    /**
+     ** The password 
+     */
+    const [loginPassword, setPassword] = useState("");
+    /**
+     ** On password changed event
+     */
     const OnPasswordChanged = (event) => {
         setPassword(event.target.value);
     };
 
+    /**
+     ** A flag indicating whether the login is successful 
+     */
+    const [isCorrectLogin, setIsCorrectLogin] = useState(true);
+    
+    /**
+     ** A flag indicating whether the error dialog is open
+     */
+    const [isOpen, setIsOpen] = useState(false);
     const IsOpenHandler = () => setIsOpen(!isOpen);
+    
+    /**
+     ** A flag indicating whether the error dialog for empty inputs is open
+     */
+    const [isEmptyInputsOpen, setIsEmptyInputsOpen] = useState(false);
     const IsEmptyInputsOpenHandler = () => setIsEmptyInputsOpen(!isEmptyInputsOpen);
-
+    
+    /**
+     ** Logs in a user and navigates to the home page if it is a user and to the point of interest page for the admin 
+     */
     const Login = async () => {
+        // If any input is empty...
         if (loginUsername === "" || loginPassword === "") {
+            // Opens the empty input dialog
             IsEmptyInputsOpenHandler();
+            return;
         } 
-        else {
-            try {
-                const responseOne = await axios.get(`/api/myMaps/users`);
-                const responseTwo = await axios.get(`/api/MyMaps/admins`);
-                
-                // The json data from the response
-                let users = responseOne.data;
-                let admins = responseTwo.data;
-               
-                if (users.find(x => x.username === loginUsername && x.password === loginPassword)) {
-
-                    var userData = users.find(x => x.username === loginUsername && x.password === loginPassword);  
-
-                    navigate(`users/${userData.id}/home`, {state: { userData : userData, userLocation: {"lat" : userLocation.lat, "lng" : userLocation.lng} }}); 
-                } 
-                else if(admins.find(x => x.username === loginUsername && x.password === loginPassword)) {
-
-                    var adminData = admins.find(x => x.username === loginUsername && x.password === loginPassword);
-
-                    navigate(`admins/${adminData.id}/pointsOfInterest`, {state: { adminData : adminData }});
-                } 
-                else {
-                    
-                    setIsCorrectLogin(false);
-                    console.log(isCorrectLogin);
-                    IsOpenHandler();
-                }
-            } catch (error) {
+        // Try...
+        try 
+        {
+            // Gets the users form the data base
+            const responseOne = await axios.get(`/api/myMaps/users`);
+            // Gets the admins form the data base
+            const responseTwo = await axios.get(`/api/MyMaps/admins`);
+            
+            // The json data from the response
+            let users = responseOne.data;
+            let admins = responseTwo.data;
+            
+            // If a user with the given credentials exists...
+            if (users.find(x => x.username === loginUsername && x.password === loginPassword)) 
+            {
+                // Gets the data of the user
+                var userData = users.find(x => x.username === loginUsername && x.password === loginPassword);  
+                // Navigates tot he user's home page and sets in the location and user data
+                navigate(`users/${userData.id}/home`, {state: { userData : userData, userLocation: {"lat" : userLocation.lat, "lng" : userLocation.lng} }}); 
+            } 
+            // Else if an admin with the given credentials exists...
+            else if(admins.find(x => x.username === loginUsername && x.password === loginPassword)) {
+                // Gets the data from the admin                
+                var adminData = admins.find(x => x.username === loginUsername && x.password === loginPassword);
+                // Navigates to the points of interest page and sets in the location the admin's data
+                navigate(`admins/${adminData.id}/pointsOfInterest`, {state: { adminData : adminData }});
+            } 
+            // Else...
+            else 
+            {
+                // Sets the login as unsuccessful    
                 setIsCorrectLogin(false);
-                console.log(isCorrectLogin);
+                // Opens the dialog
                 IsOpenHandler();
             }
         }
+        // Catch if there is an error...
+        catch (error) 
+        {
+            // Sets the login as unsuccessful    
+            setIsCorrectLogin(false);
+            // Opens the dialog
+            IsOpenHandler();
+        }
     };
 
+    /**
+     ** On initialized
+     */
     useEffect(() => {
+        // If the user location is not set...
         if(userLocation === null)
         {
+            // Gets the user's position
             navigator.geolocation.getCurrentPosition(function(position) {
                 //setUserLocation({"lat" : position.coords.latitude, "lng" : position.coords.longitude})
                 setUserLocation({"lat" : 38.249669, "lng" : 21.7373873})
-                // 38.249669, 21.7373873
             });
         }
     });

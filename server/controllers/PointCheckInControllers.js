@@ -4,7 +4,7 @@ const PointCheckIn = require('../models/PointCheckIn');
 const ErrorResponse = require("../utils/errorResponse");
 
 /**
- * Gets all the point check ins from the data base
+ ** Gets all the point check ins from the data base
  */
  exports.GetAllPointCheckIns = async (req, res, next) => {
 
@@ -12,30 +12,25 @@ const ErrorResponse = require("../utils/errorResponse");
     // Execute the query
     var result = await GetQueryResultAsync(query);
 
-    // if(result.length == 0) {
-    //     return next(new ErrorResponse(`ERROR 404: Not found.`, 404));
-    // }
-
     // Set the body of the response
     res.status(200).json(result);
 };
 
 /**
- * Gets all the point check ins joined with their points from the data base
+ ** Gets all the point check ins joined with their points from the data base
  */
  exports.GetAllPointCheckInAndPoints = async(req, res, next) => {
     let query = PointCheckIn.GetAllWithPoints(req.query);
     // Execute the query
     var result = await GetQueryResultAsync(query);
 
-    // if(result.length == 0) {
-    //     return next(new ErrorResponse(`ERROR 404: Not found.`, 404));
-    // }
-
     // Set the body of the response
     res.status(200).json(result);
 }
 
+/**
+ ** Gets all point check ins and cases 
+ */
  exports.GetAllPointCheckInAndCases = async(req, res, next) => {
     let query = PointCheckIn.GetAllPointCheckInCases(req.query, "checkInDate");
     // Execute the query
@@ -45,6 +40,9 @@ const ErrorResponse = require("../utils/errorResponse");
     res.status(200).json(result);
 }
 
+/**
+ ** Get all the point check ins and types 
+ */
  exports.GetAllPointCheckInsTypes = async(req, res, next) => {
     let query = PointCheckIn.GetAllPointCheckInsTypes();
     // Execute the query
@@ -53,10 +51,11 @@ const ErrorResponse = require("../utils/errorResponse");
     // Set the body of the response
     res.status(200).json(result);
 }
+
 /**
- * Deletes all the point check ins from the data base
+ ** Deletes all the point check ins from the data base
  */
-exports.DeleteAllPointCheckIns = async (req, res, next) => {
+ exports.DeleteAllPointCheckIns = async (req, res, next) => {
 
     let query = PointCheckIn.DeleteAll();
 
@@ -72,7 +71,7 @@ exports.DeleteAllPointCheckIns = async (req, res, next) => {
 };
 
 /**
- * Creates a new point check in in the data base
+ ** Creates a new point check in in the data base
  */
  exports.CreateNewPointCheckIn =  async (req, res, next) => {
     let pointCheckIn = new PointCheckIn(req.body.id, req.body.userId, req.body.pointId, req.body.customers, req.body.checkInDate);
