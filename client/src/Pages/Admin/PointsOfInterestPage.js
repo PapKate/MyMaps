@@ -115,8 +115,9 @@ const PointsOfInterestPage = () => {
     try 
     {
       await axios.post(`/api/myMaps/database`, {
-        indexStart: 5,
-        indexEnd : 10
+        N: 10,
+        indexStart: 11,
+        indexEnd : 16
       });
     }
     catch (error)

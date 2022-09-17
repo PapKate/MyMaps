@@ -16,6 +16,13 @@
          return query;
     }
 
+    static BulkCreate(valuesString) {
+        let query = `INSERT INTO confirmedcases(userId, date)
+                     VALUES ${valuesString};`;
+
+        return query;
+    }
+
     static GetAll() {
         let query = `SELECT * FROM confirmedcases ORDER BY date DESC`;
 

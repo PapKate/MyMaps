@@ -12,19 +12,22 @@ const ControllerHelpers = require("../helpers/ControllerHelpers");
     // Try...
     try 
     {
+
+        
         // The query to get all the users in the data base
         var getAllUsersQuery = User.GetAll();
         // Calls the data base and gets all the users
         var allUsers = await GetQueryResultAsync(getAllUsersQuery);
         // A list for all the new users
         var newUsers = [];
-
+        
+        var N = req.body.N;
         var indexStart = req.body.indexStart;
         var indexEnd = req.body.indexEnd;
 
         // If the database does not contain any users...
-        if(allUsers.length === 0)
-        {
+        //if(allUsers.length === 0)
+        // {
             let dateTimeNow = "2022-08-01 00:00:00";
 
             let dateCreated = dateTimeNow;
@@ -38,7 +41,7 @@ const ControllerHelpers = require("../helpers/ControllerHelpers");
                 // Adds the user model's data to the new users' list
                 newUsers.push(`"${userModel.username}", "${userModel.email}", "${userModel.password}", '${dateCreated}', '${dateModified}'`);
             }    
-        }
+        //}
 
         // If there are new users...
         if(newUsers.length > 0)
@@ -68,24 +71,25 @@ const ControllerHelpers = require("../helpers/ControllerHelpers");
         // A list for all the new point check in
         var newPointCheckIn = [];
 
-        allIdUserList.forEach(async userId => {
-            
-            for (let i = 0; i < 20; i++) 
-            {
-                // Get random customer number 
-                let randomCustomers = Math.floor((Math.random() * 100) + 1);
-                // Get random date number between August 1st and current date
-                var randomDate = ControllerHelpers.RandomDate(new Date(2022, 8, 1), new Date())
-                // Get random point id
-                var pointId = allIdPointList[Math.floor(Math.random()*allIdPointList.length)];
+            allIdUserList.forEach(async userId => {
+                
+                for (let i = 0; i < 20; i++) 
+                {
+                    // Get random customer number 
+                    let randomCustomers = Math.floor((Math.random() * 100) + 1);
+                    // Get random date number between August 1st and current date
+                    var randomDate = ControllerHelpers.RandomDate(new Date(2022, 7, 1), new Date())
+                    // Get random point id
+                    var pointId = allIdPointList[Math.floor(Math.random()*allIdPointList.length)];
 
-                // Creates Point Check In Model
-                var pointCheckInModel = new PointCheckIn(userId, `${pointId}`, randomCustomers, `${ControllerHelpers.FormatDateTime(randomDate)}` )
+                    // Creates Point Check In Model
+                    var pointCheckInModel = new PointCheckIn(userId, `${pointId}`, randomCustomers, `${ControllerHelpers.FormatDateTime(randomDate)}` )
 
-                // Adds the point check in model's data to the new point check ins' list
-                newPointCheckIn.push(`${pointCheckInModel.userId}, "${pointCheckInModel.pointId}", ${pointCheckInModel.customers}, '${pointCheckInModel.checkInDate}'`);
-            }
-        })
+                    // Adds the point check in model's data to the new point check ins' list
+                    newPointCheckIn.push(`${pointCheckInModel.userId}, "${pointCheckInModel.pointId}", ${pointCheckInModel.customers}, '${pointCheckInModel.checkInDate}'`);
+                }
+            })
+        
 
         // If there are new point check ins...
         if(newPointCheckIn.length > 0)
@@ -100,6 +104,38 @@ const ControllerHelpers = require("../helpers/ControllerHelpers");
 
         var getAllConfirmedCases = ConfirmedCase.GetAll();
         var allConfirmedCases = await GetQueryResultAsync(getAllConfirmedCases);
+
+        var newConfirmedCases = [];
+
+        // if(allConfirmedCases.length === 0)
+        // {
+            var divisionInteger = Math.floor(N/5);
+            // For random users create confirm case N DIV 2
+            for (let i = 0; i < divisionInteger ; i++) 
+            {
+                // Get random user id
+                var userId = allIdUserList[Math.floor(Math.random()*allIdUserList.length)];
+                // Get random date number between August 1st and current date
+                var randomDate = ControllerHelpers.RandomDate(new Date(2022, 7, 1), new Date())        
+
+                // Creates Confirmed Case Model
+                var confirmedCaseModel = new ConfirmedCase(userId, `${ControllerHelpers.FormatDateTime(randomDate)}` )
+
+                // Adds the point check in model's data to the new point check ins' list
+                newConfirmedCases.push(`${confirmedCaseModel.userId}, '${confirmedCaseModel.date}'`);
+            }
+        // }
+
+        // If there are confirmed cases...
+        if(newConfirmedCases.length > 0)
+        {
+            // Creates the values for the bulk insert query
+            let confirmedCasesValuesQuery = ControllerHelpers.FormatValuesForBulkInsert(newConfirmedCases);
+            // Creates the bulk insert query
+            let confirmedCasesQuery = ConfirmedCase.BulkCreate(confirmedCasesValuesQuery);
+            // Executes the query
+            await GetQueryResultAsync(confirmedCasesQuery);
+        }
 
     } 
     // If there is an error...
