@@ -11,6 +11,7 @@ import IconTextInput from "../../Components/Inputs/IconTextInput";
 import TextButton from "../../Components/Buttons/TextButton";
 import VectorButton from "../../Components/Buttons/VectorButton";
 import MessageDialog from "../../Components/Dialogs/MessageDialog";
+import InputDialog from "../../Components/Dialogs/InputDialog";
 
 const theme = createTheme({
     palette: {
@@ -100,6 +101,10 @@ const PointsOfInterestPage = () => {
   const [deleteDialog_IsOpen, deleteDialog_SetIsOpen] = useState(false);
   const DeleteDialog_IsOpenHandler = () => deleteDialog_SetIsOpen(!deleteDialog_IsOpen);
 
+  // A flag indicating whether the new values dialog is open
+  const [newValuesDialog_IsOpen, newValuesDialog_SetIsOpen] = useState(false);
+  const NewValuesDialog_IsOpenHandler = () => newValuesDialog_SetIsOpen(!newValuesDialog_IsOpen);
+
   const [pointsName, setPointsName] = useState([]);
 
   /**
@@ -127,12 +132,12 @@ const PointsOfInterestPage = () => {
   /**
    ** Adds the dummy data to the database 
    */
-  const AddDataToDatabase = async () => {
+  const AddDataToDatabase = async (numberOfValues) => {
     // Try ...
     try 
     {
       await axios.post(`/api/myMaps/database`, {
-        N: 10
+        N: numberOfValues
       });
     }
     // Catch if there is an error...
@@ -276,23 +281,27 @@ const PointsOfInterestPage = () => {
             <VectorButton Size="3.5rem" 
                         BackColor={Constants.LightBlue}
                         VectorSource={Constants.Database}
-                        OnClick = {AddDataToDatabase}/>
+                        OnClick = {NewValuesDialog_IsOpenHandler}/>
+            <InputDialog IsOpen={newValuesDialog_IsOpen} 
+                        VectorSource={Constants.Database}
+                        IsOpenHandler={NewValuesDialog_IsOpenHandler}
+                        YesOnClick={(numberOfValues)=> { NewValuesDialog_IsOpenHandler(); AddDataToDatabase(numberOfValues);}}
+                        NoOnClick={()=> { NewValuesDialog_IsOpenHandler(); }}/>
           </div>
           <div className={classes.deleteButtonContainer}>
             <VectorButton Size="3.5rem" 
                         BackColor={Constants.Red}
                         VectorSource={Constants.Delete}
                         OnClick = {DeleteDialog_IsOpenHandler}/>
-        
             <MessageDialog  Title={"Delete"}
-                              Text={"Are you sure you want to delete all points of interest?"}
-                              IsOpen={deleteDialog_IsOpen} 
-                              IsOpenHandler={DeleteDialog_IsOpenHandler}
-                              VectorSource={Constants.Delete}
-                              Color={Constants.Red}
-                              BackColor={Constants.VeryLightRed}
-                              YesOnClick={()=> { DeleteDialog_IsOpenHandler(); DeletePointsOfInterest();}}
-                              NoOnClick={()=> { DeleteDialog_IsOpenHandler(); }}/>
+                            Text={"Are you sure you want to delete all points of interest?"}
+                            IsOpen={deleteDialog_IsOpen} 
+                            IsOpenHandler={DeleteDialog_IsOpenHandler}
+                            VectorSource={Constants.Delete}
+                            Color={Constants.Red}
+                            BackColor={Constants.VeryLightRed}
+                            YesOnClick={()=> { DeleteDialog_IsOpenHandler(); DeletePointsOfInterest();}}
+                            NoOnClick={()=> { DeleteDialog_IsOpenHandler(); }}/>
           </div>
         </ThemeProvider>
      </div>
