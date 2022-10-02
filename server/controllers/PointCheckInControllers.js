@@ -74,7 +74,7 @@ const ErrorResponse = require("../utils/errorResponse");
  ** Creates a new point check in in the data base
  */
  exports.CreateNewPointCheckIn =  async (req, res, next) => {
-    let pointCheckIn = new PointCheckIn(req.body.id, req.body.userId, req.body.pointId, req.body.customers, req.body.checkInDate);
+    let pointCheckIn = new PointCheckIn(req.body.userId, req.body.pointId, req.body.customers, req.body.checkInDate);
     
     // Gets the sql query for creating the user
     let query = pointCheckIn.Create();
